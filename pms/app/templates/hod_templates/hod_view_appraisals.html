@@ -1,0 +1,36 @@
+{% extends 'hod_templates/hod_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/listview1.css' %}">
+<title>NASRDA PMS | Appraisals </title>
+<div class="main_container">
+
+    <div class="wrapper">
+        <div class="view_main">
+            <!-- Centered Grid View -->
+            <div class="view_wrap grid-view grid-view-wrapper">
+                <div class="grid-view">
+                    {% for appraisal in appraisals %}
+                    <div class="view_item">
+                        <div class="vi_left">
+                            <img src="{% static 'img/logo2.jpeg' %}" alt="logo">
+                        </div>
+                        <div class="vi_right">
+                            <p class="title">Full Name: {{ appraisal.full_name }}</p>
+                            <p class="title">Department: {{ appraisal.department }}</p>
+                            <p class="title">Unit: {{ appraisal.unit }}</p>
+                            <p class="title">Appraisal Period: {{ appraisal.period_of_evaluation_from_date|date:'m-Y' }} to {{ appraisal.period_of_evaluation_to_date|date:'m-Y' }}</p>
+                            <p class="title">Appraisal Status: {{ appraisal.appraisal_status }}</p>
+                            <p class="title">Appraisal Rating: {{ appraisal.total_appraisal_rating }}</p>
+                            <button class="btn"><a href="{% url 'hod_review' appraisal.id %}">Comment</a></button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static "js/ListScripts.js" %}"></script>
+{% endblock %}

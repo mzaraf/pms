@@ -1,0 +1,174 @@
+{% extends 'staff_templates/staff_base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>NASRDA PMS | Appraisal Results</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/result.css' %}">
+</head>
+
+<div class="wrapper">
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+        <button class="tablink" onclick="openTab(event, 'InProgress')" id="defaultOpen">In Progress</button>
+        <button class="tablink" onclick="openTab(event, 'Completed')">Completed</button>
+    </div>
+
+    <!-- In Progress Appraisals Table -->
+    <div id="InProgress" class="tabcontent">
+        <main class="table" id="inprogress_table">
+            <section class="table__header"></section>
+            <section class="table__body table-bordered">
+                <table>
+                    <thead>
+                        <tr>
+                            <th> S/N <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> File Number <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> IPPIS Number <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Full Name <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Designation <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Appraisal Year <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Appraisal Status <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Total Scores <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Action <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appraisal in in_progress_appraisals %}
+                        <tr>
+                            <td> {{ forloop.counter }} </td>
+                            <td> {{ appraisal.file_number }} </td>
+                            <td> {{ appraisal.ippis_no }} </td>
+                            <td> {{ appraisal.full_name }} </td>
+                            <td> {{ appraisal.designation }} </td>
+                            <td> {{ appraisal.period_of_evaluation_from_date|date:'Y' }}</td>
+                            <td> {{ appraisal.appraisal_status }} </td>
+                            <td> <strong>{{ appraisal.total_appraisal_rating }} </strong></td>
+                            <td> <a href="{% url 'staff_review' appraisal_id=appraisal.id %}"><img src="{% static 'img/details.png' %}" alt="Details"></a> </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9">No Pending Appraisal.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+            <!-- In Progress Appraisals Pagination -->
+            {% if in_progress_show_pagination %}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if in_progress_appraisals.has_previous %}
+                    <a href="?in_progress_page=1&tab=InProgress">&laquo; First</a>
+                    <a href="?in_progress_page={{ in_progress_appraisals.previous_page_number }}&tab=InProgress">Previous</a>
+                    {% endif %}
+                    <span class="current">
+                        Page {{ in_progress_appraisals.number }} of {{ in_progress_appraisals.paginator.num_pages }}.
+                    </span>
+                    {% if in_progress_appraisals.has_next %}
+                    <a href="?in_progress_page={{ in_progress_appraisals.next_page_number }}&tab=InProgress">Next</a>
+                    <a href="?in_progress_page={{ in_progress_appraisals.paginator.num_pages }}&tab=InProgress">Last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <!-- Completed Appraisals Table -->
+    <div id="Completed" class="tabcontent">
+        <main class="table" id="completed_table">
+            <section class="table__header"></section>
+            <section class="table__body table-bordered">
+                <table>
+                    <thead>
+                        <tr>
+                            <th> S/N <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> File Number <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> IPPIS Number <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Full Name <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Designation <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Appraisal Year <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Appraisal Status <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Total Scores <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Action <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appraisal in complete_appraisals %}
+                        <tr>
+                            <td> {{ forloop.counter }} </td>
+                            <td> {{ appraisal.file_number }} </td>
+                            <td> {{ appraisal.ippis_no }} </td>
+                            <td> {{ appraisal.full_name }} </td>
+                            <td> {{ appraisal.designation }} </td>
+                            <td> {{ appraisal.period_of_evaluation_from_date|date:'Y' }}
+                            <td> {{ appraisal.appraisal_status }} </td>
+                            <td> <strong>{{ appraisal.total_appraisal_rating }} </strong></td>
+                            <td> <a href="{% url 'staff_review' appraisal_id=appraisal.id %}"><img src="{% static 'img/details.png' %}" alt="Details"></a> </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9">No Complete Appraisal.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+            <!-- Completed Appraisals Pagination -->
+            {% if complete_show_pagination %}
+             <div class="pagination">
+                <span class="step-links">
+                    {% if complete_appraisals.has_previous %}
+                    <a href="?complete_page=1&tab=Completed">&laquo; First</a>
+                    <a href="?complete_page={{ complete_appraisals.previous_page_number }}&tab=Completed">Previous</a>
+                    {% endif %}
+                    <span class="current">
+                        Page {{ complete_appraisals.number }} of {{ complete_appraisals.paginator.num_pages }}.
+                    </span>
+                    {% if complete_appraisals.has_next %}
+                    <a href="?complete_page={{ complete_appraisals.next_page_number }}&tab=Completed">Next</a>
+                    <a href="?complete_page={{ complete_appraisals.paginator.num_pages }}&tab=Completed">Last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+
+<!-- JavaScript to toggle tabs -->
+<script>
+    function openTab(evt, tabName, query) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+
+        // Update the URL without reloading the page
+        history.pushState(null, '', query);
+        }
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('tab') || 'InProgress';
+        const tabButton = document.querySelector(`.tablink[onclick*="${activeTab}"]`);
+        if (tabButton) {
+            tabButton.click();
+        }
+    };
+
+    // Set default open tab
+    document.getElementById("defaultOpen").click();
+</script>
+
+{% endblock content %}

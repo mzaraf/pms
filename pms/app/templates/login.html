@@ -1,0 +1,114 @@
+{% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{% static './css/password.css' %}">
+  <title>NASRDA PMS | Login Page</title>
+  <link rel="icon" href="{% static 'img/nasrda.ico' %}" id="signupLogo" alt="logo">
+  <style>
+.messages {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px;
+  z-index: 1000;
+  padding: 10px;
+  text-align: center;
+}
+
+.alert {
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: white;
+}
+
+.alert-success {
+  background-color: #4caf50; /* Green background for success */
+  border-color: #3e8e41;
+}
+
+.alert-error, .alert-danger {
+  background-color: #f44336; /* Red background for errors */
+  border-color: #d32f2f;
+}
+
+.alert-info {
+  background-color: #2196f3; /* Blue background for info */
+  border-color: #1976d2;
+}
+
+.alert-dismissible .btn-close {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+}
+  </style>
+</head>
+<body>
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="mainDiv">
+      <div class="cardStyle">
+        <form action="{% url 'login' %}" method="post" name="loginForm" id="loginForm">
+          {% csrf_token %}
+          
+          <!-- You can add your logo source here -->
+          <img src="{% static 'img/logo.png' %}" id="loginLogo" alt="Logo"/>
+          
+          <h2 class="formTitle">
+            Welcome to NASRDA Performance Management System
+          </h2>
+          
+          <div class="inputDiv">
+            <label class="inputLabel" for="ippis_no">IPPIS Number</label>
+            <input type="number" id="username" name="ippis_no" placeholder="Enter your IPPIS Number" required>
+          </div>
+          
+          <div class="inputDiv">
+            <label class="inputLabel" for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          </div>
+          
+          <div class="buttonWrapper">
+            <button type="submit" id="loginButton" class="submitButton pure-button pure-button-primary">
+              <span>Login</span>
+              <div id="loader" style="display:none;"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+</body>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function() {
+      // Show the loader when form is submitted
+      document.getElementById('loader').style.display = 'inline-block';
+      
+      // Disable the submit button to prevent multiple submissions
+      document.getElementById('loginButton').disabled = true;
+    });
+
+  // Automatically remove the alerts after 5 seconds
+  setTimeout(function() {
+    var alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+      alert.remove();
+    });
+  }, 5000);
+  </script>

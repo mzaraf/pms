@@ -1,0 +1,332 @@
+{% extends 'supervisor_templates/supervisor_base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASRDA Employee Evaluation</title>
+    <link rel="stylesheet" href="{% static "css/form.css" %}">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    <form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'supervisor_rating' appraisal_id=appraisal.id %}">
+        {% csrf_token %}
+        <div class="section">
+            <label>Type of Evaluation:</label>
+
+                <label for="Q1" style="display: inline-block; margin-right: 10px;">Q1</label>
+                <input type="radio" name="appraisal_period" value="Q1" style="display: inline-block; margin-right: 10px;" {% if appraisal.appraisal_period == 'Q1' %}checked{% endif %} readonly disabled>
+
+                <label for="Q2" style="display: inline-block; margin-right: 10px;">Q2</label>
+                <input type="radio" name="appraisal_period" value="Q2" style="display: inline-block; margin-right: 10px;" {% if appraisal.appraisal_period == 'Q2' %}checked{% endif %} readonly disabled>
+
+                <label for="Q3" style="display: inline-block; margin-right: 10px;">Q3</label>
+                <input type="radio" name="appraisal_period" value="Q3" style="display: inline-block; margin-right: 10px;" {% if appraisal.appraisal_period == 'Q3' %}checked{% endif %} readonly disabled>
+
+                <label for="Q4" style="display: inline-block; margin-right: 10px;">Q4</label>
+                <input type="radio" name="appraisal_period" value="Q4" style="display: inline-block; margin-right: 10px;" {% if appraisal.appraisal_period == 'Q4' %}checked{% endif %} readonly disabled>
+            <h2>Section 1: General Information</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <!-- General Information Fields -->
+                <div>
+                    <label for="employeeName">Name of Employee:</label>
+                    <input type="text" id="employeeName" name="full_name" class="form-control" value="{{ appraisal.full_name }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="dateOfBirth">Date of Birth:</label>
+                    <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" value="{{ appraisal.date_of_birth|date:'Y-m-d' }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="dateOfFirstAppointment">Date of First Appointment:</label>
+                    <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" class="form-control" value="{{ appraisal.date_of_first_appointment|date:'Y-m-d' }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
+                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ appraisal.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
+                    <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" value="{{ appraisal.date_of_acting_appointment|date:'Y-m-d' }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="fileNumber">File Number:</label>
+                    <input type="text" id="fileNumber" name="file_number" class="form-control" value="{{ appraisal.file_number }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="ippisNumber">IPPIS Number:</label>
+                    <input type="text" id="ippisNumber" name="ippis_no" class="form-control" value="{{ appraisal.ippis_no }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="designation">Designation:</label>
+                    <input type="text" id="designation" name="designation" class="form-control" value="{{ appraisal.designation }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="department">Department:</label>
+                    <input type="text" id="department" name="department" class="form-control" value="{{ appraisal.department }}" readonly disabled>
+                </div>
+            </div>
+        </div>
+        
+        <!-- New Section 1B: Educational Background -->
+        <div class="section">
+            <h2>Section 2: Educational Background</h2>
+            <table>
+                <tr>
+                    <th>Educational Qualification</th>
+                    <th>Institution</th>
+                    <th>Date of Award</th>
+                </tr>
+                <tr>
+                    <td><input type="text" id="qualification" name="qualification" class="form-control" value="{{ appraisal.qualification }}" readonly disabled></td>
+                    <td><input type="text" id="institution" name="institution" class="form-control" value="{{ appraisal.institution }}" readonly disabled></td>
+                    <td><input type="date" id="awardDate" name="qualification_award_date" class="form-control" value="{{ appraisal.qualification_award_date|date:'Y-m-d' }}" readonly disabled></td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <h2>2 (i) Job Description/Role For The Period Of Evaluation (To be Completed by Staff)</h2>
+            <table style="width: 100%;">
+                <tr>
+                    <th>Activity/Task</th>
+                    <th>Employee’s Overall Assessment of Performance</th>
+                    <th>Comment</th>
+                </tr>
+                {% for job in job_descriptions %}
+                <tr>
+                    <td><input type="text" id="activity_task" name="activity_task" class="form-control" value="{{ job.activity_task }}" readonly disabled></td>
+                    <td><input type="text" id="overallAssessmentOfPerformance" name="overall_assessment_of_performance" class="form-control" value="{{ job.overall_assessment_of_performance }}" readonly disabled></td>
+                    <td><input type="text" id="Comment" name="comment" class="form-control" value="{{ job.comment }}" readonly disabled></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No job description provided for this appraisal.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="section">
+            <strong>I have served for over 3 months under:</strong> <br>
+            <div>
+                <span class="title">(i). Mr./Mrs.
+                    <div class="fields">
+                        <div class="input-field">
+                            <label><strong>the reporting officer</strong></label>
+                            <input type="text" id="reportingOfficer" name="reporting_officer" class="form-control" value="{{ appraisal.reporting_officer }}" readonly disabled>
+                        </div>
+                        <div class="input-field">
+                            <label>From</label>
+                            <input type="date" id="reportingOfficerFromDate" name="reporting_officer_from_date" class="form-control" value="{{ appraisal.reporting_officer_from_date|date:'Y-m-d' }}" readonly disabled>
+                        </div>
+                        <div class="input-field">
+                            <label>To</label>
+                            <input type="date" id="reportingOfficerToDate" name="reporting_officer_to_date" class="form-control" value="{{ appraisal.reporting_officer_to_date|date:'Y-m-d' }}" readonly disabled>
+                        </div>
+                    </div>
+                </span>
+            </div>
+            <div>
+                <span class="title">(ii). Mr./Mrs.
+                    <div class="fields">
+                        <div class="input-field">
+                            <label><strong>the countersigning officer</strong></label>
+                            <input type="text" id="countersigningOfficer" name="countersigning_officer" class="form-control" value="{{ appraisal.countersigning_officer }}" readonly disabled>
+                        </div>
+                        <div class="input-field">
+                            <label>From</label>
+                            <input type="date" id="countersigningOfficerFromDate" name="countersigning_officer_from_date" class="form-control" value="{{ appraisal.countersigning_officer_from_date|date:'Y-m-d' }}" readonly disabled>
+                        </div>
+                        <div class="input-field">
+                            <label>To</label>
+                            <input type="date" id="countersigningOfficerToDate" name="countersigning_officer_to_date" class="form-control" value="{{ appraisal.countersigning_officer_to_date|date:'Y-m-d' }}" readonly disabled>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Section 3: Performance Evaluation</h2>
+            <p>Instructions: Rate the employee’s performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 13. Prior to the performance discussion with the employee, a detailed plan to address areas rated “needs improvement” or “unacceptable” must be submitted to the department head and human resources for review.</p>
+                <p>Rating scale:</p>
+                <p>5 – Excellent (consistently exceeds standards) 4 - Outstanding (frequently exceeds standards) 3- Satisfactory (generally meets standards) 2- Needs improvement (frequently fails to meet standards) 1- Unacceptable (fails to meet standards)</p>
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Rating</th>
+                </tr>
+                <tr>
+                    <td>Job Knowledge</td>
+                    <td>
+                        <select name="job_knowledge" class="form-control" required>
+                            <option value="">Select rating</option>
+                            <option value="5" {% if appraisal.job_knowledge == 5 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="4" {% if appraisal.job_knowledge == 4 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="3" {% if appraisal.job_knowledge == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="2" {% if appraisal.job_knowledge == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="1" {% if appraisal.job_knowledge == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Quality of Work</td>
+                    <td>
+                        <select name="quality_of_work" class="form-control" required>
+                            <option value="">Select rating</option>
+                            <option value="5" {% if appraisal.quality_of_work == 5 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="4" {% if appraisal.quality_of_work == 4 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="3" {% if appraisal.quality_of_work == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="2" {% if appraisal.quality_of_work == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="1" {% if appraisal.quality_of_work == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Quantity of Work</td>
+                    <td>
+                        <select name="quantity_of_work" class="form-control" required>
+                            <option value="">Select rating</option>
+                            <option value="5" {% if appraisal.quantity_of_work == 5 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="4" {% if appraisal.quantity_of_work == 4 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="3" {% if appraisal.quantity_of_work == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="2" {% if appraisal.quantity_of_work == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="1" {% if appraisal.quantity_of_work == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Reliability</td>
+                    <td>
+                        <select name="reliability" class="form-control" required>
+                            <option value="">Select rating</option>
+                            <option value="5" {% if appraisal.reliability == 5 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="4" {% if appraisal.reliability == 4 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="3" {% if appraisal.reliability == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="2" {% if appraisal.reliability == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="1" {% if appraisal.reliability == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Initiative and Creativity</td>
+                    <td>
+                        <select name="initiative_creativity" class="form-control" required>
+                            <option value="">Select rating</option>
+                            <option value="5" {% if appraisal.initiative_creativity == 5 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="4" {% if appraisal.initiative_creativity == 4 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="3" {% if appraisal.initiative_creativity == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="2" {% if appraisal.initiative_creativity == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="1" {% if appraisal.initiative_creativity == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Judgment</td>
+                    <td>
+                        <select name="judgment" class="form-control" required>
+                            <option value="">Select rating</option>
+                            <option value="5" {% if appraisal.judgment == 5 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="4" {% if appraisal.judgment == 4 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="3" {% if appraisal.judgment == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="2" {% if appraisal.judgment == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="1" {% if appraisal.judgment == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p>Add all numerical values from each category above then divide by 10 (or 13 if supervisor section was completed). Overall performance rating: Training course/Seminars attended (Period Under Review)</p>
+        <div class="section">
+            <h2>Section 4: Character Trait</h2>
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Rating</th>
+                </tr>
+                <tr>
+                    <td>Interpersonal Relationship with Supervisor<br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
+                    </td>
+                    <td>
+                        <select name="relationship_with_supervisor" class="form-control" required>
+                            <option value="">Select rating</option>
+                            <option value="5" {% if appraisal.relationship_with_supervisor == 5 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="4" {% if appraisal.relationship_with_supervisor == 4 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="3" {% if appraisal.relationship_with_supervisor == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="2" {% if appraisal.relationship_with_supervisor == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="1" {% if appraisal.relationship_with_supervisor == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Quality of work<br><p>Willingness to work harmoniously with others in getting a job done. Readiness to respond positively to instructions and procedures.</p>
+                        <td>
+                            <select name="working_with_others" class="form-control" required>
+                                <option value="">Select rating</option>
+                                <option value="5" {% if appraisal.working_with_others == 5 %}selected{% endif %}>5 - Excellent</option>
+                                <option value="4" {% if appraisal.working_with_others == 4 %}selected{% endif %}>4 - Outstanding</option>
+                                <option value="3" {% if appraisal.working_with_others == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                                <option value="2" {% if appraisal.working_with_others == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                                <option value="1" {% if appraisal.working_with_others == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                            </select>
+                        </td>
+                </tr>
+                <tr>
+                    <td>Interpersonal Relationship with Subordinates<br><p>Ability to direct and give clear instructions, coach/mentor and provide leadership in a way that is not domineering and at the same time result oriented..</p>
+                        <td>
+                            <select name="relationship_with_subordinates" class="form-control" required>
+                                <option value="">Select rating</option>
+                                <option value="5" {% if appraisal.relationship_with_subordinates == 5 %}selected{% endif %}>5 - Excellent</option>
+                                <option value="4" {% if appraisal.relationship_with_subordinates == 4 %}selected{% endif %}>4 - Outstanding</option>
+                                <option value="3" {% if appraisal.relationship_with_subordinates == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                                <option value="2" {% if appraisal.relationship_with_subordinates == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                                <option value="1" {% if appraisal.relationship_with_subordinates == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                            </select>
+                        </td>
+                </tr>
+                <tr>
+                    <td>Communication Skills (Written & Verbal)<br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
+                        <td>
+                            <select name="communication_skills" class="form-control" required>
+                                <option value="">Select rating</option>
+                                <option value="5" {% if appraisal.communication_skills == 5 %}selected{% endif %}>5 - Excellent</option>
+                                <option value="4" {% if appraisal.communication_skills == 4 %}selected{% endif %}>4 - Outstanding</option>
+                                <option value="3" {% if appraisal.communication_skills == 3 %}selected{% endif %}>3 - Satisfactory</option>
+                                <option value="2" {% if appraisal.communication_skills == 2 %}selected{% endif %}>2 - Needs improvement</option>
+                                <option value="1" {% if appraisal.communication_skills == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                            </select>
+                        </td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <h2>Section 9: Supervisor's Comments</h2>
+            
+            <label for="supervisorsComments">Supervisor's Comment:</label>
+            <textarea id="supervisorsComments" name="supervisor_comments" rows="5" placeholder="Enter your comments here..." class="form-control" required>{{ appraisal.supervisor_comments }}</textarea>
+
+            <label for="dateOfEvaluation">Date of Evaluation:</label>
+            <div class="input-field">
+                <input type="date" id="dateOfEvaluation" name="date_of_evaluation" class="form-control" value="{{ appraisal.date_of_evaluation|date:'Y-m-d' }}" required>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Section 10: Head of Department Comments</h2>
+            <label for="headOfDepartmentComments">Head Of Department Comment:</label>
+            <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." class="form-control" value="{{ appraisal.head_of_department_comments }}" readonly disabled></textarea>
+        </div>
+        <div class="section"></div>
+            <button type="submit" class="submit-btn">Submit Evaluation</button>
+        </div>
+    </form>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+    const inputDate = document.getElementById('dateOfEvaluation');
+    const today = new Date().toISOString().split('T')[0];
+    inputDate.value = today;
+    });
+</script>
+</html>
+{% endblock content %}

@@ -1,0 +1,754 @@
+{% extends 'staff_templates/staff_base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Increase button size */
+    .add-job-description-row, .add-training-course-row, .remove-row {
+    font-size: 20px;      /* Increase font size */
+    padding: 10px 15px;   /* Increase padding */
+    width: 40px;          /* Set width */
+    height: 40px;         /* Set height */
+    border-radius: 5px;   /* Add rounded corners */
+    background-color: #28a745; /* Background color for + button */
+    color: white;         /* Text color */
+    border: none;         /* Remove border */
+    cursor: pointer;      /* Change cursor to pointer */
+    }
+
+    .remove-row {
+    background-color: #dc3545; /* Background color for - button */
+    }
+
+    .add-row:hover, .remove-row:hover {
+    opacity: 0.8; /* Add a hover effect */
+    }
+    .form-container {
+    margin-top: 60px;
+    margin-left: 225px; /* Matches the sidebar width */
+    padding: 30px; /* Add padding for spacing */
+    width: calc(100% - 225px); /* Adjust width accordingly */
+    }
+</style>
+        <title>NASRDA PMS | Appraisal Review</title>
+      <form id="employeeEvaluationForm" class="form-container">
+        {% csrf_token %}
+        <div class="section">
+            <div style="display: flex; align-items: center; gap: 60px;">
+                <label style="font-weight: bold;"><h3>Period of Report:</h3></label>
+                <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
+                    <label for="from" style="font-weight: bold;">From</label>
+                    <input type="month" name="period_of_report_from_date" id="from" style="padding: 5px; width: 150px;" 
+                           value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" readonly disabled>
+                </div>
+                <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
+                    <label for="to" style="font-weight: bold;">To</label>
+                    <input type="month" name="period_of_report_to_date" id="to" style="padding: 5px; width: 150px;" 
+                           value="{{ appraisal.period_of_evaluation_to_date|date:'Y-m' }}" readonly disabled>
+                </div>
+            </div>                                        
+               
+            <br>
+            <h2>Section 1: General Information (To be Completed by the Employee)</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <!-- General Information Fields -->
+                <div>
+                    <label for="employeeName">Name of Employee:</label>
+                    <input type="text" id="employeeName" name="full_name" class="form-control" value="{{ appraisal.full_name }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="dateOfBirth">Date of Birth:</label>
+                    <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" value="{{ appraisal.date_of_birth|date:'Y-m-d' }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="dateOfFirstAppointment">Date of First Appointment:</label>
+                    <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" name="date_of_first_appointment" class="form-control" value="{{ appraisal.date_of_first_appointment|date:'Y-m-d' }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
+                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" value="{{ appraisal.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
+                    <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" value="{{ appraisal.date_of_acting_appointment|date:'Y-m-d' }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="fileNumber">File Number:</label>
+                    <input type="text" id="fileNumber" name="file_number" class="form-control" value="{{ appraisal.file_number }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="ippisNumber">IPPIS Number:</label>
+                    <input type="text" id="ippisNumber" name="ippis_no" class="form-control" value="{{ appraisal.ippis_no }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="designation">Designation:</label>
+                    <input type="text" id="designation" name="designation" class="form-control" value="{{ appraisal.designation }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="department">Department:</label>
+                    <input type="text" id="department" name="department" value="{{ appraisal.department }}" readonly disabled>
+                </div>
+            </div>
+        </div>
+        <!-- New Section 1B: Educational Background -->
+        <div class="section">
+            <h2>B: Educational/Professional certifications</h2>
+            <table>
+                <tr>
+                    <th>Highest Qualification (Most Recent Qualification, Academic /Professional)</th>
+                    <th>Institution</th>
+                    <th>Date of Award</th>
+                </tr>
+                <tr>
+                    <td><input type="text" id="qualification" name="qualification" class="form-control" value="{{ appraisal.qualification }}" readonly disabled></td>
+                    <td><input type="text" id="institution" name="institution" class="form-control" value="{{ appraisal.institution }}" readonly disabled></td>
+                    <td><input type="date" id="awardDate" name="qualification_award_date" class="form-control" value="{{ appraisal.qualification_award_date|date:'Y-m-d' }}" readonly disabled></td>
+                </tr>
+                
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>C (i) Job Description/Role For The Period Of Evaluation</h2>
+            <table  id="jobDescriptionTable" style="width: 100%;">
+                <tr>
+                    <th>Activity/Task Assigned to You</th>
+                    <th>Overall Assessment of Performance</th>               
+                </tr>
+                {% for job in job_descriptions %}
+                <tr>
+                    <td><input type="text" name="activity_task[]" value="{{ job.activity_task }}" readonly disabled></td>
+                    <td><input type="text" name="overall_assessment_of_performance[]" value="{{ job.overall_assessment_of_performance }}" readonly disabled></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No job description provided for this appraisal.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+            <div class="section">
+                <div class="details personal">
+                    <span class="title">
+                        <h2>C (ii) Job Description</h2>
+                    </span>
+                    <div class="Job_Description">
+                        <table style="width: 100%; table-layout: fixed;">
+                            <!-- Question a -->
+                            <tr>
+                                <td style="width: 100%;" colspan="2">
+                                    <label><strong>(a)</strong> State in the box in order of importance the main duties performed in relation to the targets set during the period of report</label>
+                                    <textarea name="main_duties_performed_by_staff" rows="3" readonly disabled style="width: 100%;">{{ appraisal.main_duties_performed_by_staff }}</textarea>
+                                </td>
+                            </tr>
+                            <!-- Question b -->
+                            <tr>
+                                <td style="width: 50%;"><strong>(b)</strong> Was there any joint discussion between you and your Supervisor on how to accomplish the target?</td>
+                                <td style="width: 50%;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <label for="jointDiscussionYes">Yes</label>
+                                        <label for="jointDiscussionNo">No</label>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionYes" value="yes" {% if appraisal.joint_discussion_with_supervisor == 'yes' %}checked{% endif %} readonly disabled>
+                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionNo" value="no" {% if appraisal.joint_discussion_with_supervisor == 'no' %}checked{% endif %} readonly disabled>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Question c -->
+                            <tr>
+                                <td style="width: 50%;"><strong>(c)</strong> Were you properly equipped professionally/technically/administratively to perform the jobs allocated to you?</td>
+                                <td style="width: 50%;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <label for="equippedYes">Yes</label>
+                                        <label for="equippedNo">No</label>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <input type="radio" name="staff_professionally_equipped" id="equippedYes" value="yes" {% if appraisal.staff_professionally_equipped == 'yes' %}checked{% endif %} readonly disabled>
+                                        <input type="radio" name="staff_professionally_equipped" id="equippedNo" value="no" {% if appraisal.staff_professionally_equipped == 'no' %}checked{% endif %} readonly disabled>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Question d -->
+                            <tr>
+                                <td style="width: 100%;" colspan="2">
+                                    <label><strong>(d)</strong> In light of <strong> (c) </strong> above, state the various difficulties encountered in achieving the set targets and efforts you and your supervisor put in to rectify them.</label>
+                                    <textarea name= "difficulties_achieving_target" rows="3" readonly disabled style="width: 100%;">{{ appraisal.difficulties_achieving_target }}</textarea>
+                                </td>
+                            </tr>                            
+                            <!-- Question e -->
+                            <tr>
+                                <td style="width: 100%;" colspan="2">
+                                    <label><strong>(e)</strong> What was the method adopted by your supervisor to assist you in solving the difficult problems?</label>
+                                    <textarea name="method_by_supervisor_to_resolve_difficulties" rows="3" readonly disabled style="width: 100%;">{{ appraisal.method_by_supervisor_to_resolve_difficulties }}</textarea>
+                                </td>
+                            </tr>
+                            <!-- Question f -->
+                            <tr>
+                                <td style="width: 50%;"><strong>(f)</strong> Was there any periodic review of the targets set for you by your supervisor to achieve the desired goals?</td>
+                                <td style="width: 50%;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <label  for="reviewYes">Yes</label>
+                                        <label  for="reviewNo">No</label>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <input name="target_review_with_supervisor" type="radio" id="reviewYes" value="yes" {% if appraisal.target_review_with_supervisor == 'yes' %}checked{% endif %} readonly disabled>
+                                        <input name="target_review_with_supervisor" type="radio" id="reviewNo" value="no" {% if appraisal.target_review_with_supervisor == 'no' %}checked{% endif %} readonly disabled>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Question g -->
+                            <tr>
+                                <td style="width: 50%;"><strong>(g)</strong> After the review, did your performance measure up to the prescribed standards set at the beginning of the year?</td>
+                                <td style="width: 50%;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <label for="performanceYes">Yes</label>
+                                        <label for="performanceNo">No</label>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <input type="radio" name="performance_measure_upto_standard_after_review" id="performanceYes" value="yes" {% if appraisal.performance_measure_upto_standard_after_review == 'yes' %}checked{% endif %} readonly disabled>
+                                        <input type="radio" name="performance_measure_upto_standard_after_review" id="performanceNo" value="no" {% if appraisal.performance_measure_upto_standard_after_review == 'no' %}checked{% endif %} readonly disabled>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Question h -->
+                            <tr>
+                                <td style="width: 100%;" colspan="2">
+                                    <label><strong>(h)</strong> State any ad hoc duties performed by you in addition to your normal schedule of duties which were not of continuous nature</label>
+                                    <textarea rows="3" name="adhoc_duties_performed" readonly disabled style="width: 100%;">{{ appraisal.adhoc_duties_performed }}</textarea>
+                                </td>
+                            </tr>
+                            <!-- Question i -->
+                            <tr>
+                                <td style="width: 50%;"><strong>(i)</strong> Did the performance of these ad hoc duties affect your real duties and if so, did you bring these to the attention of your supervisor?</td>
+                                <td style="width: 50%;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <label for="adHocYes">Yes</label>
+                                        <label for="adHocNo">No</label>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <input type="radio" name="adhoc_duties_impact_real_duties" id="adHocYes" value="yes" {% if appraisal.adhoc_duties_impact_real_duties == 'yes' %}checked{% endif %} readonly disabled>
+                                        <input type="radio" name="adhoc_duties_impact_real_duties" id="adHocNo" value="no" {% if appraisal.adhoc_duties_impact_real_duties == 'no' %}checked{% endif %} readonly disabled>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Question j -->
+                            <tr>
+                                <td style="width: 50%;">
+                                    <span class="title"><strong>(j)</strong> State the period that you have been on the schedule of duty referred to in <strong>(a) </strong> above:</span>
+                                </td>
+                                <td style="width: 50%;">
+                                    <div class="fields">
+                                        <div class="input-field">
+                                            <label>From</label>
+                                            <input name="main_duties_performed_by_staff_from_date" type="date" value="{{ appraisal.main_duties_performed_by_staff_from_date|date:'Y-m-d' }}" readonly disabled>
+                                        </div>
+                                        <div class="input-field">
+                                            <label>To</label>
+                                            <input name="main_duties_performed_by_staff_to_date" type="date" value="{{ appraisal.main_duties_performed_by_staff_to_date|date:'Y-m-d' }}" readonly disabled>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+                <div class="section">
+                    <section class="achievement-section">
+                        <div class="details personal">
+                            <span class="title">
+                                <h2>D. Achievement of Target: (If Applicable)</h2>
+                            </span>
+                            <table style="width: 100%; table-layout: fixed;">
+                                <tbody>
+                                    <!-- Question 1 -->
+                                    <tr>
+                                        <td class="question-cell" style="width: 50%;"><strong>(I)</strong> What was the estimated cost of the Project/Assignment/Responsibility set for your Division/Section/Unit?</td>
+                                        <td class="options-cell" style="width: 50%;">
+                                            <div>
+                                                <label>Allowances: </label> <input type="text" id="allowances" name="cost_project_assignment_responsibility_allowances" value="{{ appraisal.cost_project_assignment_responsibility_allowances }}" readonly disabled>
+                                                <label>Overhead Cost: </label> <input type="text" id="overhead_cost" name="project_assignment_responsibility_overhead_cost" value="{{ appraisal.project_assignment_responsibility_overhead_cost }}" readonly disabled>
+                                                <label>Capital Cost: </label> <input type="text" id="capital_cost" name="project_assignment_responsibility_capital_cost" value="{{ appraisal.project_assignment_responsibility_capital_cost }}" readonly disabled>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Question 2 -->
+                                    <tr>
+                                        <td class="question-cell" style="width: 50%;"><strong>(II)</strong> What was the agreed time for the completion of the Project/Assignment/Responsibility?</td>
+                                        <td class="options-cell" style="width: 50%;">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <label class="radio-label" for="completion_daily">Daily</label>
+                                                <label class="radio-label" for="completion_weekly">Weekly</label>
+                                                <label class="radio-label" for="completion_monthly">Monthly</label>
+                                                <label class="radio-label" for="completion_yearly">Yearly</label>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <input type="radio" name="project_assigment_completion_time" id="completion_daily" value="DAILY" {% if appraisal.project_assigment_completion_time == 'DAILY' %}checked{% endif %} readonly disabled>
+                                                <input type="radio" name="project_assigment_completion_time" id="completion_weekly" value="WEEKLY" {% if appraisal.project_assigment_completion_time == 'WEEKLY' %}checked{% endif %} readonly disabled>
+                                                <input type="radio" name="project_assigment_completion_time" id="completion_monthly" value="MONTHLY" {% if appraisal.project_assigment_completion_time == 'MONTHLY' %}checked{% endif %} readonly disabled>
+                                                <input type="radio" name="project_assigment_completion_time" id="completion_yearly" value="YEARLY" {% if appraisal.project_assigment_completion_time == 'YEARLY' %}checked{% endif %} readonly disabled>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Question 3 -->
+                                    <tr>
+                                        <td class="question-cell" style="width: 50%;"><strong>(III)</strong> Was the quantity of the work performed during the period of the report in conformity with the set standard?</td>
+                                        <td class="options-cell" style="width: 50%;">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <label class="radio-label" for="quantity_yes">Yes</label>
+                                                <label class="radio-label" for="quantity_no">No</label>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <input type="radio" name="project_quantity_conformity_to_standard" id="quantity_yes" value="yes" {% if appraisal.project_quantity_conformity_to_standard == 'yes' %}checked{% endif %} readonly disabled>
+                                                <input type="radio" name="project_quantity_conformity_to_standard" id="quantity_no" value="no" {% if appraisal.project_quantity_conformity_to_standard == 'no' %}checked{% endif %} readonly disabled>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Question 4 -->
+                                    <tr>
+                                        <td class="question-cell" style="width: 50%;"><strong>(IV)</strong> Did the quality of the Project/Assignment/Responsibility so far completed agree with the set standards?</td>
+                                        <td class="options-cell" style="width: 50%;">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <label class="radio-label" for="quality_yes">Yes</label>
+                                                <label class="radio-label" for="quality_no">No</label>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <input type="radio" name="project_quality_conformity_to_standard" id="quality_yes" value="yes" {% if appraisal.project_quality_conformity_to_standard == 'yes' %}checked{% endif %} readonly disabled>
+                                                <input type="radio" name="project_quality_conformity_to_standard" id="quality_no" value="no" {% if appraisal.project_quality_conformity_to_standard == 'no' %}checked{% endif %} readonly disabled>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+                <div class="section">
+                    <h2>E: Training course/Seminars attended (Period Under Review)</h2>
+                    <table id="TrainingCourseSeminarsTable" style="width: 100%;">
+                        
+                        <tr>
+                            <th>Type of Training/Seminar</th>
+                            <th>Where was the Training held</th>
+                            <th>Period of Training</th>
+                        </tr>
+                        {% for training in training_seminars %}
+                        <tr>
+                            <td><input type="text" id="trainingProgram" name="training_program_type[]" value="{{ training.training_program_type }}" readonly disabled></td>
+                            <td><input type="text" id="trainingLocation" name="training_location[]" value="{{ training.training_location }}" readonly disabled></td>
+                            <td><label>From</label><input type="date" id="trainingDate" name="training_from_date[]" value="{{ training.training_from_date|date:'Y-m-d' }}" readonly disabled>
+                                <label>To</label><input type="date" id="trainingDate" name="training_to_date[]" value="{{ training.training_to_date|date:'Y-m-d' }}" readonly disabled>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">No Training/Seminars provided for this appraisal.</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="section">
+                    <strong>I have served for over 3 months under:</strong><br>
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <span class="title">(i). Mr./Mrs.
+                                    <div class="fields">
+                                        <div class="input-field">
+                                            <label><strong>the reporting officer</strong></label>
+                                            <input type="text" id="reportingOfficer" name="reporting_officer" value="{{ appraisal.reporting_officer }}" readonly disabled>
+                                        </div>
+                                        <div class="input-field">
+                                            <label>From</label>
+                                            <input type="date" id="reportingOfficerFromDate" name="reporting_officer_from_date" value="{{ appraisal.reporting_officer_from_date|date:'Y-m-d' }}"  readonly disabled>
+                                        </div>
+                                        <div class="input-field">
+                                            <label>To</label>
+                                            <input type="date" id="reportingOfficerToDate" name="reporting_officer_to_date" value="{{ appraisal.reporting_officer_to_date|date:'Y-m-d' }}" readonly disabled>
+                                        </div>
+                                    </div>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="title">(ii). Mr./Mrs.
+                                    <div class="fields">
+                                        <div class="input-field">
+                                            <label><strong>the countersigning officer</strong></label>
+                                            <input type="text" id="countersigningOfficer" name="countersigning_officer" value="{{ appraisal.countersigning_officer }}" readonly disabled>
+                                        </div>
+                                        <div class="input-field">
+                                            <label>From</label>
+                                            <input type="date" id="countersigningOfficerFromDate" name="countersigning_officer_from_date" value="{{ appraisal.countersigning_officer_from_date|date:'Y-m-d' }}" readonly disabled>
+                                        </div>
+                                        <div class="input-field">
+                                            <label>To</label>
+                                            <input type="date" id="countersigningOfficerToDate" name="countersigning_officer_to_date" value="{{ appraisal.countersigning_officer_to_date|date:'Y-m-d' }}" readonly disabled>
+                                        </div>
+                                    </div>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+             <div class="section">   
+                <p style="color: red;"><b>The Section Below is for your Supervisor and Director<br>SCROLL DOWN TO THE BOTTOM OF THE PAGE TO SUBMIT YOUR FORM</b></p>
+<hr>
+                <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2><p style="color: red;"><b>( To be filled by Supervisor)</b></p>
+
+            <p><b>Instructions: </b><i>Rate the employee’s performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 16 Sixteen and match with the corresponding marks in bracket. Prior to the performance discussion with the employee, a detailed plan to address areas rated “needs improvement” or “unacceptable” must be submitted to the department head and human resources for review.</i></p>
+            <br>    
+            <p><b>Rating scale:</b></p>
+                <p><b>5 – Excellent (consistently exceeds standards) – (16) 4 - Outstanding (frequently exceeds standards) – (13) 3- Satisfactory (generally meets standards) -(10) 2- Needs improvement (frequently fails to meet standards) – (7) 1- Unacceptable (fails to meet standards) – (5)</b></p>
+            <table>
+                <!--<h2>Work (<span class="red-text">10 points</span>)</h2>-->
+                <br>
+                <tr>
+                    <th style="width: 80%;">Parameter</th>
+                    <th style="width: 20%;">Rating</th>
+                </tr>
+                <tr>
+                    <td><strong>a. </strong>,<b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
+                    <td>
+                        <select name="job_knowledge" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.job_knowledge == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.job_knowledge == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.job_knowledge == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.job_knowledge == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.job_knowledge == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>b. </strong><b> Quality of Work </b><p>Freedom from errors and mistakes. Accuracy, quality of work in general.</p></td>
+                    <td>
+                        <select name="quality_of_work" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.quality_of_work == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.quality_of_work == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.quality_of_work == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.quality_of_work == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.quality_of_work == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>c. </strong><b> Quantity of Work </b><p>Productivity of the employee.</p></td>
+                    <td>
+                        <select name="quantity_of_work" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.quantity_of_work == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.quantity_of_work == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.quantity_of_work == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.quantity_of_work == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.quantity_of_work == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>d. </strong><b> Reliability </b><p>The extent to which the employee can be depended upon to be available for work, to complete work properly, and complete work on time. The degree to which the employee is reliable, trustworthy, and persistent. 
+                        Consistency in coming to work daily and conforming to scheduled work hours. ATTENDANCE
+                        </p></td>
+                    <td>
+                        <select name="reliability" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.reliability == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.reliability == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.reliability == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.reliability == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.reliability == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>e. </strong> <b>Initiative and Creativity </b><p>The ability to plan work and to proceed with a task without being told every detail and the ability to make constructive suggestions.</p></td>
+                    <td>
+                        <select name="initiative_creativity" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.initiative_creativity == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.initiative_creativity == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.initiative_creativity == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.initiative_creativity == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.initiative_creativity == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>f. </strong><b> Judgement </b><p>The extent to which the employee makes decisions that is sound. The ability to base decisions on fact rather than emotion.</p></td>
+                    <td>
+                        <select name="judgment" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.judgment == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.judgment == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.judgment == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.judgment == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.judgment == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <h3>Character Trait</h3>
+            <table>
+                <tr>
+                    <th style="width: 80%;">Parameter</th>
+                    <th style="width: 20%;">Rating</th>
+                </tr>
+                <tr>
+                    <td><strong>a. </strong><b>Interpersonal Relationship with Supervisor</b><br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
+                    </td>
+                    <td>
+                        <select name="relationship_with_supervisor" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.relationship_with_supervisor == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.relationship_with_supervisor == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.relationship_with_supervisor == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.relationship_with_supervisor == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.relationship_with_supervisor == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>b. </strong><b> Quality of work</b><br><p>Willingness to work harmoniously with others in getting a job done. Readiness to respond positively to instructions and procedures.</p>
+                        <td>
+                        <select name="working_with_others" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.working_with_others == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.working_with_others == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.working_with_others == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.working_with_others == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.working_with_others == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>c. </strong><b>Interpersonal Relationship with Subordinates</b><br><p>Ability to direct and give clear instructions, coach/mentor and provide leadership in a way that is not domineering and at the same time result oriented..</p>
+                        <td>
+                        <select name="relationship_with_subordinates" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.relationship_with_subordinates == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.relationship_with_subordinates == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.relationship_with_subordinates == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.relationship_with_subordinates == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.relationship_with_subordinates == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>d. </strong> <b>Communication Skills (Written & Verbal)</b><br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
+                        <td>
+                        <select name="communication_skills" readonly disabled>
+                            <option value="">Select rating</option>
+                            <option value="16" {% if appraisal.communication_skills == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.communication_skills == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.communication_skills == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.communication_skills == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.communication_skills == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+          </table>
+        </div>
+        <div class="section">
+            <h3>Complete this Section for Employees with Supervisory Responsibilities:</h3>
+            <table>
+                <tr>
+                    <th style="width: 80%;">Parameter</th>
+                    <th style="width: 20%;">Rating</th>
+                </tr>
+                <tr>
+                    <td><strong>a. </strong> <b>Planning and organizing</b><br>
+                        <p>The ability to analyze work, set goals, develop plans of action, utilize time. Consider amount of supervision readonly disabled and extent to which you can trust employee to carry out assignments diligently.</p>
+                    </td>
+                    <td>
+                        <select name="planning_and_organizing" readonly disabled>
+                            <option value="0">Select rating</option>
+                            <option value="16" {% if appraisal.planning_and_organizing == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.planning_and_organizing == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.planning_and_organizing == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.planning_and_organizing == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.planning_and_organizing == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>b. </strong> <b>Directing and controlling</b><br><p>The ability to create a motivating climate, achieve teamwork, train and develop, measure work in progress, take corrective action.</p>
+                        <td>
+                        <select name="directing_and_controlling" readonly disabled>
+                            <option value="0">Select rating</option>
+                            <option value="16" {% if appraisal.directing_and_controlling == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.directing_and_controlling == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.directing_and_controlling == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.directing_and_controlling == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.directing_and_controlling == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>c. </strong><b>Decision-making</b><br><p>The ability to make decisions and the quality and timeliness of those decisions.</p>
+                        <td>
+                        <select name="decision_making" readonly disabled>
+                            <option value="0">Select rating</option>
+                            <option value="16" {% if appraisal.decision_making == 16 %}selected{% endif %}>5 - Excellent</option>
+                            <option value="13" {% if appraisal.decision_making == 13 %}selected{% endif %}>4 - Outstanding</option>
+                            <option value="10" {% if appraisal.decision_making == 10 %}selected{% endif %}>3 - Satisfactory</option>
+                            <option value="7"  {% if appraisal.decision_making == 7 %}selected{% endif %}>2 - Needs improvement</option>
+                            <option value="5"  {% if appraisal.decision_making == 1 %}selected{% endif %}>1 - Unacceptable</option>
+                        </select>
+                    </td>
+                </tr>
+                
+          </table>
+          <p style="color: red;"><b><i>GRADING: All numerical values from each category above will then be divide by 10 (or 13 if supervisory section was completed). <br>Overall performance rating: {{ appraisal.total_appraisal_rating }}</i></b></p>
+        </div>
+        <div class="section">
+        <table class="evaluation-table">
+            <div class="section">
+            <tr>
+                <td colspan="2"><strong>Incentive/Reward</strong><br></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    Has the officer received any special commendations (WRITTEN) DURING the year for outstanding performance? (<span class="red-text">2 points</span>)
+                    <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+                        <label for="quality_yes">Yes</label>
+                        <input type="radio" name="commendation_for_outstanding_performance" id="commendation_yes" value="2" {% if appraisal.commendation_for_outstanding_performance == 2 %}checked{% endif %} readonly disabled>
+                        
+                        <label for="quality_no">No</label>
+                        <input type="radio" name="commendation_for_outstanding_performance" id="commendation_no" value="0" {% if appraisal.commendation_for_outstanding_performance == 0 %}checked{% endif %} readonly disabled>
+                    </div>
+                    <br>
+                    If YES, give details:
+                
+                    <textarea rows="3" name="details_of_commendation_for_outstanding_performance" style="width: 100%;" readonly disabled>{{ appraisal.details_of_commendation_for_outstanding_performance }}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Leadership Attainment</strong><br></td>
+            </tr>
+            <tr>
+                <td colspan="2">Did he make suggestions for changes/adjust methods/procedures that significantly contribute to his/her own work or that of any associate/subordinates? (<span class="red-text">2 points</span>)
+                    <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+                    <label for="leadershipYes">Yes</label>
+                    <input type="radio" name="suggestions_that_contributed_to_changes" id="leadership_yes" value="2" {% if appraisal.suggestions_that_contributed_to_changes == 2 %}checked{% endif %} readonly disabled>
+                        
+                    <label for="leadershipNo">No</label>
+                    <input type="radio" name="suggestions_that_contributed_to_changes" id="leadership_no" value="0" {% if appraisal.suggestions_that_contributed_to_changes == 0 %}checked{% endif %} readonly disabled>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Sanction/Discipline</strong><br></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    Has any disciplinary action been taken against the officer during the period covered by this report?
+                    <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+                        <label for="quality_yes">Yes</label>
+                        <input type="radio" name="sanction_discipline" id="saction_yes" value="yes" {% if appraisal.sanction_discipline == 'yes' %}checked{% endif %} readonly disabled>
+                        
+                        <label for="quality_no">No</label>
+                        <input type="radio" name="sanction_discipline" id="saction_no" value="no" {% if appraisal.sanction_discipline == 'no' %}checked{% endif %} readonly disabled>
+                    </div>
+                    <br>
+                    If YES, give details of Sanction:
+                
+                    <textarea rows="3" name="details_sanction_discipline" style="width: 100%;" readonly disabled>{{ appraisal.details_sanction_discipline }}</textarea>
+                </td>
+            </tr>
+        </table>
+        <div class="section">
+            <h2>Section 3 </h2>
+            <table>
+              <tr>
+                <td style="width: 100%;" colspan="2">
+                    <strong>i.</strong> In what way has the Employee developed his/her capacity since the last evaluation?
+                    <textarea rows="3" name="capacity_development_since_last_evaluation" style="width: 100%;" readonly disabled>{{ appraisal.capacity_development_since_last_evaluation }}</textarea>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 100%;" colspan="2">
+                    <strong>ii.</strong> State any outstanding accomplishments of the Employee since the last evaluation?
+                    <textarea rows="3" name="accommplishments_since_last_evaluation" style="width: 100%;" readonly disabled>{{ appraisal.accommplishments_since_last_evaluation }}</textarea>
+                </td>
+                
+              </tr>
+              <tr>
+                <td style="width: 100%;" colspan="2">
+                    <strong>iii.</strong> Specify areas (if any), in which the Employee requires training to handle new or more responsibilities.
+                    <textarea rows="3" name="training_requirements_to_handle_responsibilities" style="width: 100%;" readonly disabled>{{ appraisal.training_requirements_to_handle_responsibilities }}</textarea>
+                </td>
+                
+              </tr>
+              <tr>
+                <td style="width: 100%;" colspan="2">
+                    <strong>iv.</strong> What are the skills gaps/areas requiring improvement in job performance noticed in the Employee?
+                    <textarea rows="3" name="skills_gap_requiring_improvement" style="width: 100%;" readonly disabled>{{ appraisal.skills_gap_requiring_improvement }}</textarea>
+                </td>
+                
+              </tr>
+              <tr>
+                <td style="width: 100%;" colspan="2">
+                    <strong>v.</strong> Are there necessary opportunities that could not be created for the Employee during the period evaluated and why?
+                    <textarea rows="3" name="missed_opportunities_reason" style="width: 100%;" readonly disabled>{{ appraisal.missed_opportunities_reason }}</textarea>
+                </td>
+                
+              </tr>
+            </table>
+        </div>
+        <div class="section">
+            <p>From the above assessments, indicate the overall performance of his/her duties by selecting the appropriate value below:</p>
+            <h3>Overall Assessment:</h3>
+            <select id="overallAssessment" name="overall_performance_assessment" readonly disabled>
+                <option value="">Select assessment</option>
+                <option value="Outstanding" {% if appraisal.overall_performance_assessment == "Outstanding" %}selected{% endif %}>A - Outstanding, An exceptionally valuable member of staff, performance is well above the readonly disabled standard for the job.</option>
+                <option value="Very Good" {% if appraisal.overall_performance_assessment == "Very Good" %}selected{% endif %}>B - Very Good, Displays good all-round level of effectiveness; performance meets requirements in all important tasks.</option>
+                <option value="Good" {% if appraisal.overall_performance_assessment == "Good" %}selected{% endif %}>C - Good, A competent member of staff; generally achieves the standard readonly disabled.</option>
+                <option value="Fair" {% if appraisal.overall_performance_assessment == "Fair" %}selected{% endif %}>D - Fair Complete all assignments fairly satisfactorily within agreed date.</option>
+                <option value="Poor" {% if appraisal.overall_performance_assessment == "Poor" %}selected{% endif %}>E - Poor, Performance does not always reach the readonly disabled standard; room for improvement.</option>
+                <option value="Very Poor" {% if appraisal.overall_performance_assessment == "Very Poor" %}selected{% endif %}>F - Very Poor, Performance does not meet the readonly disabled standard</option>
+            </select>
+        </div>
+        <div class="section">
+            
+            <h3>Promotability: </h3>
+            <select id="Promotability" name="promotability" readonly disabled>
+                <option value="">Select Promotability</option>
+                <option value="Outstanding" {% if appraisal.promotability == "Outstanding" %}selected{% endif %}>A - Well qualified, the officer already stands out in the next higher </option>
+                <option value="Very Good" {% if appraisal.promotability == "Very Good" %}selected{% endif %}>B - Ready for promotion</option>
+                <option value="Good" {% if appraisal.promotability == "Good" %}selected{% endif %}>C - Has promotion potentials; has completed the readonly disabled number of years</option>
+                <option value="Fair" {% if appraisal.promotability == "Fair" %}selected{% endif %}>D - Not yet ripe for promotion ( for non-fulfillment of condition prescribed for 
+                    promotion in line with the Guideline on Civil Service reforms)
+                    </option>
+                <option value="Poor" {% if appraisal.promotability == "Fair" %}selected{% endif %}>E - No evidence of promotion potential at present.</option>
+                <option value="Very Poor" {% if appraisal.promotability == "Very Poor" %}selected{% endif %}>F - Unlikely to qualify as he/she seems to have reached the limit of his/her capacity.</option>
+            </select>
+        </div>
+        <div class="section">
+            <h2>Section 4: Recommended by supervisor</h2>
+            
+            <label for="supervisorsComments">Supervisor's Comment:</label>
+            <textarea id="supervisorsComments" name="supervisor_comments" rows="5" placeholder="Enter your comments here..." readonly disabled>{{ appraisal.supervisor_comments }}</textarea>
+
+            <label for="supervisorDateOfEvaluation">Date of Evaluation:</label>
+            <input type="date" id="supervisorDateOfEvaluation" name="supervisor_date_of_evaluation" value="{{ appraisal.supervisor_date_of_evaluation|date:'Y-m-d' }}" readonly disabled>
+
+        </div>
+
+        <div class="section">
+            <div class="section">
+                <h2>Section 5: Head of Department’s Comments <i>(As applicable):</i></h2>
+                
+                <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." readonly disabled>{{ appraisal.head_of_department_comments }}</textarea>
+    
+                <label for="headOfDepartmentComments">Date of Evaluation:</label>
+                <input type="date" id="headOfDepartmentDateOfEvaluation" name="head_of_department_date_of_evaluation" value="{{ appraisal.head_of_department_date_of_evaluation|date:'Y-m-d' }}" readonly disabled>
+    
+            </div>
+        </div>
+    </form>
+{% endblock content %}

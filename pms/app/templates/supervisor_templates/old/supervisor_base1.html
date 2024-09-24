@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="icon" href="{% static 'img/nasrda.ico' %}" alt="logo">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://kit.fontawesome.com/b99e675b6e.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" defer></script>
+    <script>
+        $(document).ready(function(){
+            $(".hamburger .hamburger__inner").click(function(){
+              $(".wrapper").toggleClass("active")
+            })
+
+            $(".top_navbar .fas").click(function(){
+               $(".profile_dd").toggleClass("active");
+            });
+        })
+    </script>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="top_navbar">
+    <div class="hamburger">
+       <div class="hamburger__inner">
+         <div class="one"></div>
+         <div class="two"></div>
+         <div class="three"></div>
+       </div>
+    </div>
+    <div class="menu">
+      <div class="logo">
+        <strong>NASRDA Performance Management System</strong> 
+      </div>
+      <div class="right_menu">
+        <ul>
+          <li><i class="fas fa-user"></i>
+            <div class="profile_dd">
+               <div class="dd_item">Profile</div>
+               <div class="dd_item">Change Password</div>
+               <div class="dd_item"><a href="{% url 'logout' %}" onclick="return confirm('Are you sure you want to logout?');">Logout</a></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    
+  <div class="main_container">
+      <div class="sidebar">
+          <div class="sidebar__inner">
+            <div class="profile">
+              <div class="img">
+                <img src="{% static 'img/profile.png' %}" alt="">
+              </div>
+              <div class="profile_info">
+                 <p>Welcome</p>
+                 <p class="profile_name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+              </div>
+            </div>
+            <ul>
+              <li>
+                <a href="{% url 'supervisor' %}" class="{% if request.resolver_match.view_name == 'supervisor' %}active{% endif %}">
+                  <span class="icon"><i class="fa-solid fa-house"></i></span>
+                  <span class="title">About PMS</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'supervisor_form' %}" class="{% if request.resolver_match.view_name == 'supervisor_form' %}active{% endif %}">
+                  <span class="icon"><i class="fab fa-elementor"></i></span>
+                  <span class="title">Appraisal Form</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'supervisor_view_appraisals' %}" class="{% if request.resolver_match.view_name == 'supervisor_view_appraisals' %}active{% endif %}">
+                  <span class="icon"><i class="fab fa-delicious"></i></span>
+                  <span class="title">Rate Appraisal</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+      </div>
+      {% block content %}
+      {% endblock content %}
+  </div>
+</div>	
+
+</body>
+</html>
