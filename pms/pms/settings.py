@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-0w#rn^=wd@t9h*43=tsclcw3#h2^5ku(970eq10hydiza@8yfg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['102.130.119.186', 'localhost']
 
 
 # Application definition
@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'pms.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'your_db_name',
-        'USER': 'your_db_user',
-        'PASSWORD': 'your_password',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'pms',
+        'USER': 'pmsuser',
+        'PASSWORD': '4ureyes0nly',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -127,7 +127,7 @@ MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 STATIC_URL = 'static/'
-STATIC_ROOT=os.path.join(BASE_DIR,'static')
+STATIC_ROOT=os.path.join(BASE_DIR,'static/')
 
 AUTH_USER_MODEL = 'app.CustomUser'
 

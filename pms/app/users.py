@@ -15,7 +15,7 @@ def upload_users_from_excel(file_path):
     for index, row in df.iterrows():
         # Create a CustomUser instance
         user = CustomUser(
-            username=row['username'],
+            username='email',
             first_name=row['first_name'],
             last_name=row['last_name'],
             email=row['email'],

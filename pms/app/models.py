@@ -155,7 +155,11 @@ class Appraisal(models.Model):
     difficulties_achieving_target = models.TextField(null=True, db_index = True, blank=True)
     method_by_supervisor_to_resolve_difficulties = models.TextField(null=True, db_index = True, blank=True)
     target_review_with_supervisor = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+<<<<<<< HEAD
     performance_measure_upto_standard_after_review = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+=======
+    performance_measure_upto_standard_after_review = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+>>>>>>> 5c79918 (changes on server)
     adhoc_duties_performed = models.TextField(null=True, db_index = True, blank=True)
     adhoc_duties_impact_real_duties = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
     main_duties_performed_by_staff_from_date = models.DateField(null=True, db_index = True, blank=True)
@@ -292,7 +296,7 @@ class Appraisal(models.Model):
     #    super(Appraisal, self).save(*args, **kwargs)
     
     details_of_commendation_for_outstanding_performance = models.TextField(blank = True, db_index = True, null = True,)
-    sanction_discipline = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+    sanction_discipline = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
     details_sanction_discipline = models.TextField(blank = True, db_index = True, null = True,)
 
     capacity_development_since_last_evaluation = models.TextField(blank = True, db_index = True, null = True,)
@@ -301,8 +305,13 @@ class Appraisal(models.Model):
     skills_gap_requiring_improvement = models.TextField(blank = True, db_index = True, null = True,)
     missed_opportunities_reason = models.TextField(blank = True, db_index = True, null = True,)
 
+<<<<<<< HEAD
     overall_performance_assessment = models.CharField(max_length=50, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
     promotability = models.CharField(max_length=50, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
+=======
+    overall_performance_assessment = models.CharField(max_length=100, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
+    promotability = models.CharField(max_length=100, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
+>>>>>>> 5c79918 (changes on server)
 
 
     supervisor_comments = models.TextField(blank = True, db_index = True, null = True,)
