@@ -3,6 +3,33 @@ from django.db import models
 from django_fsm import FSMField, transition
 import math
 
+from django.contrib.auth.models import BaseUserManager
+
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, ippis_no, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        if not ippis_no:
+            raise ValueError('The IPPIS number must be set')
+
+        email = self.normalize_email(email)
+        user = self.model(ippis_no=ippis_no, email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, ippis_no, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(ippis_no, email, password, **extra_fields)
+
 class Usertype(models.Model):
     name = models.CharField(blank=True, max_length=50, db_index = True, unique = True,)
     def __str__(self):
@@ -112,7 +139,7 @@ class Appraisal(models.Model):
     date_of_first_appointment = models.DateField(null=True, db_index = True, blank=True)
     date_of_present_appointment = models.DateField(null=True, db_index = True, blank=True)
     date_of_acting_appointment = models.DateField(null=True, db_index = True, blank=True)
-    file_number = models.CharField(max_length=20, null=True, db_index = True, blank=True)
+    file_number = models.CharField(max_length=50, null=True, db_index = True, blank=True)
     ippis_no=models.IntegerField(db_index = True, null=True)
     designation = models.CharField(max_length=50, null=True, db_index = True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
@@ -123,23 +150,23 @@ class Appraisal(models.Model):
     qualification_award_date = models.DateField(null=True, db_index = True, blank=True)
 
     main_duties_performed_by_staff = models.TextField(null=True, db_index = True, blank=True)
-    joint_discussion_with_supervisor = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
-    staff_professionally_equipped = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+    joint_discussion_with_supervisor = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+    staff_professionally_equipped = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
     difficulties_achieving_target = models.TextField(null=True, db_index = True, blank=True)
     method_by_supervisor_to_resolve_difficulties = models.TextField(null=True, db_index = True, blank=True)
-    target_review_with_supervisor = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+    target_review_with_supervisor = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
     performance_measure_upto_standard_after_review = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
     adhoc_duties_performed = models.TextField(null=True, db_index = True, blank=True)
-    adhoc_duties_impact_real_duties = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+    adhoc_duties_impact_real_duties = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
     main_duties_performed_by_staff_from_date = models.DateField(null=True, db_index = True, blank=True)
     main_duties_performed_by_staff_to_date = models.DateField(null=True, db_index = True, blank=True)
 
     cost_project_assignment_responsibility_allowances = models.CharField(max_length=50, null=True, db_index = True, blank=True)
     project_assignment_responsibility_overhead_cost = models.CharField(max_length=50, null=True, db_index = True, blank=True)
     project_assignment_responsibility_capital_cost = models.CharField(max_length=50, null=True, db_index = True, blank=True)
-    project_assigment_completion_time = models.CharField(max_length=10, choices=TIMELINE_CHOICES, null=True, db_index = True, blank=True)
-    project_quantity_conformity_to_standard = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
-    project_quality_conformity_to_standard = models.CharField(max_length=5, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+    project_assigment_completion_time = models.CharField(max_length=50, choices=TIMELINE_CHOICES, null=True, db_index = True, blank=True)
+    project_quantity_conformity_to_standard = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+    project_quality_conformity_to_standard = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
 
 
     reporting_officer = models.CharField(max_length=100, null=True, db_index = True, blank=True)
@@ -274,8 +301,8 @@ class Appraisal(models.Model):
     skills_gap_requiring_improvement = models.TextField(blank = True, db_index = True, null = True,)
     missed_opportunities_reason = models.TextField(blank = True, db_index = True, null = True,)
 
-    overall_performance_assessment = models.CharField(max_length=20, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
-    promotability = models.CharField(max_length=20, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
+    overall_performance_assessment = models.CharField(max_length=50, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
+    promotability = models.CharField(max_length=50, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
 
 
     supervisor_comments = models.TextField(blank = True, db_index = True, null = True,)
