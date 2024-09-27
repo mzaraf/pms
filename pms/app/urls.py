@@ -7,6 +7,12 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     
     path('admin_dashboard/', AdminViews.admin_dashboard, name='admin'),
+    path('staff_list/', AdminViews.staff_list, name='staff_list'),
+    path('add_staff/', AdminViews.add_staff_info, name='add_staff_info'),
+    path('update_staff/<int:user_id>/', AdminViews.update_staff_info, name='update_staff_info'),
+    path('get-units-by-department/', AdminViews.get_units_by_department, name='get_units_by_dept'),
+    path('staff_list/download/', AdminViews.download_staff_data, name='download_staff_data'),
+    path('download_appraisal/', AdminViews.download_appraisal_data, name='download_appraisal_data'),
     path('admin_results/', AdminViews.admin_view_results, name='admin_view_results'),
     path('admin_view/<int:appraisal_id>/', AdminViews.admin_view, name='admin_view'),
 

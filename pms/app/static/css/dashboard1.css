@@ -454,3 +454,41 @@ form#employeeEvaluationForm{
 .view-appraisal:hover {
   background-color: #E0F2F1; /* Hover effect */
 }
+
+
+
+.footer {
+  background-color: #004D40; /* Dark background color */
+  color: #ffffff; /* White text color */
+  padding: 5px 20px;
+  text-align: center;
+  font-size: 14px;
+  border-top: 1px solid #444; /* Optional border for separation */
+  position: fixed; /* Fix the footer at the bottom */
+  left: 0; /* Align to the left */
+  bottom: 0; /* Position at the bottom */
+  width: 100%; /* Full width */
+}
+
+.footer a {
+  color: #ffc107; /* Highlighted color for links */
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #e0a800; /* Slightly darker color on hover */
+}
+
+.footer .float-right {
+  float: right;
+  color: #adb5bd; /* Lighter gray for the version text */
+  font-size: 12px;
+}
+
+@media (max-width: 576px) {
+  .footer .float-right {
+      float: none;
+      text-align: center;
+      margin-top: 5px;
+  }
+}

@@ -87,12 +87,69 @@ tbody tr:hover {
     background-color: #E0F2F1;
 }
 
+.input-search-container {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    justify-content: flex-start; /* Align items to the left */
+}
+
+.input-search {
+    display: flex; /* Make the input and button inside it align horizontally */
+    margin-right: 70px; /* Space between search input and download button */
+    flex: 1; /* Allow the input to grow and take available space */
+}
+
+input[type="search"] {
+    padding: 10px;
+    width: 100%; /* Allow the search input to take the full width */
+    border: none; /* Remove the border */
+    border-radius: 4px;
+}
+
+/* Adjust the download button */
+.download-btn {
+    padding: 10px 15px; /* Add padding to match input */
+    height: 40px; /* Match the height of the search input */
+    border: none; /* Remove border */
+    background: #007bff; /* Use the same background color */
+    color: white; /* Text color */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-left: 30px; /* Add margin to create a gap */
+    align-items: center; /* Center items vertically */
+}
+
 .status {
     padding: .4rem 0;
     border-radius: 2rem;
     text-align: center;
 }
 
+/* Scoped Modal Styles */
+.modal-custom label{
+    font-size: 16px; /* Adjust font size */
+    color: #004D40; /* Use a visible color */
+    margin-bottom: 0.5rem; /* Add some spacing below labels */
+    display: block; /* Ensure labels take up full width */
+}
+
+.modal-custom .form-check {
+    margin-bottom: 15px; /* Add spacing between checkboxes */
+}
+
+.modal-custom .modal-footer {
+    justify-content: space-between; /* Space out footer buttons */
+}
+.modal-custom .modal-header {
+    background-color: #E0F2F1; /* Set a background color for visibility */
+    color: #004D40; /* Ensure text color is visible */
+}
+
+.modal-custom .modal-title {
+    font-size: 20px; /* Set an appropriate font size */
+    font-weight: bold; /* Make it bold */
+    margin: 0; /* Reset margin */
+}
 /* Responsive adjustments */
 @media (max-width: 768px) {
     main.table {

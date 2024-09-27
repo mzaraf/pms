@@ -1,0 +1,155 @@
+{% extends 'admin_templates/admin_base.html' %}
+{% load static %}
+{% block content %}
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <title>NASRDA PMS | Staff List</title>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     <link rel="stylesheet" type="text/css" href="{% static 'css/adminResult.css' %}">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ </head>
+    <div class="wrapper">
+        <main class="table" id="customers_table">
+            <section class="table__header">
+                <!--<div class="input-group">
+                    <input type="search" placeholder="Search Data...">
+                    <img src="{% static 'img/search.jpg' %}" alt="search">
+                </div>-->
+                <form method="GET" action="">
+                    <div class="input-search-container">
+                        <div class="input-search">
+                            <input style= "width: 400px" type="search" name="q" placeholder="Search Staff..." value="{{ request.GET.q }}">
+                            <!--<button type="submit" class="search-btn"></button>-->
+                        </div>
+                        <button type="button" class="btn btn-primary" id="addStaffBtn" style="margin-right: 40px;">Add Staff</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#fieldSelectionModal">Download Excel</button>
+                    </div>
+                </form>
+                <!-- Modal -->
+                <div class="modal fade" id="fieldSelectionModal" tabindex="-1" role="dialog" aria-labelledby="fieldSelectionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content modal-custom">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="fieldSelectionModalLabel">Select Fields to Download</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="downloadFieldsForm" method="GET" action="{% url 'download_staff_data' %}">
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="all" id="selectAll">
+                                            <label class="form-check-label" for="selectAll"><b>Select All</b></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="fields" value="first_name" id="field1">
+                                            <label class="form-check-label" for="field1">First Name</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="fields" value="middle_name" id="field2">
+                                            <label class="form-check-label" for="field2">Middle Name</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="fields" value="file_number" id="field3">
+                                            <label class="form-check-label" for="field3">File Number</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="fields" value="ippis_no" id="field4">
+                                            <label class="form-check-label" for="field4">IPPIS Number</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="fields" value="last_name" id="field5">
+                                            <label class="form-check-label" for="field5">Last Name</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="fields" value="designation" id="field6">
+                                            <label class="form-check-label" for="field6">Designation</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="fields" value="department" id="field7">
+                                            <label class="form-check-label" for="field7">Department</label>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="q" value="{{ request.GET.q }}">
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="downloadButton">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </section>
+            <section class="table__body table-bordered">
+                <table>
+                    <thead>
+                        <tr>
+                            <th> S/N <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> File Number <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> IPPIS Number <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Name <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Designation <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Department <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Action <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       {% for staff in staff_members %}
+                        <tr>
+                            <td> {{ forloop.counter }} </td>
+                            <td> {{ staff.file_number }} </td>
+                            <td> {{ staff.ippis_no }} </td>
+                            <td> {{ staff.first_name }} {{ staff.last_name }} </td>
+                            <td> {{ staff.designation }} </td>
+                            <td> {{ staff.department }} </td>
+                            <td> <a href="{% url 'update_staff_info' user_id=staff.id %}"><img src="{% static 'img/edit.png' %}" alt="Edit"></a> </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+            <!-- Pagination Controls -->
+            {% if show_pagination %}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if staff_members.has_previous %}
+                        <a href="?q={{ request.GET.q }}&page=1">&laquo; First</a>
+                        <a href="?q={{ request.GET.q }}&page={{ staff_members.previous_page_number }}">Previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ staff_members.number }} of {{ staff_members.paginator.num_pages }}.
+                    </span>
+
+                    {% if staff_members.has_next %}
+                        <a href="?q={{ request.GET.q }}&page={{ staff_members.next_page_number }}">Next</a>
+                        <a href="?q={{ request.GET.q }}&page={{ staff_members.paginator.num_pages }}">Last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('addStaffBtn').addEventListener('click', function() {
+                window.location.href = "{% url 'add_staff_info' %}";
+            });
+        });
+
+        $(document).ready(function() {
+            $('#selectAll').click(function() {
+                $('input[name="fields"]').prop('checked', this.checked);
+            });
+            
+            $('#downloadButton').click(function() {
+                $('#downloadFieldsForm').submit();
+            });
+        });
+    </script>
+{% endblock content %}

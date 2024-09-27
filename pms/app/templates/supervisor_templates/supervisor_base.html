@@ -27,7 +27,7 @@
         $(".alert").fadeOut("slow", function() {
           $(this).remove(); // Remove the alert from the DOM after it fades out
         });
-      }, 5000); // 5000 milliseconds = 7 seconds
+      }, 4000); // 4000 milliseconds = 4 seconds
 		});
 	</script>
 </head>
@@ -50,7 +50,7 @@
         <ul>
           <li><i class="fas fa-user"></i>
             <div class="profile_dd">
-               <div class="dd_item">Profile</div>
+               <!--<div class="dd_item">Profile</div>-->
                <div class="dd_item"><div class="password" onclick="handlePasswordReset(event);">Change Password</div></div>
                <div class="dd_item"><div class="logout" onclick="handleLogout(event);">Logout</div></div>
             </div>
@@ -118,6 +118,15 @@
       {% endblock content %}
       
   </div>
+</div>
+<div>
+  <footer class="footer">
+    <strong>Copyright &copy; {% now 'Y' %} <a href="https://central.nasrda.gov.ng" target="_blank">NASRDA ICT</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.2
+    </div>
+  </footer>
 </div>
 <script>
   function handleLogout(event) {

@@ -1,0 +1,161 @@
+{% extends 'admin_templates/admin_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/staff.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<title>NASRDA PMS | Update Form</title>
+    <form id="StaffProfileForm" class="form-container" method="POST" action="{% url 'add_staff_info' %}">
+        {% csrf_token %}
+        <div class="section">                            
+               <h1>Add Staff</h1>
+            <br>
+            <h2>General Information</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <!-- General Information Fields -->
+                <div>
+                    <label for="employeeName">First Name:</label>
+                    <input type="text" id="employeeName" name="first_name" class="form-control" required>
+                </div>
+                <div>
+                    <label for="employeeName">Middle Name:</label>
+                    <input type="text" id="employeeName" name="middle_name" class="form-control">
+                </div>
+                <div>
+                    <label for="employeeName">Surname:</label>
+                    <input type="text" id="employeeName" name="last_name" class="form-control" required>
+                </div>
+                <div>
+                    <label for="dateOfBirth">Date of Birth:</label>
+                    <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" required>
+                </div>
+                <div>
+                    <label for="dateOfFirstAppointment">Date of First Appointment:</label>
+                    <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" name="date_of_first_appointment" class="form-control" required>
+                </div>
+                <div>
+                    <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
+                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" required>
+                </div>
+                <div>
+                    <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
+                    <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" required>
+                </div>
+                <div>
+                    <label for="fileNumber">File Number:</label>
+                    <input type="text" id="fileNumber" name="file_number" class="form-control" required>
+                </div>
+                <div>
+                    <label for="ippisNumber">IPPIS Number:</label>
+                    <input type="text" id="ippisNumber" name="ippis_no" class="form-control" required>
+                </div>
+                <div>
+                    <label for="designation">Designation:</label>
+                    <input type="text" id="designation" name="designation" class="form-control" required>
+                </div>
+                <div>
+                    <label for="department">Department:</label>
+                    <select id="department" name="department" class="form-control" required>
+                        <option value="">Select Department</option>
+                        {% for department in departments %}
+                            <option value="{{ department.id }}" {% if user.department.id == department.id %}selected{% endif %}>
+                                {{ department.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="unit">Dvision/Unit:</label>
+                    <select id="unit" name="unit" class="form-control" required>
+                        <!-- Units will be populated dynamically based on selected department -->
+                        {% if user.unit %}
+                            <option selected>{{ user.unit.name }}</option>
+                        {% else %}
+                            <option value="">Select Division/Unit</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div>
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                </div>
+                <div>
+                    <label for="usertype">User Type:</label>
+                    <select id="usertype" name="usertype" class="form-control" required>
+                        <option value="">Select User Type</option>
+                        {% for user_type in user_types %}
+                        <option value="{{ user_type.id }}">{{ user_type.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- New Section 1B: Educational Background -->
+        <div class="section">
+            <h2>Educational/Professional certifications</h2>
+            <table>
+                <tr>
+                    <th style="width: 50%;">Highest Qualification (Most Recent Qualification, Academic /Professional)</th>
+                    <th style="width: 30%;">Institution</th>
+                    <th style="width: 10%;">Date of Award</th>
+                </tr>
+                <tr>
+                    <td><input type="text" id="qualification" name="qualification" class="form-control" required></td>
+                    <td><input type="text" id="institution" name="institution" class="form-control"  required></td>
+                    <td><input type="date" id="awardDate" name= "qualification_award_date" class="form-control" required></td>
+                </tr>
+                
+            </table>
+        </div>
+        <div class="section">
+            <button type="submit" class="submit-btn">Add Staff</button>
+        </div>
+    </form>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Handle form submission and password validation
+            $('#StaffProfileForm').on('submit', function(e) {
+                var password = $('#password').val();
+                var confirmPassword = $('#confirmPassword').val();
+    
+                if (password !== confirmPassword) {
+                    e.preventDefault(); // Prevent form submission
+                    alert("Passwords do not match!");
+                }
+            });
+    
+            // Handle department selection change and fetch units via AJAX
+            $('#department').change(function() {
+                var departmentId = $(this).val();  // Get the selected department ID
+        
+                // Make an AJAX request to get the units for the selected department
+                $.ajax({
+                    url: '{% url "get_units_by_dept" %}',  // The URL for the AJAX endpoint
+                    data: {
+                        'department_id': departmentId  // Send department ID as parameter
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var unitDropdown = $('#unit');  // Select the unit dropdown
+                        unitDropdown.empty();  // Clear any existing options
+        
+                        // Populate the unit dropdown with the new options
+                        unitDropdown.append($('<option>', {
+                            value: '',
+                            text: 'Select Division/Unit'
+                        }));
+                        $.each(data, function(index, unit) {
+                            unitDropdown.append($('<option>', {
+                                value: unit.id,
+                                text: unit.name
+                            }));
+                        });
+                    }
+                });
+            });
+        });
+    </script>    
+{% endblock content %}
