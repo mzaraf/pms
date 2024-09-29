@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Appraisal, JobDescription,TrainingCourseSeminars
+from .models import Appraisal, CustomUser, JobDescription,TrainingCourseSeminars
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
@@ -16,7 +16,26 @@ def supervisor_dashboard(request):
 
 @login_required
 def supervisor_form(request):
-    return render(request, 'supervisor_templates/supervisor_form.html')
+    user = request.user
+
+    # Fetch the supervisors in the same department and unit
+    supervisors = CustomUser.objects.filter(
+        usertype__name='supervisor', 
+        department=user.department, 
+        unit=user.unit
+    )
+
+    # Fetch the HODs in the same department
+    hods = CustomUser.objects.filter(
+        usertype__name='hod', 
+        department=user.department
+    )
+
+    context = {
+        'supervisors': supervisors,
+        'hods': hods,
+    }
+    return render(request, 'supervisor_templates/supervisor_form.html', context)
 
 def supervisor_view_appraisals(request):
     appraisals = Appraisal.objects.all()
@@ -239,6 +258,8 @@ def supervisor_initiate_appraisal(request):
             project_assigment_completion_time = request.POST.get('project_assigment_completion_time'),
             project_quantity_conformity_to_standard = request.POST.get('project_quantity_conformity_to_standard'),
             project_quality_conformity_to_standard = request.POST.get('project_quality_conformity_to_standard'),
+
+            quality_of_training_received = request.POST.get('quality_of_training_received'),
 
             reporting_officer = request.POST.get('reporting_officer'),
             reporting_officer_from_date = request.POST.get('reporting_officer_from_date'),

@@ -104,7 +104,13 @@
                             <td> {{ appraisal.designation }} </td>
                             <td> {{ appraisal.department }} </td>
                             <td> <strong>{{ appraisal.total_appraisal_rating }} </strong></td>
-                            <td> <a href="{% url 'admin_view' appraisal_id=appraisal.id %}"><img src="{% static 'img/details.png' %}" alt="Details"></a> </td>
+                            <td>
+                                {% if appraisal.appraisal_type == 'supervisor' %}
+                                 <a href="{% url 'admin_supervisor_view' appraisal_id=appraisal.id %}"><img src="{% static 'img/details.png' %}" alt="Details"></a> 
+                                 {% else %}
+                                 <a href="{% url 'admin_staff_view' appraisal_id=appraisal.id %}"><img src="{% static 'img/details.png' %}" alt="Details"></a>
+                                 {% endif %} 
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

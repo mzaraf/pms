@@ -116,8 +116,8 @@
                 </tr>
                 {% for job in job_descriptions %}
                 <tr>
-                    <td><input type="text" name="activity_task[]" value="{{ job.activity_task }}" readonly disabled></td>
-                    <td><input type="text" name="overall_assessment_of_performance[]" value="{{ job.overall_assessment_of_performance }}" readonly disabled></td>
+                    <td style="width: 60%;"><input type="text" name="activity_task[]" value="{{ job.activity_task }}" readonly disabled></td>
+                    <td style="width: 40%;"><input type="text" name="overall_assessment_of_performance[]" value="{{ job.overall_assessment_of_performance }}" readonly disabled></td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -133,7 +133,7 @@
                         <h2>C (ii) Job Description</h2>
                     </span>
                     <div class="Job_Description">
-                        <table style="width: 100%; table-layout: fixed;">
+                        <table style="width: 100%;">
                             <!-- Question a -->
                             <tr>
                                 <td style="width: 100%;" colspan="2">
@@ -143,8 +143,8 @@
                             </tr>
                             <!-- Question b -->
                             <tr>
-                                <td style="width: 50%;"><strong>(b)</strong> Was there any joint discussion between you and your Supervisor on how to accomplish the target?</td>
-                                <td style="width: 50%;">
+                                <td style="width: 80%;"><strong>(b)</strong> Was there any joint discussion between you and your Supervisor on how to accomplish the target?</td>
+                                <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label for="jointDiscussionYes">Yes</label>
                                         <label for="jointDiscussionNo">No</label>
@@ -157,8 +157,8 @@
                             </tr>
                             <!-- Question c -->
                             <tr>
-                                <td style="width: 50%;"><strong>(c)</strong> Were you properly equipped professionally/technically/administratively to perform the jobs allocated to you?</td>
-                                <td style="width: 50%;">
+                                <td style="width: 80%;"><strong>(c)</strong> Were you properly equipped professionally/technically/administratively to perform the jobs allocated to you?</td>
+                                <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label for="equippedYes">Yes</label>
                                         <label for="equippedNo">No</label>
@@ -185,8 +185,8 @@
                             </tr>
                             <!-- Question f -->
                             <tr>
-                                <td style="width: 50%;"><strong>(f)</strong> Was there any periodic review of the targets set for you by your supervisor to achieve the desired goals?</td>
-                                <td style="width: 50%;">
+                                <td style="width: 80%;"><strong>(f)</strong> Was there any periodic review of the targets set for you by your supervisor to achieve the desired goals?</td>
+                                <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label  for="reviewYes">Yes</label>
                                         <label  for="reviewNo">No</label>
@@ -199,8 +199,8 @@
                             </tr>
                             <!-- Question g -->
                             <tr>
-                                <td style="width: 50%;"><strong>(g)</strong> After the review, did your performance measure up to the prescribed standards set at the beginning of the year?</td>
-                                <td style="width: 50%;">
+                                <td style="width: 80%;"><strong>(g)</strong> After the review, did your performance measure up to the prescribed standards set at the beginning of the year?</td>
+                                <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label for="performanceYes">Yes</label>
                                         <label for="performanceNo">No</label>
@@ -220,8 +220,8 @@
                             </tr>
                             <!-- Question i -->
                             <tr>
-                                <td style="width: 50%;"><strong>(i)</strong> Did the performance of these ad hoc duties affect your real duties and if so, did you bring these to the attention of your supervisor?</td>
-                                <td style="width: 50%;">
+                                <td style="width: 80%;"><strong>(i)</strong> Did the performance of these ad hoc duties affect your real duties and if so, did you bring these to the attention of your supervisor?</td>
+                                <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label for="adHocYes">Yes</label>
                                         <label for="adHocNo">No</label>
@@ -234,10 +234,10 @@
                             </tr>
                             <!-- Question j -->
                             <tr>
-                                <td style="width: 50%;">
+                                <td style="width: 80%;">
                                     <span class="title"><strong>(j)</strong> State the period that you have been on the schedule of duty referred to in <strong>(a) </strong> above:</span>
                                 </td>
-                                <td style="width: 50%;">
+                                <td style="width: 20%;">
                                     <div class="fields">
                                         <div class="input-field">
                                             <label>From</label>
@@ -265,8 +265,8 @@
                                 <tbody>
                                     <!-- Question 1 -->
                                     <tr>
-                                        <td class="question-cell" style="width: 50%;"><strong>(I)</strong> What was the estimated cost of the Project/Assignment/Responsibility set for your Division/Section/Unit?</td>
-                                        <td class="options-cell" style="width: 50%;">
+                                        <td class="question-cell" style="width: 80%;"><strong>(I)</strong> What was the estimated cost of the Project/Assignment/Responsibility set for your Division/Section/Unit?</td>
+                                        <td class="options-cell" style="width: 20%;">
                                             <div>
                                                 <label>Allowances: </label> <input type="text" id="allowances" name="cost_project_assignment_responsibility_allowances" value="{{ appraisal.cost_project_assignment_responsibility_allowances }}" readonly disabled>
                                                 <label>Overhead Cost: </label> <input type="text" id="overhead_cost" name="project_assignment_responsibility_overhead_cost" value="{{ appraisal.project_assignment_responsibility_overhead_cost }}" readonly disabled>
@@ -276,12 +276,12 @@
                                     </tr>
                                     <!-- Question 2 -->
                                     <tr>
-                                        <td class="question-cell" style="width: 50%;"><strong>(II)</strong> What was the agreed time for the completion of the Project/Assignment/Responsibility?</td>
-                                        <td class="options-cell" style="width: 50%;">
+                                        <td class="question-cell" style="width: 80%;"><strong>(II)</strong> What was the agreed time for the completion of the Project/Assignment/Responsibility?</td>
+                                        <td class="options-cell" style="width: 20%;">
                                             <div style="display: flex; justify-content: space-between;">
-                                                <label class="radio-label" for="completion_daily">Daily</label>
-                                                <label class="radio-label" for="completion_weekly">Weekly</label>
-                                                <label class="radio-label" for="completion_monthly">Monthly</label>
+                                                <label class="radio-label" for="completion_daily">Daily|</label>
+                                                <label class="radio-label" for="completion_weekly">Weekly|</label>
+                                                <label class="radio-label" for="completion_monthly">Monthly|</label>
                                                 <label class="radio-label" for="completion_yearly">Yearly</label>
                                             </div>
                                             <div style="display: flex; justify-content: space-between;">
@@ -294,8 +294,8 @@
                                     </tr>
                                     <!-- Question 3 -->
                                     <tr>
-                                        <td class="question-cell" style="width: 50%;"><strong>(III)</strong> Was the quantity of the work performed during the period of the report in conformity with the set standard?</td>
-                                        <td class="options-cell" style="width: 50%;">
+                                        <td class="question-cell" style="width: 80%;"><strong>(III)</strong> Was the quantity of the work performed during the period of the report in conformity with the set standard?</td>
+                                        <td class="options-cell" style="width: 20%;">
                                             <div style="display: flex; justify-content: space-between;">
                                                 <label class="radio-label" for="quantity_yes">Yes</label>
                                                 <label class="radio-label" for="quantity_no">No</label>
@@ -308,8 +308,8 @@
                                     </tr>
                                     <!-- Question 4 -->
                                     <tr>
-                                        <td class="question-cell" style="width: 50%;"><strong>(IV)</strong> Did the quality of the Project/Assignment/Responsibility so far completed agree with the set standards?</td>
-                                        <td class="options-cell" style="width: 50%;">
+                                        <td class="question-cell" style="width: 80%;"><strong>(IV)</strong> Did the quality of the Project/Assignment/Responsibility so far completed agree with the set standards?</td>
+                                        <td class="options-cell" style="width: 20%;">
                                             <div style="display: flex; justify-content: space-between;">
                                                 <label class="radio-label" for="quality_yes">Yes</label>
                                                 <label class="radio-label" for="quality_no">No</label>
@@ -336,9 +336,9 @@
                         </tr>
                         {% for training in training_seminars %}
                         <tr>
-                            <td><input type="text" id="trainingProgram" name="training_program_type[]" value="{{ training.training_program_type }}" readonly disabled></td>
-                            <td><input type="text" id="trainingLocation" name="training_location[]" value="{{ training.training_location }}" readonly disabled></td>
-                            <td><label>From</label><input type="date" id="trainingDate" name="training_from_date[]" value="{{ training.training_from_date|date:'Y-m-d' }}" readonly disabled>
+                            <td style="width: 40%;"><input type="text" id="trainingProgram" name="training_program_type[]" value="{{ training.training_program_type }}" readonly disabled></td>
+                            <td style="width: 40%;"><input type="text" id="trainingLocation" name="training_location[]" value="{{ training.training_location }}" readonly disabled></td>
+                            <td style="width: 20%;"><label>From</label><input type="date" id="trainingDate" name="training_from_date[]" value="{{ training.training_from_date|date:'Y-m-d' }}" readonly disabled>
                                 <label>To</label><input type="date" id="trainingDate" name="training_to_date[]" value="{{ training.training_to_date|date:'Y-m-d' }}" readonly disabled>
                             </td>
                         </tr>
@@ -347,6 +347,21 @@
                             <td colspan="3">No Training/Seminars provided for this appraisal.</td>
                         </tr>
                         {% endfor %}
+                    </table>
+                    <table>
+                        <tr>
+                            <td class="question-cell" style="width: 80%;"> Has the training received by you enhanced your performance and productivity?</td>
+                            <td class="options-cell" style="width: 20%;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <label class="radio-label" for="quality_yes">Yes</label>
+                                    <label class="radio-label" for="quality_no">No</label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <input type="radio" name="quality_of_training_received" id="quality_yes" value="yes" {% if appraisal.quality_of_training_received == 'yes' %}checked{% endif %} readonly disabled>
+                                    <input type="radio" name="quality_of_training_received" id="quality_no" value="no" {% if appraisal.quality_of_training_received == 'no' %}checked{% endif %} readonly disabled>
+                                </div>
+                            </td>
+                        </tr>
                     </table>
                 </div>
                 <div class="section">

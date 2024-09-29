@@ -225,7 +225,7 @@ def admin_view_results(request):
 
 
 @login_required
-def admin_view(request, appraisal_id):
+def admin_staff_view(request, appraisal_id):
     appraisal = Appraisal.objects.get(id=appraisal_id)
     job_descriptions = JobDescription.objects.filter(appraisal=appraisal)
     training_seminars = TrainingCourseSeminars.objects.filter(appraisal=appraisal)
@@ -236,8 +236,21 @@ def admin_view(request, appraisal_id):
         'training_seminars': training_seminars
     }
 
-    return render(request, 'admin_templates/admin_view.html', context)
+    return render(request, 'admin_templates/admin_staff_view.html', context)
 
+@login_required
+def admin_supervisor_view(request, appraisal_id):
+    appraisal = Appraisal.objects.get(id=appraisal_id)
+    job_descriptions = JobDescription.objects.filter(appraisal=appraisal)
+    training_seminars = TrainingCourseSeminars.objects.filter(appraisal=appraisal)
+
+    context = {
+        'appraisal': appraisal,
+        'job_descriptions': job_descriptions,
+        'training_seminars': training_seminars
+    }
+
+    return render(request, 'admin_templates/admin_supervisor_view.html', context)
 
 def download_appraisal_data(request):
     query = request.GET.get('q')
@@ -363,6 +376,8 @@ def download_appraisal_data(request):
             row['Quantity Conformity to Standard'] = appraisal.project_quantity_conformity_to_standard
         if 'project_quality_conformity_to_standard' in selected_fields:
             row['Quality Conformity to Standard'] = appraisal.project_quality_conformity_to_standard
+        if 'quality_of_training_received' in selected_fields:
+            row['Quality of Training Received'] = appraisal.quality_of_training_received
         if 'reporting_officer' in selected_fields:
             row['Reporting Officer'] = appraisal.reporting_officer
         if 'reporting_officer_from_date' in selected_fields:

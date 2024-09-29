@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django_fsm import FSMField, transition
 import math
-
 from django.contrib.auth.models import BaseUserManager
 
 
@@ -30,6 +29,7 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(ippis_no, email, password, **extra_fields)
 
+
 class Usertype(models.Model):
     name = models.CharField(blank=True, max_length=50, db_index = True, unique = True,)
     def __str__(self):
@@ -56,7 +56,7 @@ class CustomUser(AbstractUser):
     )
 
     middle_name = models.CharField(max_length = 50, blank = True, db_index = True, null = True,)
-    file_number = models.CharField(max_length = 20, blank = True, db_index = True, null = True,)
+    file_number = models.CharField(max_length = 50, blank = True, db_index = True, null = True,)
     designation = models.CharField(max_length = 50, blank = True, db_index = True, null = True,)
     date_of_birth = models.DateField(blank = True, db_index = True, null = True,)
     date_of_first_appointment = models.DateField(blank = True, db_index = True, null = True,)
@@ -71,6 +71,11 @@ class CustomUser(AbstractUser):
     qualification_award_date = models.DateField(blank = True, db_index = True, null = True,)
     usertype = models.ForeignKey(Usertype, on_delete = models.SET_NULL, blank = True, null = True, db_index = True,)
     objects = CustomUserManager()
+
+    def get_full_name(self):
+        if self.middle_name:
+            return f"{self.first_name} {self.middle_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}"
 
     USERNAME_FIELD = 'ippis_no'
 
@@ -167,6 +172,8 @@ class Appraisal(models.Model):
     project_assigment_completion_time = models.CharField(max_length=50, choices=TIMELINE_CHOICES, null=True, db_index = True, blank=True)
     project_quantity_conformity_to_standard = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
     project_quality_conformity_to_standard = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
+
+    quality_of_training_received = models.CharField(max_length=50, choices=RADIO_CHOICES,null=True, db_index = True, blank=True)
 
 
     reporting_officer = models.CharField(max_length=100, null=True, db_index = True, blank=True)
@@ -301,8 +308,8 @@ class Appraisal(models.Model):
     skills_gap_requiring_improvement = models.TextField(blank = True, db_index = True, null = True,)
     missed_opportunities_reason = models.TextField(blank = True, db_index = True, null = True,)
 
-    overall_performance_assessment = models.CharField(max_length=100, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
-    promotability = models.CharField(max_length=100, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
+    overall_performance_assessment = models.CharField(max_length=50, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
+    promotability = models.CharField(max_length=50, choices=OVERALL_PERFOMANCE_CHOICE, null=True, db_index = True, blank=True)
 
 
     supervisor_comments = models.TextField(blank = True, db_index = True, null = True,)
@@ -310,7 +317,7 @@ class Appraisal(models.Model):
     
     head_of_department_comments = models.TextField(max_length = 255, blank = True, db_index = True, null = True,)
     head_of_department_date_of_evaluation = models.DateField(null=True, db_index = True, blank=True)
-    appraisal_type = models.CharField(max_length=20, choices=[('staff', 'Staff'), ('supervisor', 'Supervisor')])
+    appraisal_type = models.CharField(max_length=50, choices=[('staff', 'Staff'), ('supervisor', 'Supervisor')])
     # FSM status for workflow
     appraisal_status = FSMField(default='initiated', choices=STATUS)
 
