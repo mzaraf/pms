@@ -3,7 +3,7 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/staff.css' %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<title>NASRDA PMS | Update Form</title>
+<title>NASRDA PMS | Add Staff</title>
     <form id="StaffProfileForm" class="form-container" method="POST" action="{% url 'add_staff_info' %}">
         {% csrf_token %}
         <div class="section">                            
@@ -75,12 +75,12 @@
                     </select>
                 </div>
                 <div>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
                 </div>
                 <div>
-                    <label for="confirmPassword">Confirm Password:</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="number" id="phoneNumber" name="phone" class="form-control" required>
                 </div>
                 <div>
                     <label for="usertype">User Type:</label>
@@ -90,6 +90,14 @@
                         <option value="{{ user_type.id }}">{{ user_type.name }}</option>
                         {% endfor %}
                     </select>
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div>
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
                 </div>
             </div>
         </div>

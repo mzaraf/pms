@@ -7,8 +7,9 @@ from .models import CustomUser, Department, Unit, Usertype
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 import pandas as pd
-from django.contrib.auth.hashers import make_password
-
+from django.core.mail import send_mail
+from django.conf import settings
+import os
 
 def admin_dashboard(request):
     staff_user = request.user
@@ -51,7 +52,7 @@ def add_staff_info(request):
     if request.method == 'POST':
         # Extract form data
         first_name = request.POST.get('first_name')
-        middle_name = request.POST.get('middle_name')
+        middle_name = request.POST.get('middle_name', '')
         last_name = request.POST.get('last_name')
         date_of_birth = request.POST.get('date_of_birth')
         date_of_first_appointment = request.POST.get('date_of_first_appointment')
@@ -62,6 +63,8 @@ def add_staff_info(request):
         designation = request.POST.get('designation')
         department = request.POST.get('department')
         unit = request.POST.get('unit')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
         qualification = request.POST.get('qualification')
         institution = request.POST.get('institution')
         qualification_award_date = request.POST.get('qualification_award_date')
@@ -70,38 +73,69 @@ def add_staff_info(request):
 
         username = f"{first_name.lower()}.{last_name.lower()}"
         # Create new staff member
-        new_staff = CustomUser(
-            username=username,
-            first_name=first_name,
-            middle_name=middle_name,
-            last_name=last_name,
-            date_of_birth=date_of_birth,
-            date_of_first_appointment=date_of_first_appointment,
-            date_of_present_appointment=date_of_present_appointment,
-            date_of_acting_appointment=date_of_acting_appointment,
-            file_number=file_number,
-            ippis_no=ippis_no,
-            designation=designation,
-            department_id=department,
-            unit_id=unit,
-            qualification=qualification,
-            institution=institution,
-            qualification_award_date=qualification_award_date,
-            password=make_password(password),
-            usertype_id=usertype,
-            
-        )
-        new_staff.save()
-        messages.success(request, 'Details Added Successfully')
-        return redirect('staff_list')  # Redirect to a success page or another view
-    
-    context = {
-        'departments': Department.objects.all(),
-        'units': Unit.objects.all(),
-        'user_types': Usertype.objects.all(),
-    }
+        try:
+            new_staff = CustomUser.objects.create_user(
+                username=username,
+                first_name=first_name,
+                middle_name=middle_name,
+                last_name=last_name,
+                date_of_birth=date_of_birth,
+                date_of_first_appointment=date_of_first_appointment,
+                date_of_present_appointment=date_of_present_appointment,
+                date_of_acting_appointment=date_of_acting_appointment,
+                file_number=file_number,
+                ippis_no=ippis_no,
+                designation=designation,
+                department_id=department,
+                unit_id=unit,
+                email=email,
+                phone=phone,
+                qualification=qualification,
+                institution=institution,
+                qualification_award_date=qualification_award_date,
+                password=password,
+                usertype_id=usertype,
+            )
+            new_staff.save()
 
-    return render(request, 'admin_templates/add_staff.html', context)
+             # Send email to the new staff with their login details
+            #send_mail(
+            #    subject='NASRDA PMS: Login Credentials',
+            #    message=f'Dear {first_name},\n\nYour account has been created successfully on the NASRDA PMS. Below are your login details:\n\n'
+            #            f'IPPIS Number: your ippis number\n'
+            #            f'Password: {password}\n'
+            #            f'Link: pe.nasrda.gov.ng\n\n'
+            #            f'Please change your password after your first login.\n\n'
+            #            f'Thank you.',
+                #from_email=settings.DEFAULT_FROM_EMAIL,
+            #    from_email = os.getenv('DEFAULT_FROM_EMAIL'),
+            #    recipient_list=[email],
+            #    fail_silently=False,
+            #)
+            messages.success(request, f"Staff member {first_name} {last_name} has been added successfully, and login credentials have been sent to their email.")
+            return redirect('staff_list')  # Redirect to a success page or another view
+        
+        except Exception as e:
+            messages.error(request, f"An error occurred while adding staff details: {str(e)}")
+
+            departments = Department.objects.all()
+            units = Unit.objects.all()
+            user_types = Usertype.objects.all()
+            return render(request, 'admin_templates/add_staff.html', {
+                'departments': departments,
+                'units': units,
+                'user_types': user_types,
+            })
+    else:
+        departments = Department.objects.all()
+        units = Unit.objects.all()
+        user_types = Usertype.objects.all()
+        
+        return render(request, 'admin_templates/add_staff.html', {
+            'departments': departments,
+            'units': units,
+            'user_types': user_types,
+        })
 
 
 
@@ -122,6 +156,8 @@ def update_staff_info(request, user_id):
         staff.designation = request.POST.get('designation')
         staff.department_id = request.POST.get('department')
         staff.unit_id = request.POST.get('unit')
+        staff.email = request.POST.get('email')
+        staff.phone = request.POST.get('phone')
         staff.qualification = request.POST.get('qualification')
         staff.institution = request.POST.get('institution')
         staff.qualification_award_date = request.POST.get('qualification_award_date')
@@ -164,7 +200,7 @@ def download_staff_data(request):
     if 'all' in selected_fields:
         selected_fields = ['file_number', 'ippis_no', 'first_name', 'last_name', 'middle_name', 'designation', 'department']
 
-    # Create a DataFrame from the staff data
+    
     data = []
     for staff in staff_members:
         row = {}

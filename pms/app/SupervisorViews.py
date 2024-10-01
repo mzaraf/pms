@@ -153,7 +153,7 @@ def supervisor_rating(request, appraisal_id):
 
         appraisal.commendation_for_outstanding_performance = int(request.POST['commendation_for_outstanding_performance'])
         appraisal.details_of_commendation_for_outstanding_performance = request.POST['details_of_commendation_for_outstanding_performance']
-        appraisal.suggestions_that_contributed_to_changes = int(request.POST['suggestions_that_contributed_to_changes'])
+        appraisal.suggestions_that_contributed_to_changes = float(request.POST['suggestions_that_contributed_to_changes'])
         appraisal.sanction_discipline = request.POST['sanction_discipline']
         appraisal.details_sanction_discipline = request.POST['details_sanction_discipline']
 

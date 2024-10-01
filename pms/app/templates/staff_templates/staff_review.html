@@ -37,12 +37,12 @@
                 <label style="font-weight: bold;"><h3>Period of Report:</h3></label>
                 <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
                     <label for="from" style="font-weight: bold;">From</label>
-                    <input type="month" name="period_of_report_from_date" id="from" style="padding: 5px; width: 150px;" 
+                    <input type="month" name="period_of_report_from_date" id="from" style="padding: 5px; width: 200px;" 
                            value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" readonly disabled>
                 </div>
                 <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
                     <label for="to" style="font-weight: bold;">To</label>
-                    <input type="month" name="period_of_report_to_date" id="to" style="padding: 5px; width: 150px;" 
+                    <input type="month" name="period_of_report_to_date" id="to" style="padding: 5px; width: 200px;" 
                            value="{{ appraisal.period_of_evaluation_to_date|date:'Y-m' }}" readonly disabled>
                 </div>
             </div>                                        
@@ -645,7 +645,7 @@
             <tr>
                 <td colspan="2"><strong>Leadership Attainment</strong><br></td>
             </tr>
-            <tr>
+            <!--<tr>
                 <td colspan="2">Did he make suggestions for changes/adjust methods/procedures that significantly contribute to his/her own work or that of any associate/subordinates? (<span class="red-text">2 points</span>)
                     <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
                     <label for="leadershipYes">Yes</label>
@@ -654,6 +654,18 @@
                     <label for="leadershipNo">No</label>
                     <input type="radio" name="suggestions_that_contributed_to_changes" id="leadership_no" value="0" {% if appraisal.suggestions_that_contributed_to_changes == 0 %}checked{% endif %} readonly disabled>
                     </div>
+                </td>
+            </tr>-->
+            <tr>
+                <td>Did he make suggestions for changes/adjust methods/procedures that significantly contribute to his/her own work or that of any associate/subordinates? (<span class="red-text">range 2 - 0.5 points</span>)</p>
+                    <select name="suggestions_that_contributed_to_changes" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="2" {% if appraisal.suggestions_that_contributed_to_changes == 2 %}selected{% endif %}>5 - Always, Frequently suggests innovative changes or adjustments that significantly contribute to both their own and others' work.</option>
+                        <option value="1.99" {% if appraisal.suggestions_that_contributed_to_changes == 1.99 %}selected{% endif %}>4 - Often, Regularly makes helpful suggestions and adjustments that positively impact their own work and sometimes that of others.</option>
+                        <option value="1" {% if appraisal.suggestions_that_contributed_to_changes == 1 %}selected{% endif %}>3 - Sometimes, Occasionally offers suggestions or makes adjustments that contribute to their work or the work of others.</option>
+                        <option value="0.99" {% if appraisal.suggestions_that_contributed_to_changes == 0.99 %}selected{% endif %}>2 - Rarely, Rarely suggests changes or adjustments, with limited contributions to their own or others' work.</option>
+                        <option value="0.5" {% if appraisal.suggestions_that_contributed_to_changes == 0.5 %}selected{% endif %}>1 - Never, Never makes suggestions or adjustments that contribute to their own or others' work.</option>
+                    </select>
                 </td>
             </tr>
             <tr>

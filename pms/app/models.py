@@ -113,6 +113,14 @@ class Appraisal(models.Model):
         (0, 'no'),
     ]
 
+    LEADERSHIP_RATING_CHOICES = [
+        (2, '5 - Always'),
+        (1.9, '4 - Often'),
+        (1, '3 - Sometimes'),
+        (0.9, '2 - Rarely'),
+        (0.5, '1 - Never'),
+    ]
+
     RADIO_CHOICES = [
         ('yes', 'YES'),
         ('no', 'NO'),
@@ -200,7 +208,7 @@ class Appraisal(models.Model):
     decision_making = models.IntegerField(choices=RATING_CHOICES, null=True, db_index = True, blank=True)
     
     commendation_for_outstanding_performance = models.IntegerField(choices=RADIO_RATING_CHOICES, null=True, db_index = True, blank=True)
-    suggestions_that_contributed_to_changes = models.IntegerField(choices=RADIO_RATING_CHOICES, null=True, db_index = True, blank=True)
+    suggestions_that_contributed_to_changes = models.FloatField(choices=LEADERSHIP_RATING_CHOICES, null=True, db_index = True, blank=True)
 
     appraisal_rating = models.FloatField(null=True, db_index = True, blank=True)
     total_appraisal_rating = models.FloatField(null=True, db_index = True, blank=True)
@@ -238,11 +246,22 @@ class Appraisal(models.Model):
         self.appraisal_rating = self.calculate_appraisal_rating()
 
         # Calculate total_appraisal_rating as the sum of the relevant fields
-        self.total_appraisal_rating = math.ceil(
+        #self.total_appraisal_rating = math.ceil(
+        #    (self.appraisal_rating or 0) +
+        #    (self.commendation_for_outstanding_performance or 0) +
+        #    (self.suggestions_that_contributed_to_changes or 0)
+        #)
+
+        # Sum the values and round to the first decimal place
+        total = (
             (self.appraisal_rating or 0) +
             (self.commendation_for_outstanding_performance or 0) +
             (self.suggestions_that_contributed_to_changes or 0)
         )
+
+        # Round the total to 1 decimal place
+        self.total_appraisal_rating = round(total, 1)
+
 
         super(Appraisal, self).save(*args, **kwargs)
 

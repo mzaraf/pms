@@ -27,7 +27,7 @@
         $(".alert").fadeOut("slow", function() {
           $(this).remove(); // Remove the alert from the DOM after it fades out
         });
-      }, 4000); // 4000 milliseconds = 4 seconds
+      }, 6000); // 6000 milliseconds = 4 seconds
 		});
 	</script>
 </head>
@@ -43,7 +43,7 @@
        </div>
     </div>
     <div class="menu">
-      <div class="logo">
+      <div class="logo" onclick="handleHome(event);">
         <strong>NASRDA Performance Management System</strong> 
       </div>
       <div class="right_menu">
@@ -123,6 +123,10 @@
   </footer>
 </div>
 <script>
+  function handleHome(event) {
+    window.location.href = "{% url 'staff' %}";
+  }
+  
   function handleLogout(event) {
       event.preventDefault(); // Prevent the default behavior
       if (confirm('Are you sure you want to logout?')) {
