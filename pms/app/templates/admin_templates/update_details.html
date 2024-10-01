@@ -82,6 +82,15 @@
                     <label for="phone">Phone Number:</label>
                     <input type="number" id="phone" name="phone" class="form-control" value="{{ user.phone }}">
                 </div>
+                <div>
+                    <label for="usertype">User Type:</label>
+                    <select id="usertype" name="usertype" class="form-control" required>
+                        <option value="">Select User Type</option>
+                        {% for usertype in usertypes %}
+                        <option value="{{ usertype.id }}" {% if user.usertype.id == usertype.id %}selected{% endif %}>{{ usertype.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
         <!-- New Section 1B: Educational Background -->

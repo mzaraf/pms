@@ -1,3 +1,4 @@
+from django import forms
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -139,40 +140,82 @@ def add_staff_info(request):
 
 
 
+#def update_staff_info(request, user_id):
+#    staff = get_object_or_404(CustomUser, id=user_id)
+
+#    if request.method == 'POST':
+        # Update staff fields with POST data
+#        staff.first_name = request.POST.get('first_name')
+#        staff.middle_name = request.POST.get('middle_name')
+#        staff.last_name = request.POST.get('last_name')
+#        staff.date_of_birth = request.POST.get('date_of_birth')
+#        staff.date_of_first_appointment = request.POST.get('date_of_first_appointment')
+#        staff.date_of_present_appointment = request.POST.get('date_of_present_appointment')
+#        staff.date_of_acting_appointment = request.POST.get('date_of_acting_appointment')
+#        staff.file_number = request.POST.get('file_number')
+#        staff.ippis_no = request.POST.get('ippis_no')
+#        staff.designation = request.POST.get('designation')
+#        staff.department_id = request.POST.get('department')
+#        staff.unit_id = request.POST.get('unit')
+#        staff.usertype_id = request.POST.get('usertype')
+#        staff.email = request.POST.get('email')
+#        staff.phone = request.POST.get('phone')
+#        staff.qualification = request.POST.get('qualification')
+#        staff.institution = request.POST.get('institution')
+#        staff.qualification_award_date = request.POST.get('qualification_award_date')
+
+#        staff.save()
+#        messages.success(request, 'Details Updated Successfully')
+#        return redirect('staff_list')
+
+#    context = {
+#        'user_id': staff.id,
+#        'departments': Department.objects.all(),
+#        'units': Unit.objects.all(),
+#        'user_types': Usertype.objects.all(),
+#        'user': staff,
+#    }
+#    return render(request, 'admin_templates/update_details.html', context)
+
+
+# Define a ModelForm for the CustomUser model
+class CustomUserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'first_name', 'middle_name', 'last_name', 'date_of_birth', 'date_of_first_appointment',
+            'date_of_present_appointment', 'date_of_acting_appointment', 'file_number', 'ippis_no',
+            'designation', 'department', 'unit', 'usertype', 'email', 'phone', 'qualification',
+            'institution', 'qualification_award_date'
+        ]
+
 def update_staff_info(request, user_id):
     staff = get_object_or_404(CustomUser, id=user_id)
 
     if request.method == 'POST':
-        # Update staff fields with POST data
-        staff.first_name = request.POST.get('first_name')
-        staff.middle_name = request.POST.get('middle_name')
-        staff.last_name = request.POST.get('last_name')
-        staff.date_of_birth = request.POST.get('date_of_birth')
-        staff.date_of_first_appointment = request.POST.get('date_of_first_appointment')
-        staff.date_of_present_appointment = request.POST.get('date_of_present_appointment')
-        staff.date_of_acting_appointment = request.POST.get('date_of_acting_appointment')
-        staff.file_number = request.POST.get('file_number')
-        staff.ippis_no = request.POST.get('ippis_no')
-        staff.designation = request.POST.get('designation')
-        staff.department_id = request.POST.get('department')
-        staff.unit_id = request.POST.get('unit')
-        staff.email = request.POST.get('email')
-        staff.phone = request.POST.get('phone')
-        staff.qualification = request.POST.get('qualification')
-        staff.institution = request.POST.get('institution')
-        staff.qualification_award_date = request.POST.get('qualification_award_date')
-
-        staff.save()
-        messages.success(request, 'Details Updated Successfully')
-        return redirect('staff_list')
+        form = CustomUserForm(request.POST, instance=staff)
+        
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Details Updated Successfully')
+            return redirect('staff_list')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    
+    else:
+        form = CustomUserForm(instance=staff)
 
     context = {
+        'form': form,
         'user_id': staff.id,
         'departments': Department.objects.all(),
         'units': Unit.objects.all(),
+        'usertypes': Usertype.objects.all(),
         'user': staff,
     }
+    
     return render(request, 'admin_templates/update_details.html', context)
+
 
 def get_units_by_department(request):
     department_id = request.GET.get('department_id')  # Get the department ID from the request
