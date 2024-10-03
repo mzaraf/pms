@@ -6,7 +6,6 @@
   list-style: none;
   box-sizing: border-box;
   text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
 }
 
 /* Style for the message alerts */
@@ -122,6 +121,7 @@
   color: #004D40;
   text-transform: uppercase;
   letter-spacing: 2px;
+  cursor: pointer;
 }
 
 .top_navbar .menu .right_menu ul {

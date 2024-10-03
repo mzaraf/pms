@@ -92,6 +92,12 @@
                 </a>
               </li>
               <li>
+                <a href="{% url 'staff_update_details' user.id %}" class="{% if request.resolver_match.view_name == 'staff_update_details' %}active{% endif %}">
+                  <span class="icon"><i class="fab fa-delicious"></i></span>
+                  <span class="title">Update Department</span>
+                </a>
+              </li>
+              <li>
                 <a href="{% url 'staff_form' %}" class="{% if request.resolver_match.view_name == 'staff_form' %}active{% endif %}">
                   <span class="icon"><i class="fab fa-elementor"></i></span>
                   <span class="title">Appraisal Form</span>

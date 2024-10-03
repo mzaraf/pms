@@ -1,0 +1,72 @@
+{% extends 'staff_templates/staff_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/staff.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <title>NASRDA PMS | Update</title>
+    <form id="StaffProfileForm" class="form-container" method="POST" action="{% url 'staff_update_details' user.id %}">
+        {% csrf_token %}
+        <div class="section">                            
+               <h1>Update Department and Division/Unit</h1>
+            <br>
+            <h2></h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <!-- General Information Fields -->
+                <div>
+                    <label for="department">Department:</label>
+                    <select id="department" name="department" class="form-control">
+                        <option value="">Select Department</option>
+                        {% for department in departments %}
+                            <option value="{{ department.id }}" {% if user.department.id == department.id %}selected{% endif %}>
+                                {{ department.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="unit">Dvision/Unit:</label>
+                    <select id="unit" name="unit" class="form-control">
+                        <!-- Units will be populated dynamically based on selected department -->
+                        {% if user.unit %}
+                            <option value="{{ user.unit.id }}" selected>{{ user.unit.name }}</option>
+                        {% else %}
+                            <option value="">Select Division/Unit</option>
+                        {% endif %}
+                    </select>
+                </div>
+
+            </div>
+        </div>
+        <div class="section">
+            <button type="submit" class="submit-btn">Update</button>
+        </div>
+    </form>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#department').change(function() {
+                var departmentId = $(this).val();  // Get the selected department ID
+    
+                // Make an AJAX request to get the units for the selected department
+                $.ajax({
+                    url: '{% url "staff_get_units_by_dept" %}',  // The URL for the AJAX endpoint
+                    data: {
+                        'department_id': departmentId  // Send department ID as parameter
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var unitDropdown = $('#unit');  // Select the unit dropdown
+                        unitDropdown.empty();  // Clear any existing options
+    
+                        // Populate the unit dropdown with the new options
+                        $.each(data, function(index, unit) {
+                            unitDropdown.append($('<option>', {
+                                value: unit.id,
+                                text: unit.name
+                            }));
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock content %}

@@ -39,6 +39,8 @@ urlpatterns = [
     path('supervisor_initiate/', SupervisorViews.supervisor_initiate_appraisal, name='supervisor_initiate_appraisal'),
 
     path('staff_dashboard/', StaffViews.staff_dashboard, name='staff'),
+    path('staff_update_details/<int:user_id>/', StaffViews.staff_update_details, name='staff_update_details'),
+    path('staff_get_units_by_department/', StaffViews.staff_get_units_by_department, name='staff_get_units_by_dept'),
     path('staff_form/', StaffViews.staff_form, name='staff_form'),
     path('staff_view_appraisal/', StaffViews.staff_view_appraisal, name='staff_view_appraisal'),
     path('staff_result/', StaffViews.staff_result, name='staff_result'),

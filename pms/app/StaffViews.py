@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django import forms
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Appraisal, CustomUser, JobDescription, TrainingCourseSeminars
-from django.http import HttpResponseRedirect
+from .models import Appraisal, CustomUser, Department, Usertype, Unit, JobDescription, TrainingCourseSeminars
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Q
@@ -14,6 +15,46 @@ def staff_dashboard(request):
     staff_user = request.user
     appraisals = Appraisal.objects.filter(staff=staff_user)
     return render(request, 'staff_templates/staff_home.html', {'appraisals': appraisals})
+
+# Define a ModelForm for the CustomUser model
+class CustomUserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = [
+             'department', 'unit',
+        ]
+
+def staff_update_details(request, user_id):
+    staff = get_object_or_404(CustomUser, id=user_id)
+
+    if request.method == 'POST':
+        form = CustomUserForm(request.POST, instance=staff)
+        
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Details Updated Successfully')
+            return redirect('staff')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    
+    else:
+        form = CustomUserForm(instance=staff)
+
+    context = {
+        'form': form,
+        'user_id': staff.id,
+        'departments': Department.objects.all(),
+        'units': Unit.objects.all(),
+        'user': staff,
+    }
+    
+    return render(request, 'staff_templates/staff_update_details.html', context)
+
+def staff_get_units_by_department(request):
+    department_id = request.GET.get('department_id')  # Get the department ID from the request
+    units = Unit.objects.filter(department_id=department_id).values('id', 'name')  # Filter units by department
+    units_list = list(units)  # Convert QuerySet to list
+    return JsonResponse(units_list, safe=False)  # Return the units in JSON format
 
 @login_required
 def staff_view_appraisal(request):
