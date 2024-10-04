@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django_fsm import FSMField, transition
 import math
+import pandas as pd
 from django.contrib.auth.models import BaseUserManager
 
 
@@ -73,9 +74,10 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     def get_full_name(self):
-        if self.middle_name:
-            return f"{self.first_name} {self.middle_name} {self.last_name}"
-        return f"{self.first_name} {self.last_name}"
+        # Check if middle_name is NaN or None
+        if pd.isna(self.middle_name) or self.middle_name is None:
+            return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.middle_name} {self.last_name}"
 
     USERNAME_FIELD = 'ippis_no'
 

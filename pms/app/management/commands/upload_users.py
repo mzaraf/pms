@@ -11,13 +11,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Define the file path directly in the script
-        file_path = ''  # Update with your actual file path
+        file_path = 'C:/Users/GRID3__02/Desktop/PMS_Data/tables/app_customuser.csv'  # Update with your actual file path
         self.upload_users_from_csv(file_path)
 
-    def send_login_details(self, last_name, email, ippis_no, password):
+    def send_login_details(self, last_name, first_name, email, ippis_no, password):
         subject = "NASRDA PMS: Login Credentials"
         message = (
-            f'Dear {last_name},\n\n'
+            f'Dear {last_name} {first_name},\n\n'
             f'Your account has been created successfully on the NASRDA PMS. Below are your login details:\n\n'
             f'IPPIS Number: {ippis_no}\n'
             f'Password: {password}\n'
@@ -84,7 +84,7 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.SUCCESS(f"User {user.username} uploaded successfully."))
 
                     # Send login details via email
-                    self.send_login_details(user.first_name, user.email, user.ippis_no, raw_password)
+                    self.send_login_details(user.last_name, user.first_name, user.email, user.ippis_no, raw_password)
 
                 except Department.DoesNotExist:
                     self.stdout.write(self.style.ERROR(f"Department with id {row['department_id']} not found."))
