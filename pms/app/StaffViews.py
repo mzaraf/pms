@@ -24,31 +24,70 @@ class CustomUserForm(forms.ModelForm):
              'department', 'unit',
         ]
 
+#def staff_update_details(request, user_id):
+#    staff = get_object_or_404(CustomUser, id=user_id)
+
+#    departments = Department.objects.all()
+
+#    if request.method == 'POST':
+#        form = CustomUserForm(request.POST, instance=staff)
+        
+#        if form.is_valid():
+#            form.save()
+#            messages.success(request, 'Details Updated Successfully')
+#            return redirect('staff')
+#        else:
+#            messages.error(request, 'Please correct the errors below.')
+    
+#    else:
+#        form = CustomUserForm(instance=staff)
+
+#    context = {
+#        'form': form,
+#        'user_id': staff.id,
+#        'departments': Department.objects.all(),
+#        'units': Unit.objects.all(),
+#        'user': staff,
+#    }
+    
+#    return render(request, 'staff_templates/staff_update_details.html', context)
+
+
 def staff_update_details(request, user_id):
+    # Get the staff user object
     staff = get_object_or_404(CustomUser, id=user_id)
+    
+    # Get the list of departments
+    departments = Department.objects.all()
+    
+    # If the user already has a department, load the corresponding units
+    if staff.department:
+        units = Unit.objects.filter(department=staff.department)
+    else:
+        units = Unit.objects.none()  # Empty queryset if no department is selected
 
     if request.method == 'POST':
         form = CustomUserForm(request.POST, instance=staff)
-        
         if form.is_valid():
             form.save()
             messages.success(request, 'Details Updated Successfully')
             return redirect('staff')
         else:
             messages.error(request, 'Please correct the errors below.')
-    
     else:
         form = CustomUserForm(instance=staff)
 
+    # Pass the departments and units to the context
     context = {
         'form': form,
-        'user_id': staff.id,
-        'departments': Department.objects.all(),
-        'units': Unit.objects.all(),
         'user': staff,
+        'user_id': staff.id,
+        'departments': departments,
+        'units': units,  # Preload units based on selected department
     }
     
     return render(request, 'staff_templates/staff_update_details.html', context)
+
 
 def staff_get_units_by_department(request):
     department_id = request.GET.get('department_id')  # Get the department ID from the request
