@@ -100,20 +100,20 @@ def add_staff_info(request):
             new_staff.save()
 
              # Send email to the new staff with their login details
-            send_mail(
-                subject='NASRDA PMS: Login Credentials',
-                message=f'Dear {last_name} {first_name},\n\nYour account has been created successfully on the NASRDA PMS. Below are your login details:\n\n'
-                        f'IPPIS Number: your ippis number\n'
-                        f'Password: {password}\n'
-                        f'Link: pe.nasrda.gov.ng\n\n'
-                        f'Please change your password after your first login.\n\n'
-                        f'Thank you.',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                from_email = os.getenv('DEFAULT_FROM_EMAIL'),
-                recipient_list=[email],
-                fail_silently=False,
-            )
-            messages.success(request, f"Staff member {first_name} {last_name} has been added successfully, and login credentials have been sent to their email.")
+            #send_mail(
+            #    subject='NASRDA PMS: Login Credentials',
+            #    message=f'Dear {last_name} {first_name},\n\nYour account has been created successfully on the NASRDA PMS. Below are your login details:\n\n'
+            #            f'IPPIS Number: your ippis number\n'
+            #            f'Password: {password}\n'
+            #            f'Link: pe.nasrda.gov.ng\n\n'
+            #            f'Please change your password after your first login.\n\n'
+            #            f'Thank you.',
+            #    from_email=settings.DEFAULT_FROM_EMAIL,
+            #    from_email = os.getenv('DEFAULT_FROM_EMAIL'),
+            #    recipient_list=[email],
+            #    fail_silently=False,
+            #)
+            #messages.success(request, f"Staff member {first_name} {last_name} has been added successfully, and login credentials have been sent to their email.")
             return redirect('staff_list')  # Redirect to a success page or another view
         
         except Exception as e:

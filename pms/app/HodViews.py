@@ -30,17 +30,17 @@ def hod_view_appraisals(request):
 def hod_result(request):
     hod_department = request.user.department
 
-    #complete_appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-id')
+    complete_appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-')
     in_progress_appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='HoD Review').order_by('id')
 
     # Set the number of items per page
     items_per_page = 20
 
     # Pagination for complete appraisals
-    #complete_paginator = Paginator(complete_appraisals, items_per_page)
-    #complete_show_pagination = complete_paginator.count > items_per_page
-    #complete_page_number = request.GET.get('complete_page')
-    #complete_appraisals_paginated = complete_paginator.get_page(complete_page_number)
+    complete_paginator = Paginator(complete_appraisals, items_per_page)
+    complete_show_pagination = complete_paginator.count > items_per_page
+    complete_page_number = request.GET.get('complete_page')
+    complete_appraisals_paginated = complete_paginator.get_page(complete_page_number)
 
     # Pagination for in-progress appraisals
     in_progress_paginator = Paginator(in_progress_appraisals, items_per_page)
@@ -49,11 +49,11 @@ def hod_result(request):
     in_progress_appraisals_paginated = in_progress_paginator.get_page(in_progress_page_number)
 
     context = {
-        #'complete_appraisals': complete_appraisals_paginated,
+        'complete_appraisals': complete_appraisals_paginated,
         'in_progress_appraisals': in_progress_appraisals_paginated,
-        #'show_complete_pagination': complete_paginator.count > items_per_page,
+        'show_complete_pagination': complete_paginator.count > items_per_page,
         'show_in_progress_pagination': in_progress_paginator.count > items_per_page,
-        #'complete_show_pagination': complete_show_pagination,
+        'complete_show_pagination': complete_show_pagination,
         'in_progress_show_pagination': in_progress_show_pagination
     }
     
