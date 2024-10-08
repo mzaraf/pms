@@ -30,7 +30,7 @@ def hod_view_appraisals(request):
 def hod_result(request):
     hod_department = request.user.department
 
-    complete_appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-')
+    complete_appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-id')
     in_progress_appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='HoD Review').order_by('id')
 
     # Set the number of items per page
