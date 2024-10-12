@@ -126,6 +126,36 @@ def staff_hod_rating(request, appraisal_id):
         return HttpResponseRedirect(reverse('hod_result'))
     
     if request.method == 'POST':
+
+        appraisal.job_knowledge = int(request.POST['job_knowledge'])
+        appraisal.quality_of_work = int(request.POST['quality_of_work'])
+        appraisal.quantity_of_work = int(request.POST['quantity_of_work'])
+        appraisal.reliability = int(request.POST['reliability'])
+        appraisal.initiative_creativity = int(request.POST['initiative_creativity'])
+        appraisal.judgment = int(request.POST['judgment'])
+        appraisal.relationship_with_supervisor = int(request.POST['relationship_with_supervisor'])
+        appraisal.working_with_others = int(request.POST['working_with_others'])
+        appraisal.relationship_with_subordinates = int(request.POST['relationship_with_subordinates'])
+        appraisal.communication_skills = int(request.POST['communication_skills'])
+        appraisal.planning_and_organizing = int(request.POST['planning_and_organizing'])
+        appraisal.directing_and_controlling = int(request.POST['directing_and_controlling'])
+        appraisal.decision_making = int(request.POST['decision_making'])
+
+        appraisal.commendation_for_outstanding_performance = int(request.POST['commendation_for_outstanding_performance'])
+        appraisal.details_of_commendation_for_outstanding_performance = request.POST['details_of_commendation_for_outstanding_performance']
+        appraisal.suggestions_that_contributed_to_changes = float(request.POST['suggestions_that_contributed_to_changes'])
+        #appraisal.sanction_discipline = request.POST['sanction_discipline']
+        #appraisal.details_sanction_discipline = request.POST['details_sanction_discipline']
+
+        #appraisal.capacity_development_since_last_evaluation = request.POST['capacity_development_since_last_evaluation']
+        #appraisal.accommplishments_since_last_evaluation = request.POST['accommplishments_since_last_evaluation']
+        #appraisal.training_requirements_to_handle_responsibilities = request.POST['training_requirements_to_handle_responsibilities']
+        #appraisal.skills_gap_requiring_improvement = request.POST['skills_gap_requiring_improvement']
+        #appraisal.missed_opportunities_reason = request.POST['missed_opportunities_reason']
+
+        #appraisal.overall_performance_assessment = request.POST['overall_performance_assessment']
+        #appraisal.promotability = request.POST['promotability']
+
         appraisal.head_of_department_comments = request.POST['head_of_department_comments']
         appraisal.head_of_department_date_of_evaluation = request.POST['head_of_department_date_of_evaluation']
         appraisal.appraisal_status = 'Completed'

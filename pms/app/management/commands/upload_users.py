@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Define the file path directly in the script
-        file_path = 'C:/Users/GRID3__02/Desktop/PMS_Data/tables/app_customuser_1.csv'  # Update with your actual file path
+        file_path = 'C:/Users/GRID3__02/Desktop/PMS_Data/tables/app_cus.csv'  # Update with your actual file path
         self.upload_users_from_csv(file_path)
 
     def send_login_details(self, last_name, first_name, email, ippis_no, password):
@@ -35,7 +35,7 @@ class Command(BaseCommand):
     def upload_users_from_csv(self, file_path):
         try:
             # Read the Excel file
-            df = pd.read_csv(file_path)
+            df = pd.read_csv(file_path, encoding='ISO-8859-1')
 
             for index, row in df.iterrows():
                 try:

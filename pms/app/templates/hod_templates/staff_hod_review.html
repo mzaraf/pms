@@ -427,7 +427,7 @@
                 <tr>
                     <td><strong>a. </strong>,<b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
                     <td>
-                        <select name="job_knowledge" readonly disabled>
+                        <select name="job_knowledge">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.job_knowledge == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.job_knowledge == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -440,7 +440,7 @@
                 <tr>
                     <td><strong>b. </strong><b> Quality of Work </b><p>Freedom from errors and mistakes. Accuracy, quality of work in general.</p></td>
                     <td>
-                        <select name="quality_of_work" readonly disabled>
+                        <select name="quality_of_work">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.quality_of_work == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.quality_of_work == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -453,7 +453,7 @@
                 <tr>
                     <td><strong>c. </strong><b> Quantity of Work </b><p>Productivity of the employee.</p></td>
                     <td>
-                        <select name="quantity_of_work" readonly disabled>
+                        <select name="quantity_of_work">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.quantity_of_work == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.quantity_of_work == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -468,7 +468,7 @@
                         Consistency in coming to work daily and conforming to scheduled work hours. ATTENDANCE
                         </p></td>
                     <td>
-                        <select name="reliability" readonly disabled>
+                        <select name="reliability">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.reliability == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.reliability == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -481,7 +481,7 @@
                 <tr>
                     <td><strong>e. </strong> <b>Initiative and Creativity </b><p>The ability to plan work and to proceed with a task without being told every detail and the ability to make constructive suggestions.</p></td>
                     <td>
-                        <select name="initiative_creativity" readonly disabled>
+                        <select name="initiative_creativity">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.initiative_creativity == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.initiative_creativity == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -494,7 +494,7 @@
                 <tr>
                     <td><strong>f. </strong><b> Judgement </b><p>The extent to which the employee makes decisions that is sound. The ability to base decisions on fact rather than emotion.</p></td>
                     <td>
-                        <select name="judgment" readonly disabled>
+                        <select name="judgment">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.judgment == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.judgment == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -517,7 +517,7 @@
                     <td><strong>a. </strong><b>Interpersonal Relationship with Supervisor</b><br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
                     </td>
                     <td>
-                        <select name="relationship_with_supervisor" readonly disabled>
+                        <select name="relationship_with_supervisor">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.relationship_with_supervisor == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.relationship_with_supervisor == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -530,7 +530,7 @@
                 <tr>
                     <td><strong>b. </strong><b> Quality of work</b><br><p>Willingness to work harmoniously with others in getting a job done. Readiness to respond positively to instructions and procedures.</p>
                         <td>
-                        <select name="working_with_others" readonly disabled>
+                        <select name="working_with_others">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.working_with_others == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.working_with_others == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -543,7 +543,7 @@
                 <tr>
                     <td><strong>c. </strong><b>Interpersonal Relationship with Subordinates</b><br><p>Ability to direct and give clear instructions, coach/mentor and provide leadership in a way that is not domineering and at the same time result oriented..</p>
                         <td>
-                        <select name="relationship_with_subordinates" readonly disabled>
+                        <select name="relationship_with_subordinates">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.relationship_with_subordinates == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.relationship_with_subordinates == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -556,7 +556,7 @@
                 <tr>
                     <td><strong>d. </strong> <b>Communication Skills (Written & Verbal)</b><br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
                         <td>
-                        <select name="communication_skills" readonly disabled>
+                        <select name="communication_skills">
                             <option value="">Select rating</option>
                             <option value="16" {% if appraisal.communication_skills == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.communication_skills == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -580,7 +580,7 @@
                         <p>The ability to analyze work, set goals, develop plans of action, utilize time. Consider amount of supervision readonly disabled and extent to which you can trust employee to carry out assignments diligently.</p>
                     </td>
                     <td>
-                        <select name="planning_and_organizing" readonly disabled>
+                        <select name="planning_and_organizing">
                             <option value="0">Select rating</option>
                             <option value="16" {% if appraisal.planning_and_organizing == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.planning_and_organizing == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -593,7 +593,7 @@
                 <tr>
                     <td><strong>b. </strong> <b>Directing and controlling</b><br><p>The ability to create a motivating climate, achieve teamwork, train and develop, measure work in progress, take corrective action.</p>
                         <td>
-                        <select name="directing_and_controlling" readonly disabled>
+                        <select name="directing_and_controlling">
                             <option value="0">Select rating</option>
                             <option value="16" {% if appraisal.directing_and_controlling == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.directing_and_controlling == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -606,7 +606,7 @@
                 <tr>
                     <td><strong>c. </strong><b>Decision-making</b><br><p>The ability to make decisions and the quality and timeliness of those decisions.</p>
                         <td>
-                        <select name="decision_making" readonly disabled>
+                        <select name="decision_making">
                             <option value="0">Select rating</option>
                             <option value="16" {% if appraisal.decision_making == 16 %}selected{% endif %}>5 - Excellent</option>
                             <option value="13" {% if appraisal.decision_making == 13 %}selected{% endif %}>4 - Outstanding</option>
@@ -631,15 +631,16 @@
                     Has the officer received any special commendations (WRITTEN) DURING the year for outstanding performance? (<span class="red-text">2 points</span>)
                     <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
                         <label for="quality_yes">Yes</label>
-                        <input type="radio" name="commendation_for_outstanding_performance" id="commendation_yes" value="2" {% if appraisal.commendation_for_outstanding_performance == 2 %}checked{% endif %} readonly disabled>
+                        <input type="radio" name="commendation_for_outstanding_performance" id="commendation_yes" value="2" {% if appraisal.commendation_for_outstanding_performance == 2 %}checked{% endif %}>
                         
                         <label for="quality_no">No</label>
-                        <input type="radio" name="commendation_for_outstanding_performance" id="commendation_no" value="0" {% if appraisal.commendation_for_outstanding_performance == 0 %}checked{% endif %} readonly disabled>
+                        <input type="radio" name="commendation_for_outstanding_performance" id="commendation_no" value="0" {% if appraisal.commendation_for_outstanding_performance == 0 %}checked{% endif %}>
                     </div>
                     <br>
                     If YES, give details:
                 
-                    <textarea rows="3" name="details_of_commendation_for_outstanding_performance" style="width: 100%;" readonly disabled>{{ appraisal.details_of_commendation_for_outstanding_performance }}</textarea>
+                    <textarea rows="3" name="details_of_commendation_for_outstanding_performance" id="commendationDetails" style="width: 100%;" disabled>{{ appraisal.details_of_commendation_for_outstanding_performance }}</textarea>
+                    <input type="hidden" name="details_of_commendation_for_outstanding_performance" id="hiddenCommendationDetails" value="NULL">
                 </td>
             </tr>
             <tr>
@@ -658,7 +659,7 @@
             </tr>-->
             <tr>
                 <td>Did he make suggestions for changes/adjust methods/procedures that significantly contribute to his/her own work or that of any associate/subordinates? (<span class="red-text">range 2 - 0.5 points</span>)</p>
-                    <select name="suggestions_that_contributed_to_changes" readonly disabled>
+                    <select name="suggestions_that_contributed_to_changes">
                         <option value="">Select rating</option>
                         <option value="2" {% if appraisal.suggestions_that_contributed_to_changes == 2 %}selected{% endif %}>5 - Always, Frequently suggests innovative changes or adjustments that significantly contribute to both their own and others' work.</option>
                         <option value="1.99" {% if appraisal.suggestions_that_contributed_to_changes == 1.99 %}selected{% endif %}>4 - Often, Regularly makes helpful suggestions and adjustments that positively impact their own work and sometimes that of others.</option>
@@ -770,7 +771,7 @@
             <div class="section">
                 <h2>Section 5: Head of Department’s Comments <i>(As applicable):</i></h2>
                 
-                <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." required></textarea>
+                <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." required>{{ appraisal.head_of_department_comments }}</textarea>
     
                 <label for="headOfDepartmentComments">Date of Evaluation:</label>
                 <input type="date" id="headOfDepartmentDateOfEvaluation" name="head_of_department_date_of_evaluation" required>
@@ -787,6 +788,33 @@
             const supervisorDateInput = document.getElementById('headOfDepartmentDateOfEvaluation');
             const today = new Date().toISOString().split('T')[0];
             supervisorDateInput.value = today;
+
+            // Commendation Textarea Control
+            const commendationYes = document.getElementById('commendation_yes');
+            const commendationNo = document.getElementById('commendation_no');
+            const commendationDetails = document.getElementById('commendationDetails');
+            const hiddenCommendationDetails = document.getElementById('hiddenCommendationDetails');
+    
+            commendationYes.addEventListener('change', function() {
+                if (commendationYes.checked) {
+                    commendationDetails.disabled = false;
+                    hiddenCommendationDetails.value = ''; // Clear hidden input when yes is selected
+                }
+            });
+    
+            commendationNo.addEventListener('change', function() {
+                if (commendationNo.checked) {
+                    commendationDetails.disabled = true;
+                    commendationDetails.value = ''; // Clear the textarea if disabled
+                    hiddenCommendationDetails.value = 'NULL'; // Assign NULL to hidden input
+                }
+            });
+    
+            commendationDetails.addEventListener('input', function() {
+                if (commendationYes.checked) {
+                    hiddenCommendationDetails.value = commendationDetails.value; // Update hidden input with textarea value
+                }
+            });
         });
     </script>
 {% endblock content %}
