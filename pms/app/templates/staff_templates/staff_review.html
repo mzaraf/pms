@@ -577,7 +577,7 @@
                 </tr>
                 <tr>
                     <td><strong>a. </strong> <b>Planning and organizing</b><br>
-                        <p>The ability to analyze work, set goals, develop plans of action, utilize time. Consider amount of supervision readonly disabled and extent to which you can trust employee to carry out assignments diligently.</p>
+                        <p>The ability to analyze work, set goals, develop plans of action, utilize time. Consider amount of supervision required and extent to which you can trust employee to carry out assignments diligently.</p>
                     </td>
                     <td>
                         <select name="planning_and_organizing" readonly disabled>
@@ -732,12 +732,12 @@
             <h3>Overall Assessment:</h3>
             <select id="overallAssessment" name="overall_performance_assessment" readonly disabled>
                 <option value="">Select assessment</option>
-                <option value="Outstanding" {% if appraisal.overall_performance_assessment == "Outstanding" %}selected{% endif %}>A - Outstanding, An exceptionally valuable member of staff, performance is well above the readonly disabled standard for the job.</option>
+                <option value="Outstanding" {% if appraisal.overall_performance_assessment == "Outstanding" %}selected{% endif %}>A - Outstanding, An exceptionally valuable member of staff, performance is well above the required standard for the job.</option>
                 <option value="Very Good" {% if appraisal.overall_performance_assessment == "Very Good" %}selected{% endif %}>B - Very Good, Displays good all-round level of effectiveness; performance meets requirements in all important tasks.</option>
                 <option value="Good" {% if appraisal.overall_performance_assessment == "Good" %}selected{% endif %}>C - Good, A competent member of staff; generally achieves the standard required.</option>
                 <option value="Fair" {% if appraisal.overall_performance_assessment == "Fair" %}selected{% endif %}>D - Fair Complete all assignments fairly satisfactorily within agreed date.</option>
-                <option value="Poor" {% if appraisal.overall_performance_assessment == "Poor" %}selected{% endif %}>E - Poor, Performance does not always reach the readonly disabled standard; room for improvement.</option>
-                <option value="Very Poor" {% if appraisal.overall_performance_assessment == "Very Poor" %}selected{% endif %}>F - Very Poor, Performance does not meet the readonly disabled standard</option>
+                <option value="Poor" {% if appraisal.overall_performance_assessment == "Poor" %}selected{% endif %}>E - Poor, Performance does not always reach the required standard; room for improvement.</option>
+                <option value="Very Poor" {% if appraisal.overall_performance_assessment == "Very Poor" %}selected{% endif %}>F - Very Poor, Performance does not meet the required standard</option>
             </select>
         </div>
         <div class="section">
@@ -747,7 +747,7 @@
                 <option value="">Select Promotability</option>
                 <option value="Outstanding" {% if appraisal.promotability == "Outstanding" %}selected{% endif %}>A - Well qualified, the officer already stands out in the next higher </option>
                 <option value="Very Good" {% if appraisal.promotability == "Very Good" %}selected{% endif %}>B - Ready for promotion</option>
-                <option value="Good" {% if appraisal.promotability == "Good" %}selected{% endif %}>C - Has promotion potentials; has completed the readonly disabled number of years</option>
+                <option value="Good" {% if appraisal.promotability == "Good" %}selected{% endif %}>C - Has promotion potentials; has completed the required number of years</option>
                 <option value="Fair" {% if appraisal.promotability == "Fair" %}selected{% endif %}>D - Not yet ripe for promotion ( for non-fulfillment of condition prescribed for 
                     promotion in line with the Guideline on Civil Service reforms)
                     </option>

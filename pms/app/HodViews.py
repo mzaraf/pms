@@ -144,17 +144,17 @@ def staff_hod_rating(request, appraisal_id):
         appraisal.commendation_for_outstanding_performance = int(request.POST['commendation_for_outstanding_performance'])
         appraisal.details_of_commendation_for_outstanding_performance = request.POST['details_of_commendation_for_outstanding_performance']
         appraisal.suggestions_that_contributed_to_changes = float(request.POST['suggestions_that_contributed_to_changes'])
-        #appraisal.sanction_discipline = request.POST['sanction_discipline']
-        #appraisal.details_sanction_discipline = request.POST['details_sanction_discipline']
+        appraisal.sanction_discipline = request.POST['sanction_discipline']
+        appraisal.details_sanction_discipline = request.POST['details_sanction_discipline']
 
-        #appraisal.capacity_development_since_last_evaluation = request.POST['capacity_development_since_last_evaluation']
-        #appraisal.accommplishments_since_last_evaluation = request.POST['accommplishments_since_last_evaluation']
-        #appraisal.training_requirements_to_handle_responsibilities = request.POST['training_requirements_to_handle_responsibilities']
-        #appraisal.skills_gap_requiring_improvement = request.POST['skills_gap_requiring_improvement']
-        #appraisal.missed_opportunities_reason = request.POST['missed_opportunities_reason']
+        appraisal.capacity_development_since_last_evaluation = request.POST['capacity_development_since_last_evaluation']
+        appraisal.accommplishments_since_last_evaluation = request.POST['accommplishments_since_last_evaluation']
+        appraisal.training_requirements_to_handle_responsibilities = request.POST['training_requirements_to_handle_responsibilities']
+        appraisal.skills_gap_requiring_improvement = request.POST['skills_gap_requiring_improvement']
+        appraisal.missed_opportunities_reason = request.POST['missed_opportunities_reason']
 
-        #appraisal.overall_performance_assessment = request.POST['overall_performance_assessment']
-        #appraisal.promotability = request.POST['promotability']
+        appraisal.overall_performance_assessment = request.POST['overall_performance_assessment']
+        appraisal.promotability = request.POST['promotability']
 
         appraisal.head_of_department_comments = request.POST['head_of_department_comments']
         appraisal.head_of_department_date_of_evaluation = request.POST['head_of_department_date_of_evaluation']

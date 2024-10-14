@@ -577,7 +577,7 @@
                 </tr>
                 <tr>
                     <td><strong>a. </strong> <b>Planning and organizing</b><br>
-                        <p>The ability to analyze work, set goals, develop plans of action, utilize time. Consider amount of supervision readonly disabled and extent to which you can trust employee to carry out assignments diligently.</p>
+                        <p>The ability to analyze work, set goals, develop plans of action, utilize time. Consider amount of supervision required and extent to which you can trust employee to carry out assignments diligently.</p>
                     </td>
                     <td>
                         <select name="planning_and_organizing">
@@ -677,15 +677,16 @@
                     Has any disciplinary action been taken against the officer during the period covered by this report?
                     <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
                         <label for="quality_yes">Yes</label>
-                        <input type="radio" name="sanction_discipline" id="saction_yes" value="yes" {% if appraisal.sanction_discipline == 'yes' %}checked{% endif %} readonly disabled>
+                        <input type="radio" name="sanction_discipline" id="saction_yes" value="yes" {% if appraisal.sanction_discipline == 'yes' %}checked{% endif %}>
                         
                         <label for="quality_no">No</label>
-                        <input type="radio" name="sanction_discipline" id="saction_no" value="no" {% if appraisal.sanction_discipline == 'no' %}checked{% endif %} readonly disabled>
+                        <input type="radio" name="sanction_discipline" id="saction_no" value="no" {% if appraisal.sanction_discipline == 'no' %}checked{% endif %}>
                     </div>
                     <br>
                     If YES, give details of Sanction:
                 
-                    <textarea rows="3" name="details_sanction_discipline" style="width: 100%;" readonly disabled>{{ appraisal.details_sanction_discipline }}</textarea>
+                    <textarea rows="3" name="details_sanction_discipline" id="sanctionDetails" style="width: 100%;">{{ appraisal.details_sanction_discipline }}</textarea>
+                    <input type="hidden" name="details_sanction_discipline" id="hiddenSanctionDetails" value="NULL">
                 </td>
             </tr>
         </table>
@@ -695,34 +696,34 @@
               <tr>
                 <td style="width: 100%;" colspan="2">
                     <strong>i.</strong> In what way has the Employee developed his/her capacity since the last evaluation?
-                    <textarea rows="3" name="capacity_development_since_last_evaluation" style="width: 100%;" readonly disabled>{{ appraisal.capacity_development_since_last_evaluation }}</textarea>
+                    <textarea rows="3" name="capacity_development_since_last_evaluation" style="width: 100%;">{{ appraisal.capacity_development_since_last_evaluation }}</textarea>
                 </td>
               </tr>
               <tr>
                 <td style="width: 100%;" colspan="2">
                     <strong>ii.</strong> State any outstanding accomplishments of the Employee since the last evaluation?
-                    <textarea rows="3" name="accommplishments_since_last_evaluation" style="width: 100%;" readonly disabled>{{ appraisal.accommplishments_since_last_evaluation }}</textarea>
+                    <textarea rows="3" name="accommplishments_since_last_evaluation" style="width: 100%;">{{ appraisal.accommplishments_since_last_evaluation }}</textarea>
                 </td>
                 
               </tr>
               <tr>
                 <td style="width: 100%;" colspan="2">
                     <strong>iii.</strong> Specify areas (if any), in which the Employee requires training to handle new or more responsibilities.
-                    <textarea rows="3" name="training_requirements_to_handle_responsibilities" style="width: 100%;" readonly disabled>{{ appraisal.training_requirements_to_handle_responsibilities }}</textarea>
+                    <textarea rows="3" name="training_requirements_to_handle_responsibilities" style="width: 100%;">{{ appraisal.training_requirements_to_handle_responsibilities }}</textarea>
                 </td>
                 
               </tr>
               <tr>
                 <td style="width: 100%;" colspan="2">
                     <strong>iv.</strong> What are the skills gaps/areas requiring improvement in job performance noticed in the Employee?
-                    <textarea rows="3" name="skills_gap_requiring_improvement" style="width: 100%;" readonly disabled>{{ appraisal.skills_gap_requiring_improvement }}</textarea>
+                    <textarea rows="3" name="skills_gap_requiring_improvement" style="width: 100%;">{{ appraisal.skills_gap_requiring_improvement }}</textarea>
                 </td>
                 
               </tr>
               <tr>
                 <td style="width: 100%;" colspan="2">
                     <strong>v.</strong> Are there necessary opportunities that could not be created for the Employee during the period evaluated and why?
-                    <textarea rows="3" name="missed_opportunities_reason" style="width: 100%;" readonly disabled>{{ appraisal.missed_opportunities_reason }}</textarea>
+                    <textarea rows="3" name="missed_opportunities_reason" style="width: 100%;">{{ appraisal.missed_opportunities_reason }}</textarea>
                 </td>
                 
               </tr>
@@ -731,24 +732,24 @@
         <div class="section">
             <p>From the above assessments, indicate the overall performance of his/her duties by selecting the appropriate value below:</p>
             <h3>Overall Assessment:</h3>
-            <select id="overallAssessment" name="overall_performance_assessment" readonly disabled>
+            <select id="overallAssessment" name="overall_performance_assessment">
                 <option value="">Select assessment</option>
-                <option value="Outstanding" {% if appraisal.overall_performance_assessment == "Outstanding" %}selected{% endif %}>A - Outstanding, An exceptionally valuable member of staff, performance is well above the readonly disabled standard for the job.</option>
+                <option value="Outstanding" {% if appraisal.overall_performance_assessment == "Outstanding" %}selected{% endif %}>A - Outstanding, An exceptionally valuable member of staff, performance is well above the required standard for the job.</option>
                 <option value="Very Good" {% if appraisal.overall_performance_assessment == "Very Good" %}selected{% endif %}>B - Very Good, Displays good all-round level of effectiveness; performance meets requirements in all important tasks.</option>
                 <option value="Good" {% if appraisal.overall_performance_assessment == "Good" %}selected{% endif %}>C - Good, A competent member of staff; generally achieves the standard required.</option>
                 <option value="Fair" {% if appraisal.overall_performance_assessment == "Fair" %}selected{% endif %}>D - Fair Complete all assignments fairly satisfactorily within agreed date.</option>
-                <option value="Poor" {% if appraisal.overall_performance_assessment == "Poor" %}selected{% endif %}>E - Poor, Performance does not always reach the readonly disabled standard; room for improvement.</option>
-                <option value="Very Poor" {% if appraisal.overall_performance_assessment == "Very Poor" %}selected{% endif %}>F - Very Poor, Performance does not meet the readonly disabled standard</option>
+                <option value="Poor" {% if appraisal.overall_performance_assessment == "Poor" %}selected{% endif %}>E - Poor, Performance does not always reach the required standard; room for improvement.</option>
+                <option value="Very Poor" {% if appraisal.overall_performance_assessment == "Very Poor" %}selected{% endif %}>F - Very Poor, Performance does not meet the required standard</option>
             </select>
         </div>
         <div class="section">
             
             <h3>Promotability: </h3>
-            <select id="Promotability" name="promotability" readonly disabled>
+            <select id="Promotability" name="promotability">
                 <option value="">Select Promotability</option>
                 <option value="Outstanding" {% if appraisal.promotability == "Outstanding" %}selected{% endif %}>A - Well qualified, the officer already stands out in the next higher </option>
                 <option value="Very Good" {% if appraisal.promotability == "Very Good" %}selected{% endif %}>B - Ready for promotion</option>
-                <option value="Good" {% if appraisal.promotability == "Good" %}selected{% endif %}>C - Has promotion potentials; has completed the readonly disabled number of years</option>
+                <option value="Good" {% if appraisal.promotability == "Good" %}selected{% endif %}>C - Has promotion potentials; has completed the required number of years</option>
                 <option value="Fair" {% if appraisal.promotability == "Fair" %}selected{% endif %}>D - Not yet ripe for promotion ( for non-fulfillment of condition prescribed for 
                     promotion in line with the Guideline on Civil Service reforms)
                     </option>
@@ -788,6 +789,33 @@
             const supervisorDateInput = document.getElementById('headOfDepartmentDateOfEvaluation');
             const today = new Date().toISOString().split('T')[0];
             supervisorDateInput.value = today;
+
+            // Disciplinary Action Textarea Control
+            const sanctionYes = document.getElementById('saction_yes');
+            const sanctionNo = document.getElementById('saction_no');
+            const sanctionDetails = document.getElementById('sanctionDetails');
+            const hiddenSanctionDetails = document.getElementById('hiddenSanctionDetails');
+    
+            sanctionYes.addEventListener('change', function() {
+                if (sanctionYes.checked) {
+                    sanctionDetails.disabled = false;
+                    hiddenSanctionDetails.value = ''; // Clear hidden input when yes is selected
+                }
+            });
+    
+            sanctionNo.addEventListener('change', function() {
+                if (sanctionNo.checked) {
+                    sanctionDetails.disabled = true;
+                    sanctionDetails.value = ''; // Clear the textarea if disabled
+                    hiddenSanctionDetails.value = 'NULL'; // Assign NULL to hidden input
+                }
+            });
+    
+            sanctionDetails.addEventListener('input', function() {
+                if (sanctionYes.checked) {
+                    hiddenSanctionDetails.value = sanctionDetails.value; // Update hidden input with textarea value
+                }
+            });
 
             // Commendation Textarea Control
             const commendationYes = document.getElementById('commendation_yes');
