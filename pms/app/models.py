@@ -341,7 +341,7 @@ class Appraisal(models.Model):
     appraisal_type = models.CharField(max_length=50, choices=[('staff', 'Staff'), ('supervisor', 'Supervisor')])
     # FSM status for workflow
     appraisal_status = FSMField(default='initiated', choices=STATUS)
-    exam_location = models.CharField(max_length=50, db_index = True, default='NASRDA HQ')
+    exam_location = models.CharField(max_length=50, db_index = True)
 
     @transition(field=appraisal_status, source='initiated', target='supervisor_review')
     def supervisor_review(self):
