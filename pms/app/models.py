@@ -71,6 +71,7 @@ class CustomUser(AbstractUser):
     institution = models.CharField(max_length = 255, blank = True, db_index = True, null = True,)
     qualification_award_date = models.DateField(blank = True, db_index = True, null = True,)
     usertype = models.ForeignKey(Usertype, on_delete = models.SET_NULL, blank = True, null = True, db_index = True,)
+    exam_location = models.CharField(max_length=50, db_index = True, default='NASRDA HQ')
     objects = CustomUserManager()
 
     def get_full_name(self):
