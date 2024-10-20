@@ -268,6 +268,8 @@ def supervisor_initiate_appraisal(request):
             #countersigning_officer_from_date = request.POST.get('countersigning_officer_from_date'),
             #countersigning_officer_to_date = request.POST.get('countersigning_officer_to_date'),
 
+            exam_location = request.POST.get('exam_location'),
+
             appraisal_type = 'supervisor',
             appraisal_status = 'HoD Review')
         

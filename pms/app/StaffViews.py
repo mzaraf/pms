@@ -276,6 +276,8 @@ def staff_initiate_appraisal(request):
             countersigning_officer = request.POST.get('countersigning_officer'),
             countersigning_officer_from_date = request.POST.get('countersigning_officer_from_date'),
             countersigning_officer_to_date = request.POST.get('countersigning_officer_to_date'),
+            
+            exam_location = request.POST.get('exam_location'),
 
             appraisal_type = 'staff',
             appraisal_status = 'Supervisor Review')

@@ -789,6 +789,7 @@
         <div class="section">
             <button type="submit" class="submit-btn">Submit Evaluation</button>
         </div>
+        <input type="hidden" id="examLocation" name="exam_location" class="form-control" value="{{ request.user.exam_location }}" readonly>
     </form>
     <script>
         // Add row to Job Description table
