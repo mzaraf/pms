@@ -18,17 +18,43 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
+            width: 100%;
         }
         .logo {
             width: 100px;
             margin-bottom: 20px;
         }
+        .pdf-header {
+            display: block;
+            position: relative; /* Changed from fixed to avoid repeating */
+            top: 0;
+            width: 100%;
+            color: #004D40;
+        }
+        /* Hide header on pages other than the first */
+        @page {
+            margin-top: 60px; /* Adjust margin to allow space for header on the first page */
+        }
+        @page:first {
+            @top-center {
+                content: element(header); /* Only applies on the first page */
+            }
+        }
+        /* Optional: Add margin to avoid overlap of content below header */
+        .header + table {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
+    <!-- Wrap header in a div and reference it as "header" in CSS -->
+    <div class="header" id="header">
         <img src="{% static 'img/logo.png' %}" class="logo">
-        <h2>Appraisal Report for {{ department_name }}</h2>
+        <div class="pdf-header">
+            <h1>Appraisal Report</h1>
+            <p><b>Department:</b> {{ department_name }}</p>
+            <p><b>Evaluation Period:</b> {{ period_year }}</p>
+        </div>
     </div>
     <table>
         <thead>

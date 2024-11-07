@@ -23,7 +23,7 @@ def hod_form(request):
 def hod_view_appraisals(request):
     query = request.GET.get('q')
     hod_department = request.user.department
-    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('ippis_no')
+    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-id')
 
     # Filter based on the search query if it exists
     if query:
@@ -238,7 +238,7 @@ def supervisor_hod_rating(request, appraisal_id):
 def hod_download_appraisal(request):
     query = request.GET.get('q')
     hod_department = request.user.department
-    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-id')
+    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('ippis_no')
 
     if query:
         appraisals = appraisals.filter(
@@ -282,7 +282,11 @@ def hod_download_appraisal(request):
         if 'total_appraisal_rating' in selected_fields:
             row.append(appraisal.total_appraisal_rating)
         
+        period_year = appraisal.period_of_evaluation_from_date.year  # Extract the year
+        
         data.append(row)
+
+        
     
     # Render the data to an HTML template for PDF conversion
     html_content = render_to_string('hod_templates/download_appraisal.html', {
@@ -290,12 +294,17 @@ def hod_download_appraisal(request):
         'selected_fields': selected_fields,
         'field_names_mapping': field_names_mapping,
         'department_name': hod_department.name,
+        'period_year': period_year,
         
     })
 
+    # Extract department name and period year
+    department_name = hod_department.name.replace(" ", "_")  # Replace spaces with underscores
+
     # Generate the PDF
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=appraisal_report.pdf'
+    # Set the filename with department and period year
+    response['Content-Disposition'] = f'attachment; filename=appraisal_report_{department_name}_{period_year}.pdf'
     
     # Use WeasyPrint to write the HTML content to the response as a PDF
     HTML(string=html_content).write_pdf(response)
