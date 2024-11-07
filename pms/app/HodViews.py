@@ -23,7 +23,7 @@ def hod_form(request):
 def hod_view_appraisals(request):
     query = request.GET.get('q')
     hod_department = request.user.department
-    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-id')
+    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('ippis_no')
 
     # Filter based on the search query if it exists
     if query:
