@@ -1,0 +1,52 @@
+{% load custom_filters %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Appraisal Report</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #004D40;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{% static 'img/logo.png' %}" class="logo">
+        <h2>Appraisal Report for {{ department_name }}</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                {% for field in selected_fields %}
+                    <th>{{ field_names_mapping|get_item:field }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for appraisal in appraisals %}
+                <tr>
+                    {% for value in appraisal %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

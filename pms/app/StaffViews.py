@@ -89,12 +89,6 @@ def staff_update_details(request, user_id):
     return render(request, 'staff_templates/staff_update_details.html', context)
 
 
-def staff_get_units_by_department(request):
-    department_id = request.GET.get('department_id')  # Get the department ID from the request
-    units = Unit.objects.filter(department_id=department_id).values('id', 'name')  # Filter units by department
-    units_list = list(units)  # Convert QuerySet to list
-    return JsonResponse(units_list, safe=False)  # Return the units in JSON format
-
 @login_required
 def staff_view_appraisal(request):
     staff_user = request.user
@@ -276,7 +270,7 @@ def staff_initiate_appraisal(request):
             countersigning_officer = request.POST.get('countersigning_officer'),
             countersigning_officer_from_date = request.POST.get('countersigning_officer_from_date'),
             countersigning_officer_to_date = request.POST.get('countersigning_officer_to_date'),
-            
+
             exam_location = request.POST.get('exam_location'),
 
             appraisal_type = 'staff',

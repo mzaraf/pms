@@ -46,6 +46,7 @@ class Unit(models.Model):
     department = models.ForeignKey('Department', on_delete = models.SET_NULL, blank = True, null = True, db_index = True,)
     def __str__(self):
         return self.name
+    
 
 class CustomUser(AbstractUser):
 
@@ -54,6 +55,26 @@ class CustomUser(AbstractUser):
         ('supervisor', 'Supervisor'),
         ('hod', 'HOD'),
         ('admin', 'Admin'),
+    )
+
+    LOCATION = (
+        ('NASRDA HQ', 'NASRDA HQ'),
+        ('CAR', 'CAR'),
+        ('CSTP EPE', 'CSTP EPE'),
+        ('CBSS NSUKKA', 'CBSS NSUKKA'),
+        ('NCRS JOS', 'NCRS JOS'),
+        ('CGG TORO', 'CGG TORO'),
+        ('ARCSSTE-E', 'ARCSSTE-E'),
+        ('AACELab GUSAU', 'AACELab GUSAU'),
+        ('AAELab OKA', 'AAELab OKA'),
+        ('ASCOLab ILLORIN', 'ASCOLab ILLORIN'),
+        ('ASTAL UYO', 'ASTAL UYO'),
+        ('AUAVL ABAKALIKI', 'AUAVL ABAKALIKI'),
+        ('COPINE ILE-IFE', 'COPINE ILE-IFE'),
+        ('ZASTAL KASHERE', 'ZASTAL KASHERE'),
+        ('ZASTAL NDUFU ALIKE', 'ZASTAL NDUFU ALIKE'),
+        ('ZASTAL LANGTANG', 'ZASTAL LANGTANG'),
+        ('ZASTAL KANO', 'ZASTAL KANO'),
     )
 
     middle_name = models.CharField(max_length = 50, blank = True, db_index = True, null = True,)
@@ -71,7 +92,7 @@ class CustomUser(AbstractUser):
     institution = models.CharField(max_length = 255, blank = True, db_index = True, null = True,)
     qualification_award_date = models.DateField(blank = True, db_index = True, null = True,)
     usertype = models.ForeignKey(Usertype, on_delete = models.SET_NULL, blank = True, null = True, db_index = True,)
-    exam_location = models.CharField(max_length=50, db_index = True, default='NASRDA HQ')
+    exam_location = models.CharField(choices=LOCATION, max_length=50, db_index = True, default='NASRDA HQ')
     objects = CustomUserManager()
 
     def get_full_name(self):

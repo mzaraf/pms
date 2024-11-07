@@ -5,9 +5,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import CustomPasswordChangeForm
+from .models import Unit
+from django.http import JsonResponse
 
-from .models import Appraisal
 
+#def landing(request):
+#    return render(request, 'landing.html')
 
 def doLogin(request):
 
@@ -72,3 +75,9 @@ def change_password(request):
     return render(request, 'change_password.html', {
         'form': form
     })
+
+def get_units_by_department(request):
+    department_id = request.GET.get('department_id')  # Get the department ID from the request
+    units = Unit.objects.filter(department_id=department_id).values('id', 'name')  # Filter units by department
+    units_list = list(units)  # Convert QuerySet to list
+    return JsonResponse(units_list, safe=False)  # Return the units in JSON format

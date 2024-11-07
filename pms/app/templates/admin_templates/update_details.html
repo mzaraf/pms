@@ -64,11 +64,14 @@
                     </select>
                 </div>
                 <div>
-                    <label for="unit">Dvision/Unit:</label>
+                    <label for="unit">Division/Unit:</label>
                     <select id="unit" name="unit" class="form-control">
-                        <!-- Units will be populated dynamically based on selected department -->
-                        {% if user.unit %}
-                            <option value="{{ user.unit.id }}" selected>{{ user.unit.name }}</option>
+                        {% if units %}
+                            {% for unit in units %}
+                                <option value="{{ unit.id }}" {% if user.unit.id == unit.id %}selected{% endif %}>
+                                    {{ unit.name }}
+                                </option>
+                            {% endfor %}
                         {% else %}
                             <option value="">Select Division/Unit</option>
                         {% endif %}
@@ -88,6 +91,15 @@
                         <option value="">Select User Type</option>
                         {% for usertype in usertypes %}
                         <option value="{{ usertype.id }}" {% if user.usertype.id == usertype.id %}selected{% endif %}>{{ usertype.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="exam_location">Exam Location:</label>
+                    <select id="exam_location" name="exam_location" class="form-control" required>
+                        <option value="">Select Location</option>
+                        {% for value, name in exam_locations %}
+                            <option value="{{ value }}" {% if value == selected_exam_location %}selected{% endif %}>{{ name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -121,7 +133,7 @@
     
                 // Make an AJAX request to get the units for the selected department
                 $.ajax({
-                    url: '{% url "get_units_by_dept" %}',  // The URL for the AJAX endpoint
+                    url: '{% url "get_units_by_department" %}',  // The URL for the AJAX endpoint
                     data: {
                         'department_id': departmentId  // Send department ID as parameter
                     },

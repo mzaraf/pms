@@ -51,7 +51,7 @@
 
             // Make an AJAX request to get the units for the selected department
             $.ajax({
-                url: '{% url "staff_get_units_by_department" %}',  // The URL for the AJAX endpoint
+                url: '{% url "get_units_by_department" %}',  // The URL for the AJAX endpoint
                 data: {
                     'department_id': departmentId  // Send department ID as parameter
                 },

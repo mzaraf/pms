@@ -92,6 +92,15 @@
                     </select>
                 </div>
                 <div>
+                    <label for="exam_location">Exam Location:</label>
+                    <select id="exam_location" name="exam_location" class="form-control" required>
+                        <option value="">Select Location</option>
+                        {% for value, name in exam_locations %}
+                            <option value="{{ value }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" class="form-control" required>
                 </div>
@@ -141,7 +150,7 @@
         
                 // Make an AJAX request to get the units for the selected department
                 $.ajax({
-                    url: '{% url "get_units_by_dept" %}',  // The URL for the AJAX endpoint
+                    url: '{% url "get_units_by_department" %}',  // The URL for the AJAX endpoint
                     data: {
                         'department_id': departmentId  // Send department ID as parameter
                     },

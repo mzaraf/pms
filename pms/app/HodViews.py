@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Appraisal, JobDescription, TrainingCourseSeminars
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 
 @login_required
@@ -19,12 +21,31 @@ def hod_form(request):
     return render(request, 'hod_templates/hod_form.html')
 
 def hod_view_appraisals(request):
-    appraisals = Appraisal.objects.all()
-
+    query = request.GET.get('q')
     hod_department = request.user.department
+    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-id')
 
-    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='HoD Review')
-    return render(request, 'hod_templates/hod_view_appraisals.html', {'appraisals': appraisals})
+    # Filter based on the search query if it exists
+    if query:
+        appraisals = appraisals.filter(
+            Q(file_number__icontains=query) |
+            Q(ippis_no__icontains=query) |
+            Q(full_name__icontains=query) |
+            Q(designation__icontains=query) |
+            Q(department__name__icontains=query)
+        )
+
+    # Paginate the results
+    items_per_page = 100
+    paginator = Paginator(appraisals, items_per_page)
+    show_pagination = paginator.count > items_per_page
+    page_number = request.GET.get('page')
+    appraisals = paginator.get_page(page_number)
+
+    return render(request, 'hod_templates/hod_view_appraisals.html', {
+        'appraisals': appraisals,
+        'show_pagination': show_pagination,
+    })
 
 @login_required
 def hod_result(request):
@@ -213,3 +234,70 @@ def supervisor_hod_rating(request, appraisal_id):
         return redirect('hod_result')
     return render(request, 'hod_templates/hod_home.html', {'appraisal': appraisal})
 
+
+def hod_download_appraisal(request):
+    query = request.GET.get('q')
+    hod_department = request.user.department
+    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-id')
+
+    if query:
+        appraisals = appraisals.filter(
+            Q(full_name__icontains=query) |
+            Q(file_number__icontains=query) |
+            Q(ippis_no__icontains=query) |
+            Q(department__name__icontains=query) |
+            Q(designation__icontains=query)
+        )
+
+    # Get selected fields from the form
+    selected_fields = request.GET.getlist('fields')
+
+    # Create a mapping for custom column names
+    field_names_mapping = {
+        'full_name': 'Full Name',
+        'file_number': 'File Number',
+        'ippis_no': 'IPPIS',
+        'designation': 'Designation',
+        'department': 'Department',
+        'total_appraisal_rating': 'Score',
+    }
+
+    if 'all' in selected_fields:
+        selected_fields = list(field_names_mapping.keys())
+
+    # Collect data to be included in the PDF
+    data = []
+    for appraisal in appraisals:
+        row = []
+        if 'full_name' in selected_fields:
+            row.append(appraisal.full_name)
+        if 'file_number' in selected_fields:
+            row.append(appraisal.file_number)
+        if 'ippis_no' in selected_fields:
+            row.append(appraisal.ippis_no)
+        if 'designation' in selected_fields:
+            row.append(appraisal.designation)
+        if 'department' in selected_fields:
+            row.append(appraisal.department.name if appraisal.department else '')
+        if 'total_appraisal_rating' in selected_fields:
+            row.append(appraisal.total_appraisal_rating)
+        
+        data.append(row)
+    
+    # Render the data to an HTML template for PDF conversion
+    html_content = render_to_string('hod_templates/download_appraisal.html', {
+        'appraisals': data,
+        'selected_fields': selected_fields,
+        'field_names_mapping': field_names_mapping,
+        'department_name': hod_department.name,
+        
+    })
+
+    # Generate the PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=appraisal_report.pdf'
+    
+    # Use WeasyPrint to write the HTML content to the response as a PDF
+    HTML(string=html_content).write_pdf(response)
+
+    return response

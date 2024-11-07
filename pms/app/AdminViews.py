@@ -71,6 +71,7 @@ def add_staff_info(request):
         qualification_award_date = request.POST.get('qualification_award_date')
         password = request.POST.get('password')
         usertype = request.POST.get('usertype')
+        exam_location = request.POST.get('exam_location')
 
         username = f"{first_name.lower()}.{last_name.lower()}"
         # Create new staff member
@@ -96,24 +97,25 @@ def add_staff_info(request):
                 qualification_award_date=qualification_award_date,
                 password=password,
                 usertype_id=usertype,
+                exam_location=exam_location,
             )
             new_staff.save()
 
              # Send email to the new staff with their login details
-            #send_mail(
-            #    subject='NASRDA PMS: Login Credentials',
-            #    message=f'Dear {last_name} {first_name},\n\nYour account has been created successfully on the NASRDA PMS. Below are your login details:\n\n'
-            #            f'IPPIS Number: your ippis number\n'
-            #            f'Password: {password}\n'
-            #            f'Link: pe.nasrda.gov.ng\n\n'
-            #            f'Please change your password after your first login.\n\n'
-            #            f'Thank you.',
-            #    from_email=settings.DEFAULT_FROM_EMAIL,
-            #    from_email = os.getenv('DEFAULT_FROM_EMAIL'),
-            #    recipient_list=[email],
-            #    fail_silently=False,
-            #)
-            #messages.success(request, f"Staff member {first_name} {last_name} has been added successfully, and login credentials have been sent to their email.")
+            send_mail(
+                subject='NASRDA PMS: Login Credentials',
+                message=f'Dear {last_name} {first_name},\n\n'
+                        f'Your account has been created successfully on the NASRDA PMS. Below are your login details:\n\n'
+                        f'IPPIS Number: {ippis_no}\n'
+                        f'Password: {password}\n'
+                        f'Link: pe.nasrda.gov.ng\n\n'
+                        f'Please change your password after your first login.\n\n'
+                        f'Thank you.',
+                from_email = os.getenv('DEFAULT_FROM_EMAIL'),
+                recipient_list=[email],
+                fail_silently=False,
+            )
+            messages.success(request, f"{first_name} {last_name} has been added successfully, and login credentials sent to their email.")
             return redirect('staff_list')  # Redirect to a success page or another view
         
         except Exception as e:
@@ -128,11 +130,13 @@ def add_staff_info(request):
                 'user_types': user_types,
             })
     else:
+        exam_locations = CustomUser.LOCATION
         departments = Department.objects.all()
         units = Unit.objects.all()
         user_types = Usertype.objects.all()
         
         return render(request, 'admin_templates/add_staff.html', {
+            'exam_locations': exam_locations,
             'departments': departments,
             'units': units,
             'user_types': user_types,
@@ -192,6 +196,16 @@ class CustomUserForm(forms.ModelForm):
 def update_staff_info(request, user_id):
     staff = get_object_or_404(CustomUser, id=user_id)
 
+     # Get the list of departments
+    departments = Department.objects.all()
+    exam_locations = CustomUser.LOCATION
+    
+    # If the user already has a department, load the corresponding units
+    if staff.department:
+        units = Unit.objects.filter(department=staff.department)
+    else:
+        units = Unit.objects.none()  # Empty queryset if no department is selected
+
     if request.method == 'POST':
         form = CustomUserForm(request.POST, instance=staff)
         
@@ -207,21 +221,17 @@ def update_staff_info(request, user_id):
 
     context = {
         'form': form,
-        'user_id': staff.id,
-        'departments': Department.objects.all(),
-        'units': Unit.objects.all(),
-        'usertypes': Usertype.objects.all(),
         'user': staff,
+        'user_id': staff.id,
+        'departments': departments,
+        'units': units,
+        'usertypes': Usertype.objects.all(),
+        'exam_locations': exam_locations,
+        'selected_exam_location': staff.exam_location,
     }
     
     return render(request, 'admin_templates/update_details.html', context)
 
-
-def get_units_by_department(request):
-    department_id = request.GET.get('department_id')  # Get the department ID from the request
-    units = Unit.objects.filter(department_id=department_id).values('id', 'name')  # Filter units by department
-    units_list = list(units)  # Convert QuerySet to list
-    return JsonResponse(units_list, safe=False)  # Return the units in JSON format
 
 def download_staff_data(request):
     query = request.GET.get('q')
