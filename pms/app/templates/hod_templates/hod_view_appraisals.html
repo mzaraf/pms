@@ -56,12 +56,16 @@
                             <label class="form-check-label" for="field3">IPPIS No</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields" value="department" id="field4">
-                            <label class="form-check-label" for="field4">Department</label>
+                            <input class="form-check-input" type="checkbox" name="fields" value="designation" id="field4">
+                            <label class="form-check-label" for="field4">Designation</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields" value="total_appraisal_rating" id="field5">
-                            <label class="form-check-label" for="field5">Appraisal Score</label>
+                            <input class="form-check-input" type="checkbox" name="fields" value="department" id="field5">
+                            <label class="form-check-label" for="field5">Department</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="fields" value="total_appraisal_rating" id="field6">
+                            <label class="form-check-label" for="field6">Appraisal Score</label>
                         </div>
                         <!-- Add more fields as necessary -->
                     </div>
@@ -81,9 +85,9 @@
                     <thead>
                         <tr>
                             <th> S/N <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Full Name <span class="icon-arrow">&UpArrow;</span></th>
                             <th> File Number <span class="icon-arrow">&UpArrow;</span></th>
                             <th> IPPIS Number <span class="icon-arrow">&UpArrow;</span></th>
-                            <th> Full Name <span class="icon-arrow">&UpArrow;</span></th>
                             <th> Designation <span class="icon-arrow">&UpArrow;</span></th>
                             <th> Department <span class="icon-arrow">&UpArrow;</span></th>
                             <th> Total Scores <span class="icon-arrow">&UpArrow;</span></th>
@@ -93,9 +97,9 @@
                        {% for appraisal in appraisals %}
                         <tr>
                             <td> {{ forloop.counter }} </td>
+                            <td> {{ appraisal.full_name }} </td>
                             <td> {{ appraisal.file_number }} </td>
                             <td> {{ appraisal.ippis_no }} </td>
-                            <td> {{ appraisal.full_name }} </td>
                             <td> {{ appraisal.designation }} </td>
                             <td> {{ appraisal.department }} </td>
                             <td> <strong>{{ appraisal.total_appraisal_rating }} </strong></td>
