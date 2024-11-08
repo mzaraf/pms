@@ -23,7 +23,7 @@ def hod_form(request):
 def hod_view_appraisals(request):
     query = request.GET.get('q')
     hod_department = request.user.department
-    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('-id')
+    appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('ippis_no')
 
     # Filter based on the search query if it exists
     if query:
@@ -282,7 +282,7 @@ def hod_download_appraisal(request):
         if 'total_appraisal_rating' in selected_fields:
             row.append(appraisal.total_appraisal_rating)
         
-        period_year = appraisal.period_of_evaluation_from_date.year  # Extract the year
+        period_year = appraisal.staff_evaluation_date_submitted.year  # Extract the year
         
         data.append(row)
 

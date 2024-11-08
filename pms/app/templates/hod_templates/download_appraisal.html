@@ -26,19 +26,26 @@
         }
         .pdf-header {
             display: block;
-            position: relative; /* Changed from fixed to avoid repeating */
+            position: relative;
             top: 0;
             width: 100%;
             color: #004D40;
         }
         /* Hide header on pages other than the first */
         @page {
-            margin-top: 60px; /* Adjust margin to allow space for header on the first page */
+            margin-top: 60px;
         }
         @page:first {
             @top-center {
                 content: element(header); /* Only applies on the first page */
             }
+        }
+        /* Display table header only on the first page */
+        .first-page-table-header {
+            display: table-header-group;
+        }
+        .subsequent-header, .subsequent-page-table-header {
+            display: none;
         }
         /* Optional: Add margin to avoid overlap of content below header */
         .header + table {
@@ -57,7 +64,7 @@
         </div>
     </div>
     <table>
-        <thead>
+        <thead class="first-page-table-header">
             <tr>
                 {% for field in selected_fields %}
                     <th>{{ field_names_mapping|get_item:field }}</th>
