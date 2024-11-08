@@ -27,7 +27,10 @@
         .pdf-header {
             color: #004D40;
         }
-        
+        /* Ensure that each row stays on a single page */
+        tr {
+            page-break-inside: avoid;
+        }
         /* Hide header on pages other than the first */
         @page {
             margin-top: 60px;
