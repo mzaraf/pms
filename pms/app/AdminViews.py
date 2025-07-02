@@ -11,6 +11,7 @@ import pandas as pd
 from django.core.mail import send_mail
 from django.conf import settings
 import os
+from datetime import datetime
 
 def admin_dashboard(request):
     staff_user = request.user
@@ -286,32 +287,6 @@ def download_staff_data(request):
     return response
 
 
-def admin_view_results(request):
-    query = request.GET.get('q')
-    appraisals = Appraisal.objects.filter(appraisal_status='Completed').order_by('ippis_no')
-
-    # Filter based on the search query if it exists
-    if query:
-        appraisals = appraisals.filter(
-            Q(file_number__icontains=query) |
-            Q(ippis_no__icontains=query) |
-            Q(full_name__icontains=query) |
-            Q(designation__icontains=query) |
-            Q(department__name__icontains=query)
-        )
-
-    # Paginate the results
-    items_per_page = 100
-    paginator = Paginator(appraisals, items_per_page)
-    show_pagination = paginator.count > items_per_page
-    page_number = request.GET.get('page')
-    appraisals = paginator.get_page(page_number)
-
-    return render(request, 'admin_templates/admin_result.html', {
-        'appraisals': appraisals,
-        'show_pagination': show_pagination,
-    })
-
 
 @login_required
 def admin_staff_view(request, appraisal_id):
@@ -341,9 +316,53 @@ def admin_supervisor_view(request, appraisal_id):
 
     return render(request, 'admin_templates/admin_supervisor_view.html', context)
 
+def admin_view_results(request):
+    query = request.GET.get('q')
+    year_filter = request.GET.get('year')  # Get year filter from request
+    appraisals = Appraisal.objects.filter(appraisal_status='Completed').order_by('ippis_no')
+
+    # Get unique years from period_of_evaluation_from_date
+    unique_years = Appraisal.objects.filter(
+        appraisal_status='Completed'
+    ).dates('period_of_evaluation_from_date', 'year').order_by('-period_of_evaluation_from_date')
+    
+    unique_years = list({date.year for date in unique_years})  # Get unique years
+
+    # Filter based on the search query if it exists
+    if query:
+        appraisals = appraisals.filter(
+            Q(file_number__icontains=query) |
+            Q(ippis_no__icontains=query) |
+            Q(full_name__icontains=query) |
+            Q(designation__icontains=query) |
+            Q(department__name__icontains=query)
+        )
+
+    # Filter by year if selected
+    if year_filter:
+        appraisals = appraisals.filter(
+            period_of_evaluation_from_date__year=year_filter
+        )
+
+    # Paginate the results
+    items_per_page = 100
+    paginator = Paginator(appraisals, items_per_page)
+    show_pagination = paginator.count > items_per_page
+    page_number = request.GET.get('page')
+    appraisals = paginator.get_page(page_number)
+
+    return render(request, 'admin_templates/admin_result.html', {
+        'appraisals': appraisals,
+        'show_pagination': show_pagination,
+        'unique_years': unique_years,
+        'selected_year': year_filter,
+    })
+
 def download_appraisal_data(request):
     query = request.GET.get('q')
+    year_filter = request.GET.get('year')
     appraisals = Appraisal.objects.all()
+    
     if query:
         appraisals = appraisals.filter(
             Q(full_name__icontains=query) |
@@ -352,6 +371,18 @@ def download_appraisal_data(request):
             Q(department__name__icontains=query) |
             Q(designation__icontains=query)
         )
+
+    # Filter by year if selected
+    if year_filter:
+        appraisals = appraisals.filter(
+            period_of_evaluation_from_date__year=year_filter
+        )
+        period_year = year_filter
+    else:
+        # Get the most recent year if no filter is selected
+        most_recent = appraisals.order_by('-period_of_evaluation_from_date').first()
+        period_year = most_recent.period_of_evaluation_from_date.year if most_recent else datetime.now().year
+
 
     # Get selected fields from the form
     selected_fields = request.GET.getlist('fields')

@@ -1,4 +1,4 @@
-{% extends 'supervisor_templates/supervisor_base.html' %}
+{% extends 'hod_templates/hod_base.html' %}
 {% load static %}
 {% block content %}
 <style>
@@ -65,7 +65,7 @@
                 </div>
                 <div>
                     <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
-                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" value="{{ appraisal.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
+                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ appraisal.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
                 </div>
                 <div>
                     <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
@@ -85,7 +85,7 @@
                 </div>
                 <div>
                     <label for="department">Department:</label>
-                    <input type="text" id="department" name="department" value="{{ appraisal.department }}" readonly disabled>
+                    <input type="text" id="department" name="department" class="form-control" value="{{ appraisal.department }}" readonly disabled>
                 </div>
             </div>
         </div>
@@ -409,9 +409,9 @@
                 </div>
                 
              <div class="section">   
-                <p style="color: red;"><b>The Section Below is for your Supervisor and Director<br>SCROLL DOWN TO THE BOTTOM OF THE PAGE TO SUBMIT YOUR FORM</b></p>
+                <p style="color: red;"><b>The Section Below is for your Director</p>
 <hr>
-                <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2><p style="color: red;"><b>( To be filled by Supervisor)</b></p>
+                <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2>
 
             <p><b>Instructions: </b><i>Rate the employee’s performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 16 Sixteen and match with the corresponding marks in bracket. Prior to the performance discussion with the employee, a detailed plan to address areas rated “needs improvement” or “unacceptable” must be submitted to the department head and human resources for review.</i></p>
             <br>    
@@ -425,7 +425,7 @@
                     <th style="width: 20%;">Rating</th>
                 </tr>
                 <tr>
-                    <td><strong>a. </strong>,<b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
+                    <td><strong>a. </strong><b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
                     <td>
                         <select name="job_knowledge" required>
                             <option value="">Select rating</option>
@@ -781,10 +781,32 @@
     
             </div>
         </div>
+        <div class="section" style="margin-top: 30px; background: #eef9f1; padding: 15px; border-radius: 8px;">
+            <h3>📊 Total Appraisal Rating:<span id="inlineTotalAppraisalRating">0.0</span></h3>
+        </div>
         <div class="section"></div>
             <button type="submit" class="submit-btn">Submit</button>
         </div>
     </form>
+
+    <!-- Floating score bar preview -->
+    <div id="floatingScoreBar" style="
+        position: fixed;
+        bottom: -100px;
+        left: 0;
+        width: 100%;
+        background: #1e3a8a;
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        text-align: center;
+        font-weight: bold;
+        z-index: 1000;
+        transition: bottom 0.3s ease;
+    ">
+        Total Appraisal Score: <span id="floatingTotalAppraisalRating">0.0</span>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             // Automatically set head of department date input to today's date
@@ -845,6 +867,90 @@
                     hiddenCommendationDetails.value = commendationDetails.value; // Update hidden input with textarea value
                 }
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ratingFields = [
+                'job_knowledge',
+                'quality_of_work',
+                'quantity_of_work',
+                'reliability',
+                'initiative_creativity',
+                'judgment',
+                'relationship_with_supervisor',
+                'working_with_others',
+                'relationship_with_subordinates',
+                'communication_skills',
+                'planning_and_organizing',
+                'directing_and_controlling',
+                'decision_making'
+            ];
+
+            const scoreBar = document.getElementById('floatingScoreBar');
+
+            // Safely find Section 2 and Section 3 by heading text
+            const section2 = Array.from(document.querySelectorAll('h2')).find(h => h.textContent.includes('Section 2'));
+            const section3 = Array.from(document.querySelectorAll('h2')).find(h => h.textContent.includes('Section 3'));
+
+            function calculateLiveTotalAppraisalRating() {
+                let total = 0;
+                let count = 0;
+
+                ratingFields.forEach(name => {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el && el.value) {
+                        const val = parseFloat(el.value);
+                        if (!isNaN(val) && val !== 0) {
+                            total += val;
+                            count++;
+                        }
+                    }
+                });
+
+                const average = count > 0 ? total / count : 0;
+
+                const commendation = parseFloat(document.querySelector('input[name="commendation_for_outstanding_performance"]:checked')?.value || 0);
+                const suggestion = parseFloat(document.querySelector('[name="suggestions_that_contributed_to_changes"]')?.value || 0);
+
+                const totalAppraisal = average + commendation + suggestion;
+
+                document.getElementById('inlineTotalAppraisalRating').textContent = totalAppraisal.toFixed(1);
+                document.getElementById('floatingTotalAppraisalRating').textContent = totalAppraisal.toFixed(1);
+            }
+
+            function handleScrollVisibility() {
+                const currentScroll = window.scrollY;
+                const section2Top = section2 ? section2.getBoundingClientRect().top + window.scrollY : 0;
+                const section3Top = section3 ? section3.getBoundingClientRect().top + window.scrollY : 999999;
+
+                if (currentScroll >= section2Top - 100 && currentScroll < section3Top - 100) {
+                    scoreBar.style.bottom = '0';
+                } else {
+                    scoreBar.style.bottom = '-100px';
+                }
+            }
+
+            // Attach listeners to all scoring inputs
+            [...ratingFields, 'suggestions_that_contributed_to_changes'].forEach(name => {
+                const el = document.querySelector(`[name="${name}"]`);
+                if (el) {
+                    el.addEventListener('change', () => {
+                        calculateLiveTotalAppraisalRating();
+                    });
+                }
+            });
+
+            document.querySelectorAll('input[name="commendation_for_outstanding_performance"]').forEach(el => {
+                el.addEventListener('change', () => {
+                    calculateLiveTotalAppraisalRating();
+                });
+            });
+
+            window.addEventListener('scroll', handleScrollVisibility);
+
+            // Initial run
+            calculateLiveTotalAppraisalRating();
+            handleScrollVisibility();
         });
     </script>
     

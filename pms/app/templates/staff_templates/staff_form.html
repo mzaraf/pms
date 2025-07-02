@@ -34,6 +34,27 @@
     padding: 30px; /* Add padding for spacing */
     width: calc(100% - 225px); /* Adjust width accordingly */
     }
+
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+    .error-field {
+        border: 2px solid red !important;
+    }
+    td.error-field {
+        border: 2px solid red !important;
+    }
+    .hide-field {
+        display: none !important;
+    }
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: -10px;
+        margin-bottom: 10px;
+        display: none;
+    }
 </style>
         <title>NASRDA PMS | Appraisal Form</title>
     <form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'staff_initiate_appraisal' %}">
@@ -43,14 +64,14 @@
             <div style="display: flex; align-items: center; gap: 60px;">
                 <label style="font-weight: bold;"><h3>Period of Report:</h3></label>
                 <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
-                    <label for="from" style="font-weight: bold;">From</label>
+                    <label for="from" style="font-weight: bold;" class="required-field">From</label>
                     <input type="date" name="period_of_evaluation_from_date" id="from" style="padding: 5px; width: 200px;" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
                 </div>
                 <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
-                    <label for="to" style="font-weight: bold;">To</label>
+                    <label for="to" style="font-weight: bold;" class="required-field">To</label>
                     <input type="date" name="period_of_evaluation_to_date" id="to" style="padding: 5px; width: 200px;" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
                 </div>
-            </div>                             
+            </div>
                
             <br>
             <h2>Section 1: General Information (To be Completed by the Employee)</h2>
@@ -66,11 +87,11 @@
                 </div>
                 <div>
                     <label for="dateOfFirstAppointment">Date of First Appointment:</label>
-                    <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" name="date_of_first_appointment" class="form-control" value="{{ request.user.date_of_first_appointment|date:'Y-m-d' }}" readonly>
+                    <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" class="form-control" value="{{ request.user.date_of_first_appointment|date:'Y-m-d' }}" readonly>
                 </div>
                 <div>
                     <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
-                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" value="{{ request.user.date_of_present_appointment|date:'Y-m-d' }}" readonly>
+                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ request.user.date_of_present_appointment|date:'Y-m-d' }}" readonly>
                 </div>
                 <div>
                     <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
@@ -90,7 +111,7 @@
                 </div>
                 <div>
                     <label for="department">Department:</label>
-                    <input type="text" id="department" name="department" value="{{ request.user.department }}" readonly>
+                    <input type="text" id="department" name="department" class="form-control" value="{{ request.user.department }}" readonly>
                 </div>
             </div>
         </div>
@@ -114,18 +135,27 @@
         
         <div class="section">
             <h2>C (i) Job Description/Role For The Period Of Evaluation</h2>
-            <table  id="jobDescriptionTable" style="width: 100%;">
-                <tr>
-                    <th>Activity/Task Assigned to You</th>
-                    <th>Overall Assessment of Performance</th>
-                    <th>Action</th>
-                </tr>
-                <tr>
-                    <td style="width: 45%;"><input type="text" name="activity_task[]" required></td>
-                    <td style="width: 45%;"><input type="text" name="overall_assessment_of_performance[]" required></td>
-                    <td style="width: 10%;"><button type="button" class="add-job-description-row">Add</button></td>
-
-                </tr>
+            <table id="jobDescriptionTable" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th class="required-field">Activity/Task Assigned to You</th>
+                        <th class="required-field">Overall Assessment of Performance</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="width: 45%;">
+                            <input type="text" name="activity_task[]" required>
+                            <span class="error-message">This field is required</span>
+                        </td>
+                        <td style="width: 45%;">
+                            <input type="text" name="overall_assessment_of_performance[]" required>
+                            <span class="error-message">This field is required</span>
+                        </td>
+                        <td style="width: 10%;"><button type="button" class="add-job-description-row">Add</button></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
 
@@ -139,55 +169,59 @@
                             <!-- Question a -->
                             <tr>
                                 <td style="width: 100%;" colspan="2">
-                                    <label><strong>(a)</strong> State in the box in order of importance the main duties performed in relation to the targets set during the period of report</label>
+                                    <label class="required-field"><strong>(a)</strong> State in the box in order of importance the main duties performed in relation to the targets set during the period of report</label>
                                     <textarea name="main_duties_performed_by_staff" rows="3" required style="width: 100%;"></textarea>
+                                    <span class="error-message">This field is required</span>
                                 </td>
                             </tr>
                             <!-- Question b -->
                             <tr>
-                                <td style="width: 80%;"><strong>(b)</strong> Was there any joint discussion between you and your Supervisor on how to accomplish the target?</td>
+                                <td style="width: 80%;" class="required-field"><strong>(b)</strong> Was there any joint discussion between you and your Supervisor on how to accomplish the target?</td>
                                 <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label class="radio-label" for="jointDiscussionYes">Yes</label>
                                         <label class="radio-label" for="jointDiscussionNo">No</label>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
-                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionYes" value="yes">
-                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionNo" value="no">
+                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionYes" value="yes" required>
+                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionNo" value="no" required>
+                                        <span class="error-message">This field is required</span>
                                     </div>
                                 </td>
                             </tr>
                             <!-- Question c -->
                             <tr>
-                                <td style="width: 80%;"><strong>(c)</strong> Were you properly equipped professionally/technically/administratively to perform the jobs allocated to you?</td>
+                                <td style="width: 80%;" class="required-field"><strong>(c)</strong> Were you properly equipped professionally/technically/administratively to perform the jobs allocated to you?</td>
                                 <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label for="equippedYes">Yes</label>
                                         <label for="equippedNo">No</label>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
-                                        <input type="radio" name="staff_professionally_equipped" id="equippedYes" value="yes">
-                                        <input type="radio" name="staff_professionally_equipped" id="equippedNo" value="no">
+                                        <input type="radio" name="staff_professionally_equipped" id="equippedYes" value="yes" required>
+                                        <input type="radio" name="staff_professionally_equipped" id="equippedNo" value="no" required>
+                                        <span class="error-message">This field is required</span>
                                     </div>
                                 </td>
                             </tr>
                             <!-- Question d -->
                             <tr>
                                 <td style="width: 100%;" colspan="2">
-                                    <label><strong>(d)</strong> In light of <strong> (c) </strong> above, state the various difficulties encountered in achieving the set targets and efforts you and your supervisor put in to rectify them.</label>
+                                    <label class="required-field"><strong>(d)</strong> In light of <strong> (c) </strong> above, state the various difficulties encountered in achieving the set targets and efforts you and your supervisor put in to rectify them.</label>
                                     <textarea name= "difficulties_achieving_target" rows="3" required style="width: 100%;"></textarea>
+                                    <span class="error-message">This field is required</span>
                                 </td>
                             </tr>                            
                             <!-- Question e -->
                             <tr>
                                 <td style="width: 100%;" colspan="2">
-                                    <label><strong>(e)</strong> What was the method adopted by your supervisor to assist you in solving the difficult problems?</label>
+                                    <label class="required-field"><strong>(e)</strong> What was the method adopted by your supervisor to assist you in solving the difficult problems?</label>
                                     <textarea name="method_by_supervisor_to_resolve_difficulties" rows="3" required style="width: 100%;"></textarea>
                                 </td>
                             </tr>
                             <!-- Question f -->
                             <tr>
-                                <td style="width: 80%;"><strong>(f)</strong> Was there any periodic review of the targets set for you by your supervisor to achieve the desired goals?</td>
+                                <td style="width: 80%;" class="required-field"><strong>(f)</strong> Was there any periodic review of the targets set for you by your supervisor to achieve the desired goals?</td>
                                 <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label  for="reviewYes">Yes</label>
@@ -201,7 +235,7 @@
                             </tr>
                             <!-- Question g -->
                             <tr>
-                                <td style="width: 80%;"><strong>(g)</strong> After the review, did your performance measure up to the prescribed standards set at the beginning of the year?</td>
+                                <td style="width: 80%;" class="required-field"><strong>(g)</strong> After the review, did your performance measure up to the prescribed standards set at the beginning of the year?</td>
                                 <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label for="performanceYes">Yes</label>
@@ -216,13 +250,13 @@
                             <!-- Question h -->
                             <tr>
                                 <td style="width: 100%;" colspan="2">
-                                    <label><strong>(h)</strong> State any ad hoc duties performed by you in addition to your normal schedule of duties which were not of continuous nature</label>
+                                    <label class="required-field"><strong>(h)</strong> State any ad hoc duties performed by you in addition to your normal schedule of duties which were not of continuous nature</label>
                                     <textarea rows="3" name="adhoc_duties_performed" required style="width: 100%;"></textarea>
                                 </td>
                             </tr>
                             <!-- Question i -->
                             <tr>
-                                <td style="width: 80%;"><strong>(i)</strong> Did the performance of these ad hoc duties affect your real duties and if so, did you bring these to the attention of your supervisor?</td>
+                                <td style="width: 80%;" class="required-field"><strong>(i)</strong> Did the performance of these ad hoc duties affect your real duties and if so, did you bring these to the attention of your supervisor?</td>
                                 <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <label for="adHocYes">Yes</label>
@@ -236,7 +270,7 @@
                             </tr>
                             <!-- Question j -->
                             <tr>
-                                <td style="width: 80%;">
+                                <td style="width: 80%;" class="required-field">
                                     <span class="title"><strong>(j)</strong> State the period that you have been on the schedule of duty referred to in <strong>(a) </strong> above:</span>
                                 </td>
                                 <td style="width: 20%;">
@@ -370,7 +404,7 @@
                                 <span class="title">(i). Mr./Mrs.
                                     <div class="fields">
                                         <div class="input-field">
-                                            <label><strong>the reporting officer</strong></label>
+                                            <label class="required-field"><strong>the reporting officer</strong></label>
                                             <select id="reportingOfficer" name="reporting_officer" required>
                                                 <option value="">Select a reporting officer</option>
                                                 {% for supervisor in supervisors %}
@@ -394,7 +428,7 @@
                                 <span class="title">(ii). Mr./Mrs.
                                     <div class="fields">
                                         <div class="input-field">
-                                            <label><strong>the countersigning officer</strong></label>
+                                            <label class="required-field"><strong>the countersigning officer</strong></label>
                                             <select id="countersigningOfficer" name="countersigning_officer" required>
                                                 <option value="">Select a countersigning officer</option>
                                                 {% for hod in hods %}
@@ -417,12 +451,12 @@
                     </table>
                 </div>                
                 
-             <div class="section">   
+             <div class="section hide-field">   
                 <p style="color: red;"><b>The Section Below is for your Supervisor and Director<br>SCROLL DOWN TO THE BOTTOM OF THE PAGE TO SUBMIT YOUR FORM</b></p>
 
                 <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2><p style="color: red;"><b>( To be filled by Supervisor)</b></p>
 
-            <p><b>Instructions: </b><i>Rate the employee’s performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 16 Sixteen and match with the corresponding marks in bracket. Prior to the performance discussion with the employee, a detailed plan to address areas rated “needs improvement” or “unacceptable” must be submitted to the department head and human resources for review.</i></p>
+            <p><b>Instructions: </b><i>Rate the employee's performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 16 Sixteen and match with the corresponding marks in bracket. Prior to the performance discussion with the employee, a detailed plan to address areas rated "needs improvement" or "unacceptable" must be submitted to the department head and human resources for review.</i></p>
             <br>    
             <p><b>Rating scale:</b></p>
                 <p><b>5 – Excellent (consistently exceeds standards) – (16) 4 - Outstanding (frequently exceeds standards) – (13) 3- Satisfactory (generally meets standards) -(10) 2- Needs improvement (frequently fails to meet standards) – (7) 1- Unacceptable (fails to meet standards) – (5)</b></p>
@@ -434,7 +468,7 @@
                     <th style="width: 20%;">Rating</th>
                 </tr>
                 <tr>
-                    <td><strong>a. </strong>,<b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
+                    <td><strong>a. </strong><b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
                     <td>
                         <select name="job_knowledge" readonly disabled>
                             <option value="">Select rating</option>
@@ -515,7 +549,7 @@
                 </tr>
             </table>
         </div>
-        <div class="section">
+        <div class="section hide-field">
             <h3>Character Trait</h3>
             <table>
                 <tr>
@@ -577,7 +611,7 @@
                 </tr>
           </table>
         </div>
-        <div class="section">
+        <div class="section hide-field">
             <h3>Complete this Section for Employees with Supervisory Responsibilities:</h3>
             <table>
                 <tr>
@@ -627,11 +661,10 @@
                 </tr>
                 
           </table>
-          <p style="color: red;"><b><i>GRADING: All numerical values from each category above will then be divide by 10 (or 13 if supervisory section was completed). <br>Overall performance rating:</i></b></p>
+          <p style="color: red;"><b><i>GRADING: All numerical values from each category above will then be divide by 10 (or 13 if supervisory section was completed).</p>
         </div>
-        <div class="section">
+        <div class="section hide-field">
         <table class="evaluation-table">
-            <div class="section">
             <tr>
                 <td colspan="2"><strong>Incentive/Reward</strong><br></td>
             </tr>
@@ -697,7 +730,8 @@
                 </td>
             </tr>
         </table>
-        <div class="section">
+        </div>
+        <div class="section hide-field">
             <h2>Section 3 </h2>
             <table>
               <tr>
@@ -736,7 +770,7 @@
               </tr>
             </table>
         </div>
-        <div class="section">
+        <div class="section hide-field">
             <p>From the above assessments, indicate the overall performance of his/her duties by selecting the appropriate value below:</p>
             <h3>Overall Assessment:</h3>
             <select id="overallAssessment" name="overall_performance_assessment" readonly disabled>
@@ -749,7 +783,7 @@
                 <option value="Very Poor">F - Very Poor, Performance does not meet the required standard</option>
             </select>
         </div>
-        <div class="section">
+        <div class="section hide-field">
             
             <h3>Promotability: </h3>
             <select id="Promotability" name="promotability" readonly disabled>
@@ -764,7 +798,7 @@
                 <option value="Very Poor">F - Unlikely to qualify as he/she seems to have reached the limit of his/her capacity.</option>
             </select>
         </div>
-        <div class="section">
+        <div class="section hide-field">
             <h2>Section 4: Recommended by supervisor</h2>
             
             <label for="supervisorsComments">Supervisor's Comment:</label>
@@ -774,10 +808,8 @@
             <input type="date" id="supervisorDateOfEvaluation" name="supervisor_date_of_evaluation" readonly disabled>
 
         </div>
-
-        <div class="section">
-            <div class="section">
-                <h2>Section 5: Head of Department’s Comments <i>(As applicable):</i></h2>
+            <div class="section hide-field">
+                <h2>Section 5: Head of Department's Comments <i>(As applicable):</i></h2>
                 
                 <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." readonly disabled></textarea>
     
@@ -785,7 +817,6 @@
                 <input type="date" id="headOfDepartmentDateOfEvaluation" name="head_of_department_date_of_evaluation" readonly disabled>
     
             </div>
-        </div>
         <div class="section">
             <button type="submit" class="submit-btn">Submit Evaluation</button>
         </div>
@@ -797,8 +828,8 @@
             const table = document.querySelector('#jobDescriptionTable tbody');
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td><input type="text" name="activity_task[]" required></td>
-                <td><input type="text" name="overall_assessment_of_performance[]" required></td>
+                <td><input type="text" name="activity_task[]" required><span class="error-message">This field is required</span></td>
+                <td><input type="text" name="overall_assessment_of_performance[]" required><span class="error-message">This field is required</span></td>
                 <td><button type="button" class="remove-row">Remove</button></td>
             `;
             table.appendChild(newRow);
@@ -825,5 +856,48 @@
                 e.target.closest('tr').remove();
             }
         });
+
+        document.getElementById('employeeEvaluationForm').addEventListener('submit', function(e) {
+            let hasErrors = false;
+            // Clear previous errors
+            document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            // Check all required fields
+            document.querySelectorAll('[required]').forEach(field => {
+                if (field.disabled || field.readOnly) return;
+                // For radio buttons
+                if (field.type === 'radio') {
+                    const name = field.name;
+                    if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                            r.closest('td').classList.add('error-field');
+                            // Show error message if present
+                            const errorMsg = r.closest('td').querySelector('.error-message');
+                            if (errorMsg) errorMsg.style.display = 'block';
+                        });
+                        hasErrors = true;
+                    }
+                    return;
+                }
+                // For other fields
+                if (!field.value.trim()) {
+                    field.classList.add('error-field');
+                    // Show error message if present
+                    const errorMsg = field.parentElement.querySelector('.error-message');
+                    if (errorMsg) errorMsg.style.display = 'block';
+                    hasErrors = true;
+                }
+            });
+            if (hasErrors) {
+                e.preventDefault();
+                alert('Please fill in all required fields highlighted in red.');
+                // Scroll to first error
+                const firstError = document.querySelector('.error-field');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
     </script>
 {% endblock content %}

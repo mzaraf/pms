@@ -57,6 +57,14 @@
         .header + table {
             margin-top: 20px;
         }
+        .report-info {
+            margin-bottom: 15px;
+            text-align: left;
+            width: 100%;
+        }
+        .report-info p {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -65,8 +73,18 @@
         <!--<img src="{% static 'img/logo.png' %}" class="logo">-->
         <div class="pdf-header">
             <h1>Appraisal Report</h1>
-            <p><b>Department:</b> {{ department_name }}</p>
-            <p><b>Evaluation Period:</b> {{ period_year }}</p>
+            <div class="report-info">
+                <p><b>Department:</b> {{ department_name }}</p>
+                <p><b>Evaluation Period:</b> 
+                    {% if year_filter %}
+                        {{ year_filter }}
+                    {% else %}
+                        All Years ({{ period_year }})
+                    {% endif %}
+                </p>
+                <p><b>Report Generated On:</b> {{ current_date|date:"F j, Y" }}</p>
+                <p><b>Total Records:</b> {{ appraisals|length }}</p>
+            </div>
         </div>
     </div>
 

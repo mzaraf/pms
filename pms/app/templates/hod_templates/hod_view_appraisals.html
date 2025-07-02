@@ -4,147 +4,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>NASRDA PMS | Staff Result</title>
-    <!-- Include Bootstrap CSS -->
+    <title>NASRDA PMS | Staff Appraisals</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/adminResult.css' %}">
-    <!-- Include jQuery and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
- </head>
-    <div class="wrapper">
-        <main class="table" id="customers_table">
-            <section class="table__header">
+    <style>
+        /* Enhanced Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-top: 60px;
+        }
+        
+        .table-header {
+            background-color: #004D40;
+            color: white;
+            padding: 15px 20px;
+        }
+        
+        .table-responsive table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table-responsive th {
+            background-color: #f8f9fa;
+            color: #004D40;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+        }
+        
+        .table-responsive td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .table-responsive tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .table-responsive tr:hover {
+            background-color: #e9f5f3;
+        }
+        
+        .total-score {
+            font-weight: bold;
+            color: #004D40;
+        }
+        
+        /* Search and Filter Section */
+        .search-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .search-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-input-group {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .search-btn {
+            padding: 0 15px;
+            background: #004D40;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .year-filter {
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        width: 150px;
+        height: 100%;
+        }
+        
+        .download-btn {
+            white-space: nowrap;
+            padding: 10px 15px;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            color: #004D40;
+        }
+        
+        .pagination .current {
+            margin: 0 10px;
+            padding: 5px 10px;
+            font-weight: bold;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .search-controls {
+                flex-direction: column;
+            }
+            
+            .search-input-group,
+            .year-filter {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="table-container">
+            <div class="table-header">
+                <h4><i class="fas fa-users"></i> Staff Appraisals</h4>
+            </div>
+            
+            <div class="search-container">
                 <form method="GET" action="">
-                    <div class="input-search-container">
-                        <div class="input-search">
-                            <input style= "width: 400px" style="margin-left: 90px;" type="search" name="q" placeholder="Search Staff..." value="{{ request.GET.q }}">
-                            <button type="submit" class="search-btn"></button>
+                    <div class="search-controls">
+                        <div class="search-input-group">
+                            <input type="search" 
+                                name="q" 
+                                placeholder="Search staff..." 
+                                value="{{ request.GET.q }}"
+                                class="search-input"
+                                aria-label="Search staff">
+                            <button type="submit" class="search-btn" aria-label="Submit search">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#fieldSelectionModal">Download Report</button>
+                        
+                        <!-- Year filter and download button group -->
+                        <div class="d-flex" style="gap: 10px;">
+                            <!-- Year filter dropdown -->
+                            <select class="year-filter" 
+                                    name="year" 
+                                    id="yearFilter"
+                                    aria-label="Filter by year">
+                                <option value="">All Years</option>
+                                {% for year in unique_years %}
+                                    <option value="{{ year }}" 
+                                            {% if request.GET.year == year|stringformat:"s" %}selected{% endif %}>
+                                        {{ year }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            
+                            <!-- Download button -->
+                            <button type="button" 
+                                    class="btn btn-primary" 
+                                    data-toggle="modal" 
+                                    data-target="#fieldSelectionModal"
+                                    aria-label="Download report">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
                     </div>
                 </form>
-                <!-- Modal -->
-<div class="modal fade" id="fieldSelectionModal" tabindex="-1" role="dialog" aria-labelledby="fieldSelectionModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content modal-custom">
-            <div class="modal-header">
-                <h5 class="modal-title" id="fieldSelectionModalLabel">Select Fields to Download</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
-            <div class="modal-body">
-                <form id="downloadFieldsForm" method="GET" action="{% url 'hod_download_appraisal' %}">
-                    <div class="form-group">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="all" id="selectAll">
-                            <label class="form-check-label" for="selectAll"><b>Select All</b></label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields" value="full_name" id="field1">
-                            <label class="form-check-label" for="field1">Full Name</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields" value="file_number" id="field2">
-                            <label class="form-check-label" for="field2">File Number</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields" value="ippis_no" id="field3">
-                            <label class="form-check-label" for="field3">IPPIS No</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields" value="designation" id="field4">
-                            <label class="form-check-label" for="field4">Designation</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields" value="department" id="field5">
-                            <label class="form-check-label" for="field5">Department</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields" value="total_appraisal_rating" id="field6">
-                            <label class="form-check-label" for="field6">Appraisal Score</label>
-                        </div>
-                        <!-- Add more fields as necessary -->
-                    </div>
-                    <input type="hidden" name="q" value="{{ request.GET.q }}">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="downloadButton">Download</button>
-            </div>
-        </div>
-    </div>
-</div>
-            </section>
-            <section class="table__body table-bordered">
-                <table>
+            
+            <div class="table-responsive">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th> S/N <span class="icon-arrow">&UpArrow;</span></th>
-                            <th> Full Name <span class="icon-arrow">&UpArrow;</span></th>
-                            <th> File Number <span class="icon-arrow">&UpArrow;</span></th>
-                            <th> IPPIS Number <span class="icon-arrow">&UpArrow;</span></th>
-                            <th> Designation <span class="icon-arrow">&UpArrow;</span></th>
-                            <th> Department <span class="icon-arrow">&UpArrow;</span></th>
-                            <th> Total Scores <span class="icon-arrow">&UpArrow;</span></th>
+                            <th>S/N <i class="fas fa-sort"></i></th>
+                            <th>Full Name <i class="fas fa-sort"></i></th>
+                            <th>File Number <i class="fas fa-sort"></i></th>
+                            <th>IPPIS Number <i class="fas fa-sort"></i></th>
+                            <th>Designation <i class="fas fa-sort"></i></th>
+                            <th>Appraisal Year <i class="fas fa-sort"></i></th>
+                            <th>Department <i class="fas fa-sort"></i></th>
+                            <th>Total Scores <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
                     <tbody>
-                       {% for appraisal in appraisals %}
+                        {% for appraisal in appraisals %}
                         <tr>
-                            <td> {{ forloop.counter }} </td>
-                            <td> {{ appraisal.full_name }} </td>
-                            <td> {{ appraisal.file_number }} </td>
-                            <td> {{ appraisal.ippis_no }} </td>
-                            <td> {{ appraisal.designation }} </td>
-                            <td> {{ appraisal.department }} </td>
-                            <td> <strong>{{ appraisal.total_appraisal_rating }} </strong></td>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ appraisal.full_name }}</td>
+                            <td>{{ appraisal.file_number }}</td>
+                            <td>{{ appraisal.ippis_no }}</td>
+                            <td>{{ appraisal.designation }}</td>
+                            <td>{{ appraisal.period_of_evaluation_from_date|date:'Y' }}</td>
+                            <td>{{ appraisal.department }}</td>
+                            <td class="total-score">{{ appraisal.total_appraisal_rating }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-            </section>
-            <!-- Pagination Controls -->
+            </div>
+            
             {% if show_pagination %}
             <div class="pagination">
                 <span class="step-links">
                     {% if appraisals.has_previous %}
-                        <a href="?page=1">&laquo; First</a>
-                        <a href="?page={{ appraisals.previous_page_number }}">Previous</a>
+                        <a href="?page=1{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                            <i class="fas fa-angle-double-left"></i> First
+                        </a>
+                        <a href="?page={{ appraisals.previous_page_number }}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                            <i class="fas fa-angle-left"></i> Previous
+                        </a>
                     {% endif %}
-
+                    
                     <span class="current">
-                        Page {{ appraisals.number }} of {{ appraisals.paginator.num_pages }}.
+                        Page {{ appraisals.number }} of {{ appraisals.paginator.num_pages }}
                     </span>
-
+                    
                     {% if appraisals.has_next %}
-                        <a href="?page={{ appraisals.next_page_number }}">Next</a>
-                        <a href="?page={{ appraisals.paginator.num_pages }}">Last &raquo;</a>
+                        <a href="?page={{ appraisals.next_page_number }}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                            Next <i class="fas fa-angle-right"></i>
+                        </a>
+                        <a href="?page={{ appraisals.paginator.num_pages }}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                            Last <i class="fas fa-angle-double-right"></i>
+                        </a>
                     {% endif %}
                 </span>
             </div>
             {% endif %}
-        </main>
+        </div>
     </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const selectAllCheckbox = document.getElementById('selectAll');
-        const fieldCheckboxes = document.querySelectorAll('input[name="fields"]');
-        
-        selectAllCheckbox.addEventListener('change', function () {
-            fieldCheckboxes.forEach(checkbox => {
-                checkbox.checked = selectAllCheckbox.checked;
+
+    <!-- Field Selection Modal -->
+    <div class="modal fade" id="fieldSelectionModal" tabindex="-1" role="dialog" aria-labelledby="fieldSelectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="fieldSelectionModalLabel">
+                        <i class="fas fa-file-export"></i> Select Fields to Download
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="downloadFieldsForm" method="GET" action="{% url 'hod_download_appraisal' %}">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="all" id="selectAll">
+                                <label class="form-check-label font-weight-bold" for="selectAll">
+                                    Select All Fields
+                                </label>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="fields" value="full_name" id="field1">
+                                        <label class="form-check-label" for="field1">Full Name</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="fields" value="file_number" id="field2">
+                                        <label class="form-check-label" for="field2">File Number</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="fields" value="ippis_no" id="field3">
+                                        <label class="form-check-label" for="field3">IPPIS No</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="fields" value="designation" id="field4">
+                                        <label class="form-check-label" for="field4">Designation</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="fields" value="department" id="field5">
+                                        <label class="form-check-label" for="field5">Department</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="fields" value="total_appraisal_rating" id="field6">
+                                        <label class="form-check-label" for="field6">Appraisal Score</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="q" value="{{ request.GET.q }}">
+                        <input type="hidden" name="year" id="selectedYear" value="{{ request.GET.year }}">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <button type="button" class="btn btn-primary" id="downloadButton">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select All Checkbox
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const fieldCheckboxes = document.querySelectorAll('input[name="fields"]');
+            
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    fieldCheckboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                });
+            }
+            
+            // Year Filter
+            const yearFilter = document.getElementById('yearFilter');
+            const searchForm = document.querySelector('form[method="GET"]');
+            const selectedYearInput = document.getElementById('selectedYear');
+            
+            if (yearFilter && searchForm) {
+                yearFilter.addEventListener('change', function() {
+                    if (selectedYearInput) {
+                        selectedYearInput.value = this.value;
+                    }
+                    searchForm.submit();
+                });
+            }
+            
+            // Download Button
+            const downloadButton = document.getElementById('downloadButton');
+            if (downloadButton) {
+                downloadButton.addEventListener('click', function() {
+                    const form = document.getElementById('downloadFieldsForm');
+                    if (form) {
+                        form.submit();
+                    }
+                });
+            }
+            
+            // Table Sorting (basic implementation)
+            const sortIcons = document.querySelectorAll('.fa-sort');
+            sortIcons.forEach(icon => {
+                icon.parentElement.style.cursor = 'pointer';
+                icon.parentElement.addEventListener('click', function() {
+                    // Implement sorting logic here
+                    console.log('Sort by:', this.textContent.trim());
+                });
             });
         });
-        
-        document.getElementById('downloadButton').addEventListener('click', function () {
-            const form = document.getElementById('downloadFieldsForm');
-            form.submit();  // Submits the form to download the selected fields
-            });
-        });
-</script>
+    </script>
+</body>
 {% endblock %}

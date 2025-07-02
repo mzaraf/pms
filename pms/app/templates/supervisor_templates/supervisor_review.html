@@ -28,6 +28,26 @@
     padding: 30px; /* Add padding for spacing */
     width: calc(100% - 225px); /* Adjust width accordingly */
     }
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+    .error-field {
+        border: 2px solid red !important;
+    }
+    td.error-field {
+        border: 2px solid red !important;
+    }
+    .hide-field {
+        display: none !important;
+    }
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: -10px;
+        margin-bottom: 10px;
+        display: none;
+    }
 </style>
         <title>NASRDA PMS | Appraisal Review</title>
       <form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'supervisor_rating' appraisal_id=appraisal.id %}">
@@ -65,7 +85,7 @@
                 </div>
                 <div>
                     <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
-                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" value="{{ appraisal.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
+                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ appraisal.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
                 </div>
                 <div>
                     <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
@@ -85,7 +105,7 @@
                 </div>
                 <div>
                     <label for="department">Department:</label>
-                    <input type="text" id="department" name="department" value="{{ appraisal.department }}" readonly disabled>
+                    <input type="text" id="department" name="department" class="form-control" value="{{ appraisal.department }}" readonly disabled>
                 </div>
             </div>
         </div>
@@ -409,7 +429,7 @@
                 </div>
                 
              <div class="section">   
-                <p style="color: red;"><b>The Section Below is for your Supervisor and Director<br>SCROLL DOWN TO THE BOTTOM OF THE PAGE TO SUBMIT YOUR FORM</b></p>
+                <p style="color: red;"><b>The Section Below is for your Supervisor and Director</p>
 <hr>
                 <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2><p style="color: red;"><b>( To be filled by Supervisor)</b></p>
 
@@ -425,7 +445,7 @@
                     <th style="width: 20%;">Rating</th>
                 </tr>
                 <tr>
-                    <td><strong>a. </strong>,<b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
+                    <td><strong>a. </strong><b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
                     <td>
                         <select name="job_knowledge" required>
                             <option value="">Select rating</option>
@@ -692,6 +712,7 @@
                 </td>
             </tr>
         </table>
+
         <div class="section">
             <h2>Section 3 </h2>
             <table>
@@ -770,21 +791,39 @@
 
         </div>
 
-        <div class="section">
-            <div class="section">
+        <div class="section hide-field">
                 <h2>Section 5: Head of Department’s Comments <i>(As applicable):</i></h2>
                 
                 <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." readonly disabled></textarea>
     
                 <label for="headOfDepartmentComments">Date of Evaluation:</label>
                 <input type="date" id="headOfDepartmentDateOfEvaluation" name="head_of_department_date_of_evaluation" readonly disabled>
-    
-            </div>
+        </div>
+        <div class="section" style="margin-top: 30px; background: #eef9f1; padding: 15px; border-radius: 8px;">
+            <h3>📊 Total Appraisal Rating:<span id="inlineTotalAppraisalRating">0.0</span></h3>
         </div>
         <div class="section"></div>
             <button type="submit" class="submit-btn">Submit</button>
         </div>
     </form>
+    <!-- Floating score bar preview -->
+    <div id="floatingScoreBar" style="
+        position: fixed;
+        bottom: -100px;
+        left: 0;
+        width: 100%;
+        background: #1e3a8a;
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        text-align: center;
+        font-weight: bold;
+        z-index: 1000;
+        transition: bottom 0.3s ease;
+    ">
+        Total Appraisal Score: <span id="floatingTotalAppraisalRating">0.0</span>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             // Automatically set supervisor date input to today's date
@@ -846,6 +885,134 @@
                 }
             });
         });
+
+        document.getElementById('employeeEvaluationForm').addEventListener('submit', function(e) {
+            let hasErrors = false;
+            // Clear previous errors
+            document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            // Check all required fields
+            document.querySelectorAll('[required]').forEach(field => {
+                if (field.disabled || field.readOnly) return;
+                // For radio buttons
+                if (field.type === 'radio') {
+                    const name = field.name;
+                    if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                            r.closest('td').classList.add('error-field');
+                            // Show error message if present
+                            const errorMsg = r.closest('td').querySelector('.error-message');
+                            if (errorMsg) errorMsg.style.display = 'block';
+                        });
+                        hasErrors = true;
+                    }
+                    return;
+                }
+                // For other fields
+                if (!field.value.trim()) {
+                    field.classList.add('error-field');
+                    // Show error message if present
+                    const errorMsg = field.parentElement.querySelector('.error-message');
+                    if (errorMsg) errorMsg.style.display = 'block';
+                    hasErrors = true;
+                }
+            });
+            if (hasErrors) {
+                e.preventDefault();
+                alert('Please fill in all required fields highlighted in red.');
+                // Scroll to first error
+                const firstError = document.querySelector('.error-field');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ratingFields = [
+                'job_knowledge',
+                'quality_of_work',
+                'quantity_of_work',
+                'reliability',
+                'initiative_creativity',
+                'judgment',
+                'relationship_with_supervisor',
+                'working_with_others',
+                'relationship_with_subordinates',
+                'communication_skills',
+                'planning_and_organizing',
+                'directing_and_controlling',
+                'decision_making'
+            ];
+
+            const scoreBar = document.getElementById('floatingScoreBar');
+
+            // Safely find Section 2 and Section 3 by heading text
+            const section2 = Array.from(document.querySelectorAll('h2')).find(h => h.textContent.includes('Section 2'));
+            const section3 = Array.from(document.querySelectorAll('h2')).find(h => h.textContent.includes('Section 3'));
+
+            function calculateLiveTotalAppraisalRating() {
+                let total = 0;
+                let count = 0;
+
+                ratingFields.forEach(name => {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el && el.value) {
+                        const val = parseFloat(el.value);
+                        if (!isNaN(val) && val !== 0) {
+                            total += val;
+                            count++;
+                        }
+                    }
+                });
+
+                const average = count > 0 ? total / count : 0;
+
+                const commendation = parseFloat(document.querySelector('input[name="commendation_for_outstanding_performance"]:checked')?.value || 0);
+                const suggestion = parseFloat(document.querySelector('[name="suggestions_that_contributed_to_changes"]')?.value || 0);
+
+                const totalAppraisal = average + commendation + suggestion;
+
+                document.getElementById('inlineTotalAppraisalRating').textContent = totalAppraisal.toFixed(1);
+                document.getElementById('floatingTotalAppraisalRating').textContent = totalAppraisal.toFixed(1);
+
+            }
+
+            function handleScrollVisibility() {
+                const currentScroll = window.scrollY;
+                const section2Top = section2 ? section2.getBoundingClientRect().top + window.scrollY : 0;
+                const section3Top = section3 ? section3.getBoundingClientRect().top + window.scrollY : 999999;
+
+                if (currentScroll >= section2Top - 100 && currentScroll < section3Top - 100) {
+                    scoreBar.style.bottom = '0';
+                } else {
+                    scoreBar.style.bottom = '-100px';
+                }
+            }
+
+            // Attach listeners to all scoring inputs
+            [...ratingFields, 'suggestions_that_contributed_to_changes'].forEach(name => {
+                const el = document.querySelector(`[name="${name}"]`);
+                if (el) {
+                    el.addEventListener('change', () => {
+                        calculateLiveTotalAppraisalRating();
+                    });
+                }
+            });
+
+            document.querySelectorAll('input[name="commendation_for_outstanding_performance"]').forEach(el => {
+                el.addEventListener('change', () => {
+                    calculateLiveTotalAppraisalRating();
+                });
+            });
+
+            window.addEventListener('scroll', handleScrollVisibility);
+
+            // Initial run
+            calculateLiveTotalAppraisalRating();
+            handleScrollVisibility();
+        });
+        
     </script>
     
 {% endblock content %}

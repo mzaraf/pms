@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from weasyprint import HTML
+from datetime import datetime
 
 
 @login_required
@@ -22,8 +23,17 @@ def hod_form(request):
 
 def hod_view_appraisals(request):
     query = request.GET.get('q')
+    year_filter = request.GET.get('year')
     hod_department = request.user.department
     appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('ippis_no')
+
+    # Get unique years from period_of_evaluation_from_date
+    unique_years = Appraisal.objects.filter(
+        department=hod_department, 
+        appraisal_status='Completed'
+    ).dates('period_of_evaluation_from_date', 'year').order_by('-period_of_evaluation_from_date')
+
+    unique_years = [date.year for date in unique_years]
 
     # Filter based on the search query if it exists
     if query:
@@ -33,6 +43,12 @@ def hod_view_appraisals(request):
             Q(full_name__icontains=query) |
             Q(designation__icontains=query) |
             Q(department__name__icontains=query)
+        )
+
+    # Filter by year if selected
+    if year_filter:
+        appraisals = appraisals.filter(
+            period_of_evaluation_from_date__year=year_filter
         )
 
     # Paginate the results
@@ -45,6 +61,7 @@ def hod_view_appraisals(request):
     return render(request, 'hod_templates/hod_view_appraisals.html', {
         'appraisals': appraisals,
         'show_pagination': show_pagination,
+        'unique_years': unique_years,
     })
 
 @login_required
@@ -237,6 +254,7 @@ def supervisor_hod_rating(request, appraisal_id):
 
 def hod_download_appraisal(request):
     query = request.GET.get('q')
+    year_filter = request.GET.get('year')
     hod_department = request.user.department
     appraisals = Appraisal.objects.filter(department=hod_department, appraisal_status='Completed').order_by('ippis_no')
 
@@ -248,6 +266,17 @@ def hod_download_appraisal(request):
             Q(department__name__icontains=query) |
             Q(designation__icontains=query)
         )
+
+    # Filter by year if selected
+    if year_filter:
+        appraisals = appraisals.filter(
+            period_of_evaluation_from_date__year=year_filter
+        )
+        period_year = year_filter
+    else:
+        # Get the most recent year if no filter is selected
+        most_recent = appraisals.order_by('-period_of_evaluation_from_date').first()
+        period_year = most_recent.period_of_evaluation_from_date.year if most_recent else datetime.now().year
 
     # Get selected fields from the form
     selected_fields = request.GET.getlist('fields')
@@ -282,11 +311,7 @@ def hod_download_appraisal(request):
         if 'total_appraisal_rating' in selected_fields:
             row.append(appraisal.total_appraisal_rating)
         
-        period_year = appraisal.staff_evaluation_date_submitted.year  # Extract the year
-        
         data.append(row)
-
-        
     
     # Render the data to an HTML template for PDF conversion
     html_content = render_to_string('hod_templates/download_appraisal.html', {
@@ -295,18 +320,23 @@ def hod_download_appraisal(request):
         'field_names_mapping': field_names_mapping,
         'department_name': hod_department.name,
         'period_year': period_year,
-        
+        'year_filter': year_filter,
+        'current_date': datetime.now(),
     })
 
     # Extract department name and period year
-    department_name = hod_department.name.replace(" ", "_")  # Replace spaces with underscores
+    department_name = hod_department.name.replace(" ", "_")
 
     # Generate the PDF
     response = HttpResponse(content_type='application/pdf')
-    # Set the filename with department and period year
-    response['Content-Disposition'] = f'attachment; filename=appraisal_report_{department_name}_{period_year}.pdf'
+    filename = f"appraisal_report_{department_name}"
+    if year_filter:
+        filename += f"_{year_filter}"
+    else:
+        filename += f"_all_years"
+    filename += ".pdf"
+    response['Content-Disposition'] = f'attachment; filename={filename}'
     
-    # Use WeasyPrint to write the HTML content to the response as a PDF
     HTML(string=html_content).write_pdf(response)
 
     return response

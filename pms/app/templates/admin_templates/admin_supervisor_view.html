@@ -65,7 +65,7 @@
                 </div>
                 <div>
                     <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
-                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" value="{{ appraisal.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
+                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ appraisal.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
                 </div>
                 <div>
                     <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
@@ -85,7 +85,7 @@
                 </div>
                 <div>
                     <label for="department">Department:</label>
-                    <input type="text" id="department" name="department" value="{{ appraisal.department }}" readonly disabled>
+                    <input type="text" id="department" name="department" class="form-control" value="{{ appraisal.department }}" readonly disabled>
                 </div>
             </div>
         </div>
@@ -409,7 +409,7 @@
                 </div>
                 
              <div class="section">   
-                <p style="color: red;"><b>The Section Below is for your Supervisor and Director<br>SCROLL DOWN TO THE BOTTOM OF THE PAGE TO SUBMIT YOUR FORM</b></p>
+                <p style="color: red;"><b>The Section Below is for your Director</p>
 <hr>
                 <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2><p style="color: red;"><b>( To be filled by Supervisor)</b></p>
 
@@ -425,7 +425,7 @@
                     <th style="width: 20%;">Rating</th>
                 </tr>
                 <tr>
-                    <td><strong>a. </strong>,<b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
+                    <td><strong>a. </strong><b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
                     <td>
                         <select name="job_knowledge" readonly disabled>
                             <option value="">Select rating</option>
@@ -618,7 +618,7 @@
                 </tr>
                 
           </table>
-          <p style="color: red;"><b><i>GRADING: All numerical values from each category above will then be divide by 10 (or 13 if supervisory section was completed). <br>Overall performance rating: {{ appraisal.total_appraisal_rating }}</i></b></p>
+          <p style="color: red;"><b><i>GRADING: All numerical values from each category above will then be divide by 10 (or 13 if supervisory section was completed).</p>
         </div>
         <div class="section">
         <table class="evaluation-table">
@@ -777,5 +777,8 @@
     
             </div>
         </div>
+    <div class="section" style="margin-top: 30px; background: #eef9f1; padding: 15px; border-radius: 8px;">
+        <h3>📊 Total Appraisal Rating:<span>{{ appraisal.total_appraisal_rating }}</span></h3>
+    </div>
     </form>
 {% endblock content %}
