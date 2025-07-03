@@ -3,6 +3,63 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/staff.css' %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+    /* Responsive Design Additions and Improvements from staff_form.html */
+    @media (max-width: 768px) {
+        .form-container {
+            margin-left: 0 !important;
+            width: 100% !important;
+            padding: 12px !important;
+            box-sizing: border-box;
+        }
+        .section {
+            padding: 10px 0;
+        }
+        .section h1, .section h2, .section h3 {
+            font-size: 1.1rem;
+        }
+        .form-container > .section > div[style*="display: grid"],
+        .form-container > .section > div[style*="display: flex"] {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+            align-items: stretch !important;
+        }
+        .form-container input,
+        .form-container select,
+        .form-container textarea,
+        .form-container button {
+            width: 100% !important;
+            min-width: 0 !important;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-container label {
+            font-size: 1rem;
+        }
+        th, td {
+            font-size: 0.95rem;
+            white-space: normal;
+        }
+        table, .form-container table {
+            width: 100% !important;
+            min-width: 0 !important;
+            display: block;
+            overflow-x: auto;
+        }
+        .submit-btn {
+            font-size: 1rem !important;
+            padding: 10px 0 !important;
+        }
+    }
+    @media (min-width: 769px) {
+        .form-container > .section > div[style*="display: grid"] {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+    }
+</style>
 <title>NASRDA PMS | Add Staff</title>
     <form id="StaffProfileForm" class="form-container" method="POST" action="{% url 'add_staff_info' %}">
         {% csrf_token %}

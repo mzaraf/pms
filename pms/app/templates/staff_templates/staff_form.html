@@ -4,20 +4,20 @@
 <style>
     /* Increase button size */
     .add-job-description-row, .add-training-course-row, .remove-row {
-    font-size: 15px; 
-    padding: 10px 15px;  
-    width: auto;     
-    height: 30px; 
-    border-radius: 5px;  
-    background-color: #28a745;
-    color: white;   
-    border: none;    
-    cursor: pointer;      
-    text-align: center;
-    line-height: 40px; 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
+        font-size: 15px; 
+        padding: 10px 15px;  
+        width: auto;     
+        height: 30px; 
+        border-radius: 5px;  
+        background-color: #28a745;
+        color: white;   
+        border: none;    
+        cursor: pointer;      
+        text-align: center;
+        line-height: 40px; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
 
     }
 
@@ -55,69 +55,252 @@
         margin-bottom: 10px;
         display: none;
     }
+
+    /* Responsive Design Additions and Improvements */
+    @media (max-width: 768px) {
+        .form-container {
+            margin-left: 0 !important;
+            width: 100% !important;
+            padding: 12px !important;
+            box-sizing: border-box;
+        }
+        .section {
+            padding: 10px 0;
+        }
+        .section h2, .section h3 {
+            font-size: 1.1rem;
+        }
+        .period-container, .grid-section {
+            flex-direction: column !important;
+            gap: 12px !important;
+            align-items: stretch !important;
+            display: flex !important;
+        }
+        .radio-group {
+            flex-direction: column !important;
+            gap: 8px !important;
+        }
+        .input-dates {
+            flex-direction: column !important;
+            gap: 5px !important;
+        }
+        .table-responsive, table, .form-container table {
+            width: 100% !important;
+            min-width: 0 !important;
+            display: block;
+            overflow-x: auto;
+        }
+        th, td {
+            font-size: 0.97rem;
+            white-space: normal;
+        }
+        .form-container input,
+        .form-container select,
+        .form-container textarea,
+        .form-container button {
+            width: 100% !important;
+            min-width: 0 !important;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-container label {
+            font-size: 1rem;
+        }
+        .add-job-description-row, .add-training-course-row, .remove-row, .submit-btn {
+            font-size: 1rem !important;
+            padding: 10px 0 !important;
+            width: 100% !important;
+        }
+        .hide-field {
+            display: none !important;
+        }
+        .error-message {
+            font-size: 0.95rem;
+        }
+        /* Section 1 improvements */
+        .section.section-general-info {
+            background: #f7f7fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            padding: 14px 8px 18px 8px;
+            margin-bottom: 18px;
+        }
+        .section.section-general-info h2 {
+            font-size: 1.08rem;
+            margin-bottom: 10px;
+            color: #2d3a4a;
+        }
+        .section.section-general-info .grid-section {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        .section.section-general-info .grid-section > div {
+            background: #fff;
+            border-radius: 5px;
+            padding: 8px 6px 6px 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            margin-bottom: 2px;
+        }
+        /* Period of Report improvements */
+        .section.section-period {
+            background: #eaf6ff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            padding: 14px 8px 18px 8px;
+            margin-bottom: 18px;
+        }
+        .section.section-period .period-container {
+            flex-direction: column !important;
+            gap: 10px !important;
+            align-items: stretch !important;
+            display: flex !important;
+        }
+        .section.section-period .input-field {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .section.section-period label {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .section.section-period input[type="date"] {
+            width: 100%;
+            font-size: 1rem;
+            padding: 7px 8px;
+            border-radius: 4px;
+            border: 1px solid #cfd8dc;
+        }
+    }
+    @media (max-width: 480px) {
+        .form-container {
+            padding: 6px !important;
+        }
+        .section h2, .section h3 {
+            font-size: 1rem;
+        }
+        th, td {
+            font-size: 0.93rem;
+        }
+    }
+    @media (min-width: 769px) {
+        .section.section-period {
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .section.section-period .period-container {
+            display: flex !important;
+            align-items: center;
+            gap: 60px;
+            flex-direction: row !important;
+        }
+        .section.section-period .input-field {
+            display: inline-flex;
+            align-items: center;
+            gap: 30px;
+            width: auto;
+        }
+        .section.section-period label[for="from"],
+        .section.section-period label[for="to"] {
+            font-weight: bold;
+        }
+        .section.section-period input[type="date"] {
+            width: 200px;
+            padding: 5px;
+        }
+        .section.section-general-info {
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .section.section-general-info h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #222;
+        }
+        .section.section-general-info .grid-section {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px !important;
+        }
+        .section.section-general-info .grid-section > div {
+            background: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            margin-bottom: 0;
+        }
+    }
 </style>
-        <title>NASRDA PMS | Appraisal Form</title>
-    <form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'staff_initiate_appraisal' %}">
-        {% csrf_token %}
-        <p style="color: red;"><b>"Please make sure you have updated your department and division/unit on the 'Update Department' page before starting your evaluation."</b></p>
-        <div class="section">
-            <div style="display: flex; align-items: center; gap: 60px;">
-                <label style="font-weight: bold;"><h3>Period of Report:</h3></label>
-                <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
-                    <label for="from" style="font-weight: bold;" class="required-field">From</label>
-                    <input type="date" name="period_of_evaluation_from_date" id="from" style="padding: 5px; width: 200px;" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
-                </div>
-                <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
-                    <label for="to" style="font-weight: bold;" class="required-field">To</label>
-                    <input type="date" name="period_of_evaluation_to_date" id="to" style="padding: 5px; width: 200px;" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
-                </div>
+<title>NASRDA PMS | Appraisal Form</title>
+<form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'staff_initiate_appraisal' %}">
+    {% csrf_token %}
+    <p style="color: red;"><b>"Please make sure you have updated your department and division/unit on the 'Update Department' page before starting your evaluation."</b></p>
+    <div class="section section-period">
+        <div class="period-container">
+            <label style="font-weight: bold;"><h3>Period of Report:</h3></label>
+            <div class="input-field">
+                <label for="from" class="required-field">From</label>
+                <input type="date" name="period_of_evaluation_from_date" id="from" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
             </div>
-               
-            <br>
-            <h2>Section 1: General Information (To be Completed by the Employee)</h2>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                <!-- General Information Fields -->
-                <div>
-                    <label for="employeeName">Name of Employee:</label>
-                    <input type="text" id="employeeName" name="full_name" class="form-control" value="{% if request.user.middle_name %}{{ request.user.first_name }} {{ request.user.middle_name }} {{ request.user.last_name }}{% else %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}" readonly>
-                </div>
-                <div>
-                    <label for="dateOfBirth">Date of Birth:</label>
-                    <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" value="{{ request.user.date_of_birth|date:'Y-m-d' }}" readonly>
-                </div>
-                <div>
-                    <label for="dateOfFirstAppointment">Date of First Appointment:</label>
-                    <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" class="form-control" value="{{ request.user.date_of_first_appointment|date:'Y-m-d' }}" readonly>
-                </div>
-                <div>
-                    <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
-                    <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ request.user.date_of_present_appointment|date:'Y-m-d' }}" readonly>
-                </div>
-                <div>
-                    <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
-                    <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" value="{{ request.user.date_of_acting_appointment|date:'Y-m-d' }}" readonly>
-                </div>
-                <div>
-                    <label for="fileNumber">File Number:</label>
-                    <input type="text" id="fileNumber" name="file_number" class="form-control" value="{{ request.user.file_number }}" readonly>
-                </div>
-                <div>
-                    <label for="ippisNumber">IPPIS Number:</label>
-                    <input type="text" id="ippisNumber" name="ippis_no" class="form-control" value="{{ request.user.ippis_no }}" readonly>
-                </div>
-                <div>
-                    <label for="designation">Designation:</label>
-                    <input type="text" id="designation" name="designation" class="form-control" value="{{ request.user.designation }}" readonly>
-                </div>
-                <div>
-                    <label for="department">Department:</label>
-                    <input type="text" id="department" name="department" class="form-control" value="{{ request.user.department }}" readonly>
-                </div>
+            <div class="input-field">
+                <label for="to" class="required-field">To</label>
+                <input type="date" name="period_of_evaluation_to_date" id="to" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
             </div>
         </div>
-        <!-- New Section 1B: Educational Background -->
-        <div class="section">
-            <h2>B: Educational/Professional certifications</h2>
+    </div>
+    <div class="section section-general-info">
+        <h2>Section 1: General Information (To be Completed by the Employee)</h2>
+        <div class="grid-section">
+            <!-- All fields remain unchanged - values preserved -->
+            <div>
+                <label for="employeeName">Name of Employee:</label>
+                <input type="text" id="employeeName" name="full_name" class="form-control" value="{% if request.user.middle_name %}{{ request.user.first_name }} {{ request.user.middle_name }} {{ request.user.last_name }}{% else %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}" readonly>
+            </div>
+            <div>
+                <label for="dateOfBirth">Date of Birth:</label>
+                <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" value="{{ request.user.date_of_birth|date:'Y-m-d' }}" readonly>
+            </div>
+            <div>
+                <label for="dateOfFirstAppointment">Date of First Appointment:</label>
+                <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" class="form-control" value="{{ request.user.date_of_first_appointment|date:'Y-m-d' }}" readonly>
+            </div>
+            <div>
+                <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
+                <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ request.user.date_of_present_appointment|date:'Y-m-d' }}" readonly>
+            </div>
+            <div>
+                <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
+                <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" value="{{ request.user.date_of_acting_appointment|date:'Y-m-d' }}" readonly>
+            </div>
+            <div>
+                <label for="fileNumber">File Number:</label>
+                <input type="text" id="fileNumber" name="file_number" class="form-control" value="{{ request.user.file_number }}" readonly>
+            </div>
+            <div>
+                <label for="ippisNumber">IPPIS Number:</label>
+                <input type="text" id="ippisNumber" name="ippis_no" class="form-control" value="{{ request.user.ippis_no }}" readonly>
+            </div>
+            <div>
+                <label for="designation">Designation:</label>
+                <input type="text" id="designation" name="designation" class="form-control" value="{{ request.user.designation }}" readonly>
+            </div>
+            <div>
+                <label for="department">Department:</label>
+                <input type="text" id="department" name="department" class="form-control" value="{{ request.user.department }}" readonly>
+            </div>
+        </div>
+    </div>
+    <!-- New Section 1B: Educational Background -->
+    <div class="section">
+        <h2>B: Educational/Professional certifications</h2>
             <table>
                 <tr>
                     <th>Highest Qualification (Most Recent Qualification, Academic /Professional)</th>
@@ -131,10 +314,10 @@
                 </tr>
                 
             </table>
-        </div>
-        
-        <div class="section">
-            <h2>C (i) Job Description/Role For The Period Of Evaluation</h2>
+    </div>
+    
+    <div class="section">
+        <h2>C (i) Job Description/Role For The Period Of Evaluation</h2>
             <table id="jobDescriptionTable" style="width: 100%;">
                 <thead>
                     <tr>
@@ -157,36 +340,36 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-
-            <div class="section">
+    </div>
+    
+    <div class="section">
                 <div class="details personal">
                     <span class="title">
-                        <h2>C (ii) Job Description</h2>
+        <h2>C (ii) Job Description</h2>
                     </span>
                     <div class="Job_Description">
-                        <table style="width: 100%;">
-                            <!-- Question a -->
-                            <tr>
+        <table style="width: 100%;">
+            <!-- Question a -->
+            <tr>
                                 <td style="width: 100%;" colspan="2">
-                                    <label class="required-field"><strong>(a)</strong> State in the box in order of importance the main duties performed in relation to the targets set during the period of report</label>
-                                    <textarea name="main_duties_performed_by_staff" rows="3" required style="width: 100%;"></textarea>
-                                    <span class="error-message">This field is required</span>
-                                </td>
-                            </tr>
-                            <!-- Question b -->
-                            <tr>
+                    <label class="required-field"><strong>(a)</strong> State in the box in order of importance the main duties performed in relation to the targets set during the period of report</label>
+                    <textarea name="main_duties_performed_by_staff" rows="3" required style="width: 100%;"></textarea>
+                    <span class="error-message">This field is required</span>
+                </td>
+            </tr>
+            <!-- Question b -->
+            <tr>
                                 <td style="width: 80%;" class="required-field"><strong>(b)</strong> Was there any joint discussion between you and your Supervisor on how to accomplish the target?</td>
                                 <td style="width: 20%;">
                                     <div style="display: flex; justify-content: space-between;">
-                                        <label class="radio-label" for="jointDiscussionYes">Yes</label>
-                                        <label class="radio-label" for="jointDiscussionNo">No</label>
+                        <label class="radio-label" for="jointDiscussionYes">Yes</label>
+                        <label class="radio-label" for="jointDiscussionNo">No</label>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
                                         <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionYes" value="yes" required>
-                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionNo" value="no" required>
+                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionNo" value="no" required>
                                         <span class="error-message">This field is required</span>
-                                    </div>
+                    </div>
                                 </td>
                             </tr>
                             <!-- Question c -->
@@ -200,10 +383,10 @@
                                     <div style="display: flex; justify-content: space-between;">
                                         <input type="radio" name="staff_professionally_equipped" id="equippedYes" value="yes" required>
                                         <input type="radio" name="staff_professionally_equipped" id="equippedNo" value="no" required>
-                                        <span class="error-message">This field is required</span>
+                    <span class="error-message">This field is required</span>
                                     </div>
-                                </td>
-                            </tr>
+                </td>
+            </tr>
                             <!-- Question d -->
                             <tr>
                                 <td style="width: 100%;" colspan="2">
@@ -286,11 +469,11 @@
                                     </div>
                                 </td>
                             </tr>
-                        </table>
+        </table>
                     </div>
                 </div>
-            </div>
-
+    </div>
+    
                 <div class="section">
                     <section class="achievement-section">
                         <div class="details personal">
@@ -361,95 +544,95 @@
                         </div>
                     </section>
                 </div>
-                <div class="section">
-                    <h2>E: Training course/Seminars attended (Period Under Review)</h2>
+    <div class="section">
+        <h2>E: Training course/Seminars attended (Period Under Review)</h2>
                     <table id="TrainingCourseSeminarsTable" style="width: 100%;">
-                        <tr>
-                            <th>Type of Training/Seminar</th>
-                            <th>Where was the Training held</th>
-                            <th>Period of Training</th>
-                            <th>Action</th>
-                        </tr>
-                        <tr>
+                <tr>
+                    <th>Type of Training/Seminar</th>
+                    <th>Where was the Training held</th>
+                    <th>Period of Training</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
                             <td style="width: 40%;"><input type="text" id="trainingProgram" name="training_program_type[]"></td>
                             <td style="width: 20%;"><input type="text" id="trainingLocation" name="training_location[]"></td>
                             <td style="width: 20%;"><label>From</label><input type="date" id="trainingDate" name="training_from_date[]">
                                 <label>To</label><input type="date" id="trainingDate" name="training_to_date[]">
-                            </td>
+                    </td>
                             <td style="width: 10%;"><button type="button" class="add-training-course-row">Add</button></td>
-                        </tr>
-                    </table>
+                </tr>
+            </table>
                     <table>
                         <tr>
                             <td class="question-cell" style="width: 80%;"> Has the training received by you enhanced your performance and productivity?</td>
                             <td class="options-cell" style="width: 20%;">
                                 <div style="display: flex; justify-content: space-between;">
-                                    <label class="radio-label" for="quality_yes">Yes</label>
-                                    <label class="radio-label" for="quality_no">No</label>
+                        <label class="radio-label" for="quality_yes">Yes</label>
+                        <label class="radio-label" for="quality_no">No</label>
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
                                     <input type="radio" name="quality_of_training_received" id="quality_yes" value="yes">
-                                    <input type="radio" name="quality_of_training_received" id="quality_no" value="no">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="section">
-                    <strong>I have served for over 3 months under:</strong><br>
+                        <input type="radio" name="quality_of_training_received" id="quality_no" value="no">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="section">
+        <strong>I have served for over 3 months under:</strong><br>
                     <table class="table">
                         <tr>
                             <!-- Reporting Officer (Supervisor) -->
                             <td>
-                                <span class="title">(i). Mr./Mrs.
-                                    <div class="fields">
+                <span class="title">(i). Mr./Mrs.
+                    <div class="fields">
+                        <div class="input-field">
+                            <label class="required-field"><strong>the reporting officer</strong></label>
+                            <select id="reportingOfficer" name="reporting_officer" required>
+                                <option value="">Select a reporting officer</option>
+                                {% for supervisor in supervisors %}
+                                    <option value="{{ supervisor.get_full_name }}">{{ supervisor.get_full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                                         <div class="input-field">
-                                            <label class="required-field"><strong>the reporting officer</strong></label>
-                                            <select id="reportingOfficer" name="reporting_officer" required>
-                                                <option value="">Select a reporting officer</option>
-                                                {% for supervisor in supervisors %}
-                                                    <option value="{{ supervisor.get_full_name }}">{{ supervisor.get_full_name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
+                                <label>From</label>
+                                <input type="date" id="reportingOfficerFromDate" name="reporting_officer_from_date" required>
+                            </div>
                                         <div class="input-field">
-                                            <label>From</label>
-                                            <input type="date" id="reportingOfficerFromDate" name="reporting_officer_from_date" required>
-                                        </div>
-                                        <div class="input-field">
-                                            <label>To</label>
-                                            <input type="date" id="reportingOfficerToDate" name="reporting_officer_to_date" required>
-                                        </div>
-                                    </div>
-                                </span>
+                                <label>To</label>
+                                <input type="date" id="reportingOfficerToDate" name="reporting_officer_to_date" required>
+                        </div>
+                    </div>
+                </span>
                             </td>
                             <!-- Countersigning Officer (HoD) -->
                             <td>
-                                <span class="title">(ii). Mr./Mrs.
-                                    <div class="fields">
+                <span class="title">(ii). Mr./Mrs.
+                    <div class="fields">
+                        <div class="input-field">
+                            <label class="required-field"><strong>the countersigning officer</strong></label>
+                            <select id="countersigningOfficer" name="countersigning_officer" required>
+                                <option value="">Select a countersigning officer</option>
+                                {% for hod in hods %}
+                                    <option value="{{ hod.get_full_name }}">{{ hod.get_full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                                         <div class="input-field">
-                                            <label class="required-field"><strong>the countersigning officer</strong></label>
-                                            <select id="countersigningOfficer" name="countersigning_officer" required>
-                                                <option value="">Select a countersigning officer</option>
-                                                {% for hod in hods %}
-                                                    <option value="{{ hod.get_full_name }}">{{ hod.get_full_name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
+                                <label>From</label>
+                                <input type="date" id="countersigningOfficerFromDate" name="countersigning_officer_from_date" required>
+                            </div>
                                         <div class="input-field">
-                                            <label>From</label>
-                                            <input type="date" id="countersigningOfficerFromDate" name="countersigning_officer_from_date" required>
-                                        </div>
-                                        <div class="input-field">
-                                            <label>To</label>
-                                            <input type="date" id="countersigningOfficerToDate" name="countersigning_officer_to_date" required>
-                                        </div>
-                                    </div>
-                                </span>
+                                <label>To</label>
+                                <input type="date" id="countersigningOfficerToDate" name="countersigning_officer_to_date" required>
+                        </div>
+                    </div>
+                </span>
                             </td>
                         </tr>
                     </table>
-                </div>                
+    </div>               
                 
              <div class="section hide-field">   
                 <p style="color: red;"><b>The Section Below is for your Supervisor and Director<br>SCROLL DOWN TO THE BOTTOM OF THE PAGE TO SUBMIT YOUR FORM</b></p>
@@ -817,87 +1000,87 @@
                 <input type="date" id="headOfDepartmentDateOfEvaluation" name="head_of_department_date_of_evaluation" readonly disabled>
     
             </div>
-        <div class="section">
-            <button type="submit" class="submit-btn">Submit Evaluation</button>
-        </div>
-        <input type="hidden" id="examLocation" name="exam_location" class="form-control" value="{{ request.user.exam_location }}" readonly>
-    </form>
-    <script>
+            <div class="section">
+        <button type="submit" class="submit-btn">Submit Evaluation</button>
+    </div>
+    <input type="hidden" id="examLocation" name="exam_location" class="form-control" value="{{ request.user.exam_location }}" readonly>
+</form>
+<script>
         // Add row to Job Description table
-        document.querySelector('.add-job-description-row').addEventListener('click', function() {
-            const table = document.querySelector('#jobDescriptionTable tbody');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td><input type="text" name="activity_task[]" required><span class="error-message">This field is required</span></td>
-                <td><input type="text" name="overall_assessment_of_performance[]" required><span class="error-message">This field is required</span></td>
-                <td><button type="button" class="remove-row">Remove</button></td>
-            `;
-            table.appendChild(newRow);
-        });
-    
+    document.querySelector('.add-job-description-row').addEventListener('click', function() {
+        const table = document.querySelector('#jobDescriptionTable tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><input type="text" name="activity_task[]" required><span class="error-message">This field is required</span></td>
+            <td><input type="text" name="overall_assessment_of_performance[]" required><span class="error-message">This field is required</span></td>
+            <td><button type="button" class="remove-row">Remove</button></td>
+        `;
+        table.appendChild(newRow);
+    });
+
         // Add row to Training Course Seminars table
-        document.querySelector('.add-training-course-row').addEventListener('click', function() {
+    document.querySelector('.add-training-course-row').addEventListener('click', function() {
             const table = document.querySelector('#TrainingCourseSeminarsTable tbody');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
                 <td><input type="text" id="trainingProgram" name="training_program_type[]" required></td>
                 <td><input type="text" id="trainingLocation" name="training_location[]" required></td>
                 <td><label>From</label><input type="date" id="trainingDateFrom" name="training_from_date[]" required>
                     <label>To</label><input type="date" id="trainingDateTo" name="training_to_date[]" required>
-                </td>
-                <td><button type="button" class="remove-row">Remove</button></td>
-            `;
-            table.appendChild(newRow);
-        });
-    
-        // Remove row from any table
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.classList.contains('remove-row')) {
-                e.target.closest('tr').remove();
-            }
-        });
+            </td>
+            <td><button type="button" class="remove-row">Remove</button></td>
+        `;
+        table.appendChild(newRow);
+    });
 
-        document.getElementById('employeeEvaluationForm').addEventListener('submit', function(e) {
-            let hasErrors = false;
+        // Remove row from any table
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-row')) {
+            e.target.closest('tr').remove();
+        }
+    });
+
+    document.getElementById('employeeEvaluationForm').addEventListener('submit', function(e) {
+        let hasErrors = false;
             // Clear previous errors
-            document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
-            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
             // Check all required fields
-            document.querySelectorAll('[required]').forEach(field => {
-                if (field.disabled || field.readOnly) return;
+        document.querySelectorAll('[required]').forEach(field => {
+            if (field.disabled || field.readOnly) return;
                 // For radio buttons
-                if (field.type === 'radio') {
-                    const name = field.name;
-                    if (!document.querySelector(`input[name="${name}"]:checked`)) {
-                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-                            r.closest('td').classList.add('error-field');
+            if (field.type === 'radio') {
+                const name = field.name;
+                if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                        r.closest('td').classList.add('error-field');
                             // Show error message if present
-                            const errorMsg = r.closest('td').querySelector('.error-message');
-                            if (errorMsg) errorMsg.style.display = 'block';
-                        });
-                        hasErrors = true;
-                    }
-                    return;
-                }
-                // For other fields
-                if (!field.value.trim()) {
-                    field.classList.add('error-field');
-                    // Show error message if present
-                    const errorMsg = field.parentElement.querySelector('.error-message');
-                    if (errorMsg) errorMsg.style.display = 'block';
+                        const errorMsg = r.closest('td').querySelector('.error-message');
+                        if (errorMsg) errorMsg.style.display = 'block';
+                    });
                     hasErrors = true;
                 }
-            });
-            if (hasErrors) {
-                e.preventDefault();
-                alert('Please fill in all required fields highlighted in red.');
-                // Scroll to first error
-                const firstError = document.querySelector('.error-field');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                return;
+            }
+                // For other fields
+            if (!field.value.trim()) {
+                field.classList.add('error-field');
+                    // Show error message if present
+                const errorMsg = field.parentElement.querySelector('.error-message');
+                if (errorMsg) errorMsg.style.display = 'block';
+                hasErrors = true;
             }
         });
+        if (hasErrors) {
+            e.preventDefault();
+            alert('Please fill in all required fields highlighted in red.');
+                // Scroll to first error
+            const firstError = document.querySelector('.error-field');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
 
-    </script>
+</script>
 {% endblock content %}

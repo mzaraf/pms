@@ -305,7 +305,7 @@ def hod_download_appraisal(request):
         if 'ippis_no' in selected_fields:
             row.append(appraisal.ippis_no)
         if 'designation' in selected_fields:
-            row.append(appraisal.designation)
+            row.append(appraisal.designation) 
         if 'department' in selected_fields:
             row.append(appraisal.department.name if appraisal.department else '')
         if 'total_appraisal_rating' in selected_fields:
@@ -324,17 +324,11 @@ def hod_download_appraisal(request):
         'current_date': datetime.now(),
     })
 
-    # Extract department name and period year
+    # Generate a safe filename
     department_name = hod_department.name.replace(" ", "_")
-
-    # Generate the PDF
+    filename = f"appraisal_report_{department_name}_{year_filter if year_filter else 'all_years'}.pdf"
+    
     response = HttpResponse(content_type='application/pdf')
-    filename = f"appraisal_report_{department_name}"
-    if year_filter:
-        filename += f"_{year_filter}"
-    else:
-        filename += f"_all_years"
-    filename += ".pdf"
     response['Content-Disposition'] = f'attachment; filename={filename}'
     
     HTML(string=html_content).write_pdf(response)

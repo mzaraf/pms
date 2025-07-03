@@ -28,6 +28,132 @@
     padding: 30px; /* Add padding for spacing */
     width: calc(100% - 225px); /* Adjust width accordingly */
     }
+    /* Responsive Design Additions and Improvements from staff_form.html */
+    @media (max-width: 768px) {
+        .form-container {
+            margin-left: 0 !important;
+            width: 100% !important;
+            padding: 12px !important;
+            box-sizing: border-box;
+        }
+        .section {
+            padding: 10px 0;
+        }
+        .section h2, .section h3 {
+            font-size: 1.1rem;
+        }
+        .period-container, .grid-section {
+            flex-direction: column !important;
+            gap: 12px !important;
+            align-items: stretch !important;
+            display: flex !important;
+        }
+        .form-container input,
+        .form-container select,
+        .form-container textarea,
+        .form-container button {
+            width: 100% !important;
+            min-width: 0 !important;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-container label {
+            font-size: 1rem;
+        }
+        .form-container .input-field {
+            flex-direction: column !important;
+            gap: 5px !important;
+        }
+        .form-container .section > div[style*="display: flex"] {
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        .form-container .section > div[style*="display: grid"] {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        table, .form-container table {
+            width: 100% !important;
+            min-width: 0 !important;
+            display: block;
+            overflow-x: auto;
+        }
+        th, td {
+            font-size: 0.95rem;
+            white-space: normal;
+        }
+        .submit-btn, .add-job-description-row, .add-training-course-row, .remove-row {
+            font-size: 1rem !important;
+            padding: 10px 0 !important;
+        }
+        /* Section 1 improvements */
+        .section.section-general-info {
+            background: #f7f7fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            padding: 14px 8px 18px 8px;
+            margin-bottom: 18px;
+        }
+        .section.section-general-info h2 {
+            font-size: 1.08rem;
+            margin-bottom: 10px;
+            color: #2d3a4a;
+        }
+        .section.section-general-info .grid-section {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        .section.section-period {
+            background: #f7f7fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            padding: 14px 8px 18px 8px;
+            margin-bottom: 18px;
+        }
+        .section.section-period .period-container {
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        .section.section-period .input-field {
+            flex-direction: column !important;
+            gap: 5px !important;
+        }
+    }
+    @media (min-width: 769px) {
+        .section.section-period {
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .section.section-period .period-container {
+            display: flex !important;
+            align-items: center;
+            gap: 60px;
+            flex-direction: row !important;
+        }
+        .section.section-period .input-field {
+            display: inline-flex;
+            align-items: center;
+            gap: 30px;
+            width: auto;
+        }
+        .section.section-general-info {
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .section.section-general-info .grid-section {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+    }
 </style>
         <title>NASRDA PMS | Appraisal Review</title>
       <form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'staff_hod_rating' appraisal_id=appraisal.id %}">
@@ -413,7 +539,7 @@
 <hr>
                 <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2><p style="color: red;"><b>( To be filled by Supervisor)</b></p>
 
-            <p><b>Instructions: </b><i>Rate the employee’s performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 16 Sixteen and match with the corresponding marks in bracket. Prior to the performance discussion with the employee, a detailed plan to address areas rated “needs improvement” or “unacceptable” must be submitted to the department head and human resources for review.</i></p>
+            <p><b>Instructions: </b><i>Rate the employee's performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 16 Sixteen and match with the corresponding marks in bracket. Prior to the performance discussion with the employee, a detailed plan to address areas rated "needs improvement" or "unacceptable" must be submitted to the department head and human resources for review.</i></p>
             <br>    
             <p><b>Rating scale:</b></p>
                 <p><b>5 – Excellent (consistently exceeds standards) – (16) 4 - Outstanding (frequently exceeds standards) – (13) 3- Satisfactory (generally meets standards) -(10) 2- Needs improvement (frequently fails to meet standards) – (7) 1- Unacceptable (fails to meet standards) – (5)</b></p>
@@ -639,7 +765,7 @@
                     <br>
                     If YES, give details:
                 
-                    <textarea rows="3" name="details_of_commendation_for_outstanding_performance" id="commendationDetails" style="width: 100%;" disabled>{{ appraisal.details_of_commendation_for_outstanding_performance }}</textarea>
+                    <textarea rows="3" name="details_of_commendation_for_outstanding_performance" id="commendationDetails" style="width: 100%;">{{ appraisal.details_of_commendation_for_outstanding_performance }}</textarea>
                     <input type="hidden" name="details_of_commendation_for_outstanding_performance" id="hiddenCommendationDetails" value="NULL">
                 </td>
             </tr>
@@ -770,7 +896,7 @@
 
         <div class="section">
             <div class="section">
-                <h2>Section 5: Head of Department’s Comments <i>(As applicable):</i></h2>
+                <h2>Section 5: Head of Department's Comments <i>(As applicable):</i></h2>
                 
                 <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." required></textarea>
     

@@ -78,6 +78,7 @@
   position: relative;
   font-size: 28px;
   z-index: 1001;
+  cursor: pointer;
 }
 
 .top_navbar .hamburger .hamburger__inner {
@@ -88,6 +89,7 @@
   cursor: pointer;
   width: 40px;
   height: 20px;
+  transition: all 0.3s ease;
 }
 
 .top_navbar .hamburger__inner > div {
@@ -97,6 +99,66 @@
   position: absolute;
   top: 0;
   left: 0;
+  transition: all 0.3s ease;
+}
+
+/* Add these new styles for the active state */
+.wrapper.active .hamburger div.one {
+  transform: rotate(45deg);
+  top: 10px;
+}
+
+.wrapper.active .hamburger div.two {
+  opacity: 0;
+}
+
+.wrapper.active .hamburger div.three {
+  transform: rotate(-45deg);
+  top: 10px;
+}
+
+/* Sidebar collapsed state */
+.sidebar.collapsed {
+  width: 80px;
+}
+
+.sidebar.collapsed ul li a span,
+.sidebar.collapsed .profile_info {
+  display: none;
+}
+
+.main_container {
+  margin-left: 280px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.collapsed + .main_container {
+  margin-left: 80px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 60px;
+    width: 280px;
+    height: 100%;
+    z-index: 2000;
+    background: #004D40;
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
+  }
+  .sidebar.sidebar-open {
+    display: block;
+    transform: translateX(0);
+  }
+  .main_container {
+    margin-left: 0;
+  }
+  .top_navbar .hamburger {
+    display: block;
+  }
 }
 
 .top_navbar .hamburger div.two {
@@ -227,6 +289,7 @@
   align-items: center;
   margin-bottom: 1px;
   transition: all 0.3s ease;
+  padding-left: 16px;
 }
 
 .main_container .sidebar ul li a .icon {
@@ -393,6 +456,10 @@ th {
   .section h2 {
     font-size: 1.2rem;
   }
+
+  .sidebar ul li a {
+    padding-left: 10px;
+  }
 }
 
 textarea {
@@ -432,15 +499,57 @@ form#employeeEvaluationForm{
 
 @media (max-width: 768px) {
   .sidebar {
-    display: none;
+    width: 80vw;
+    max-width: 280px;
+    min-width: 180px;
+    overflow-x: auto;
+    box-sizing: border-box;
+    padding-right: 10px;
   }
-
-  .main_container {
-    margin-left: 0;
+  .sidebar ul {
+    padding-left: 0;
+    margin: 0;
   }
+  .sidebar ul li a {
+    font-size: 13px;
+    padding: 10px 8px;
+    white-space: normal;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    line-height: 1.2;
+    padding-left: 10px;
+  }
+  .sidebar ul li a .icon {
+    font-size: 18px;
+    margin-right: 6px;
+  }
+  .sidebar .profile {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 8px 0;
+  }
+  .sidebar .profile .profile_info {
+    font-size: 12px;
+    word-break: break-word;
+  }
+}
 
-  .top_navbar .hamburger {
-    display: block;
+@media (max-width: 480px) {
+  .sidebar {
+    min-width: 120px;
+    padding-right: 4px;
+  }
+  .sidebar ul li a {
+    font-size: 12px;
+    padding: 8px 4px;
+  }
+  .sidebar ul li a .icon {
+    font-size: 15px;
+    margin-right: 4px;
+  }
+  .sidebar .profile .profile_info {
+    font-size: 10px;
   }
 }
 
@@ -491,4 +600,36 @@ form#employeeEvaluationForm{
       text-align: center;
       margin-top: 5px;
   }
+}
+
+@media (max-width: 768px) {
+  .sidebar.sidebar-open ul li a span,
+  .sidebar.sidebar-open .profile_info {
+    display: inline !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .main_container {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .sidebar {
+    width: 80vw;
+    min-width: 200px;
+    max-width: 300px;
+    overflow-x: auto;
+    position: fixed;
+    left: 0;
+    top: 60px;
+    z-index: 2000;
+    box-sizing: border-box;
+    padding-right: 10px;
+  }
+}
+.top_navbar .menu .logo {
+  white-space: normal;
+  word-break: break-word;
 }
