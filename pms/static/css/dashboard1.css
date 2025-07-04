@@ -163,6 +163,9 @@
   .top_navbar .hamburger {
     display: block;
   }
+  .sidebar ul li a {
+    font-size: 13px !important;
+  }
 }
 
 .top_navbar .hamburger div.two {
@@ -515,7 +518,7 @@ form#employeeEvaluationForm{
     margin: 0;
   }
   .sidebar ul li a {
-    font-size: 13px;
+    font-size: 13px !important;
     padding: 10px 8px;
     white-space: normal;
     word-break: break-word;
@@ -545,7 +548,7 @@ form#employeeEvaluationForm{
     padding-right: 4px;
   }
   .sidebar ul li a {
-    font-size: 12px;
+    font-size: 12px !important;
     padding: 8px 4px;
   }
   .sidebar ul li a .icon {
