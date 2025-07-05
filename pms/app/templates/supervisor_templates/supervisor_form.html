@@ -2,10 +2,9 @@
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/form.css' %}">
-<title>NASRDA PMS | Supervisor Appraisal Form</title>
+<title>NASRDA PMS | Appraisal Form</title>
 <form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'supervisor_initiate_appraisal' %}">
     {% csrf_token %}
-    <p style="color: red;"><b>"Please make sure you have updated your department and division/unit on the 'Update Department' page before starting your evaluation."</b></p>
     <div class="section section-period">
         <div class="period-container">
             <label style="font-weight: bold;"><h3>Period of Report:</h3></label>
