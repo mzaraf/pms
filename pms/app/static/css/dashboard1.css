@@ -469,7 +469,8 @@ th {
   }
 
   /* Mobile date input styling with !important to override inline styles */
-  input[type="date"] {
+  input[type="date"],
+  input[type="month"] {
     width: 100% !important;
     padding: 12px !important;
     font-size: 16px !important;
@@ -478,7 +479,8 @@ th {
     box-sizing: border-box !important;
   }
   
-  input[type="date"]:focus {
+  input[type="date"]:focus,
+  input[type="month"]:focus {
     border-color: #004D40 !important;
     outline: none !important;
   }
@@ -575,7 +577,8 @@ form#employeeEvaluationForm{
   }
 
   /* Smaller mobile devices - date input styling */
-  input[type="date"] {
+  input[type="date"],
+  input[type="month"] {
     width: 100% !important;
     padding: 10px !important;
     font-size: 14px !important;

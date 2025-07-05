@@ -1,244 +1,7 @@
 {% extends 'staff_templates/staff_base.html' %}
 {% load static %}
 {% block content %}
-<style>
-    /* Increase button size */
-    .add-job-description-row, .add-training-course-row, .remove-row {
-        font-size: 15px; 
-        padding: 10px 15px;  
-        width: auto;     
-        height: 30px; 
-        border-radius: 5px;  
-        background-color: #28a745;
-        color: white;   
-        border: none;    
-        cursor: pointer;      
-        text-align: center;
-        line-height: 40px; 
-        display: inline-flex; 
-        align-items: center; 
-        justify-content: center; 
-
-    }
-
-    .remove-row {
-    background-color: #dc3545; /* Background color for - button */
-    }
-
-    .add-row:hover, .remove-row:hover {
-    opacity: 0.8; /* Add a hover effect */
-    }
-    .form-container {
-    margin-top: 60px;
-    margin-left: 225px; /* Matches the sidebar width */
-    padding: 30px; /* Add padding for spacing */
-    width: calc(100% - 225px); /* Adjust width accordingly */
-    }
-
-    .required-field::after {
-        content: " *";
-        color: red;
-    }
-    .error-field {
-        border: 2px solid red !important;
-    }
-    td.error-field {
-        border: 2px solid red !important;
-    }
-    .hide-field {
-        display: none !important;
-    }
-    .error-message {
-        color: red;
-        font-size: 12px;
-        margin-top: -10px;
-        margin-bottom: 10px;
-        display: none;
-    }
-
-    /* Responsive Design Additions and Improvements */
-    @media (max-width: 768px) {
-        .form-container {
-            margin-left: 0 !important;
-            width: 100% !important;
-            padding: 12px !important;
-            box-sizing: border-box;
-        }
-        .section {
-            padding: 10px 0;
-        }
-        .section h2, .section h3 {
-            font-size: 1.1rem;
-        }
-        .period-container, .grid-section {
-            flex-direction: column !important;
-            gap: 12px !important;
-            align-items: stretch !important;
-            display: flex !important;
-        }
-        .radio-group {
-            flex-direction: column !important;
-            gap: 8px !important;
-        }
-        .input-dates {
-            flex-direction: column !important;
-            gap: 5px !important;
-        }
-        .table-responsive, table, .form-container table {
-            width: 100% !important;
-            min-width: 0 !important;
-            display: block;
-            overflow-x: auto;
-        }
-        th, td {
-            font-size: 0.97rem;
-            white-space: normal;
-        }
-        .form-container input,
-        .form-container select,
-        .form-container textarea,
-        .form-container button {
-            width: 100% !important;
-            min-width: 0 !important;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-        .form-container label {
-            font-size: 1rem;
-        }
-        .add-job-description-row, .add-training-course-row, .remove-row, .submit-btn {
-            font-size: 1rem !important;
-            padding: 10px 0 !important;
-            width: 100% !important;
-        }
-        .hide-field {
-            display: none !important;
-        }
-        .error-message {
-            font-size: 0.95rem;
-        }
-        /* Section 1 improvements */
-        .section.section-general-info {
-            background: #f7f7fa;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            padding: 14px 8px 18px 8px;
-            margin-bottom: 18px;
-        }
-        .section.section-general-info h2 {
-            font-size: 1.08rem;
-            margin-bottom: 10px;
-            color: #2d3a4a;
-        }
-        .section.section-general-info .grid-section {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 10px !important;
-        }
-        .section.section-general-info .grid-section > div {
-            background: #fff;
-            border-radius: 5px;
-            padding: 8px 6px 6px 6px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-            margin-bottom: 2px;
-        }
-        /* Period of Report improvements */
-        .section.section-period {
-            background: #eaf6ff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            padding: 14px 8px 18px 8px;
-            margin-bottom: 18px;
-        }
-        .section.section-period .period-container {
-            flex-direction: column !important;
-            gap: 10px !important;
-            align-items: stretch !important;
-            display: flex !important;
-        }
-        .section.section-period .input-field {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .section.section-period label {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        .section.section-period input[type="date"] {
-            width: 100%;
-            font-size: 1rem;
-            padding: 7px 8px;
-            border-radius: 4px;
-            border: 1px solid #cfd8dc;
-        }
-    }
-    @media (max-width: 480px) {
-        .form-container {
-            padding: 6px !important;
-        }
-        .section h2, .section h3 {
-            font-size: 1rem;
-        }
-        th, td {
-            font-size: 0.93rem;
-        }
-    }
-    @media (min-width: 769px) {
-        .section.section-period {
-            background: none;
-            border-radius: 0;
-            box-shadow: none;
-            padding: 0;
-            margin-bottom: 0;
-        }
-        .section.section-period .period-container {
-            display: flex !important;
-            align-items: center;
-            gap: 60px;
-            flex-direction: row !important;
-        }
-        .section.section-period .input-field {
-            display: inline-flex;
-            align-items: center;
-            gap: 30px;
-            width: auto;
-        }
-        .section.section-period label[for="from"],
-        .section.section-period label[for="to"] {
-            font-weight: bold;
-        }
-        .section.section-period input[type="date"] {
-            width: 200px;
-            padding: 5px;
-        }
-        .section.section-general-info {
-            background: none;
-            border-radius: 0;
-            box-shadow: none;
-            padding: 0;
-            margin-bottom: 0;
-        }
-        .section.section-general-info h2 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: #222;
-        }
-        .section.section-general-info .grid-section {
-            display: grid !important;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px !important;
-        }
-        .section.section-general-info .grid-section > div {
-            background: none;
-            border-radius: 0;
-            padding: 0;
-            box-shadow: none;
-            margin-bottom: 0;
-        }
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
 <title>NASRDA PMS | Appraisal Form</title>
 <form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'staff_initiate_appraisal' %}">
     {% csrf_token %}
@@ -262,39 +25,39 @@
             <!-- All fields remain unchanged - values preserved -->
             <div>
                 <label for="employeeName">Name of Employee:</label>
-                <input type="text" id="employeeName" name="full_name" class="form-control" value="{% if request.user.middle_name %}{{ request.user.first_name }} {{ request.user.middle_name }} {{ request.user.last_name }}{% else %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}" readonly>
+                <input type="text" id="employeeName" name="full_name" class="form-control" value="{% if request.user.middle_name %}{{ request.user.first_name }} {{ request.user.middle_name }} {{ request.user.last_name }}{% else %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}" readonly disabled>
             </div>
             <div>
                 <label for="dateOfBirth">Date of Birth:</label>
-                <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" value="{{ request.user.date_of_birth|date:'Y-m-d' }}" readonly>
+                <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" value="{{ request.user.date_of_birth|date:'Y-m-d' }}" readonly disabled>
             </div>
             <div>
                 <label for="dateOfFirstAppointment">Date of First Appointment:</label>
-                <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" class="form-control" value="{{ request.user.date_of_first_appointment|date:'Y-m-d' }}" readonly>
+                <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" class="form-control" value="{{ request.user.date_of_first_appointment|date:'Y-m-d' }}" readonly disabled>
             </div>
             <div>
                 <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
-                <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ request.user.date_of_present_appointment|date:'Y-m-d' }}" readonly>
+                <input type="date" id="dateOfPresentAppointment" name="date_of_present_appointment" class="form-control" value="{{ request.user.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
             </div>
             <div>
                 <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
-                <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" value="{{ request.user.date_of_acting_appointment|date:'Y-m-d' }}" readonly>
+                <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" value="{{ request.user.date_of_acting_appointment|date:'Y-m-d' }}" readonly disabled>
             </div>
             <div>
                 <label for="fileNumber">File Number:</label>
-                <input type="text" id="fileNumber" name="file_number" class="form-control" value="{{ request.user.file_number }}" readonly>
+                <input type="text" id="fileNumber" name="file_number" class="form-control" value="{{ request.user.file_number }}" readonly disabled>
             </div>
             <div>
                 <label for="ippisNumber">IPPIS Number:</label>
-                <input type="text" id="ippisNumber" name="ippis_no" class="form-control" value="{{ request.user.ippis_no }}" readonly>
+                <input type="text" id="ippisNumber" name="ippis_no" class="form-control" value="{{ request.user.ippis_no }}" readonly disabled>
             </div>
             <div>
                 <label for="designation">Designation:</label>
-                <input type="text" id="designation" name="designation" class="form-control" value="{{ request.user.designation }}" readonly>
+                <input type="text" id="designation" name="designation" class="form-control" value="{{ request.user.designation }}" readonly disabled>
             </div>
             <div>
                 <label for="department">Department:</label>
-                <input type="text" id="department" name="department" class="form-control" value="{{ request.user.department }}" readonly>
+                <input type="text" id="department" name="department" class="form-control" value="{{ request.user.department }}" readonly disabled>
             </div>
         </div>
     </div>
@@ -308,9 +71,9 @@
                     <th>Date of Award</th>
                 </tr>
                 <tr>
-                    <td><input type="text" id="qualification" name="qualification" class="form-control" value="{{ request.user.qualification }}" readonly></td>
-                    <td><input type="text" id="institution" name="institution" class="form-control" value="{{ request.user.institution }}" readonly></td>
-                    <td><input type="date" id="awardDate" name= "qualification_award_date" class="form-control" value="{{ request.user.qualification_award_date|date:'Y-m-d' }}" readonly></td>
+                    <td><input type="text" id="qualification" name="qualification" class="form-control" value="{{ request.user.qualification }}" readonly disabled></td>
+                    <td><input type="text" id="institution" name="institution" class="form-control" value="{{ request.user.institution }}" readonly disabled></td>
+                    <td><input type="date" id="awardDate" name= "qualification_award_date" class="form-control" value="{{ request.user.qualification_award_date|date:'Y-m-d' }}" readonly disabled></td>
                 </tr>
                 
             </table>

@@ -1,1012 +1,835 @@
 {% extends 'supervisor_templates/supervisor_base.html' %}
 {% load static %}
 {% block content %}
-<style>
-    /* Increase button size */
-    .add-job-description-row, .add-training-course-row, .remove-row {
-    font-size: 15px; 
-    padding: 10px 15px;  
-    width: auto;     
-    height: 30px; 
-    border-radius: 5px;  
-    background-color: #28a745;
-    color: white;   
-    border: none;    
-    cursor: pointer;      
-    text-align: center;
-    line-height: 40px; 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
-
-    }
-
-    .remove-row {
-    background-color: #dc3545; /* Background color for - button */
-    }
-
-    .add-row:hover, .remove-row:hover {
-    opacity: 0.8; /* Add a hover effect */
-    }
-    .form-container {
-    margin-top: 60px;
-    margin-left: 225px; /* Matches the sidebar width */
-    padding: 30px; /* Add padding for spacing */
-    width: calc(100% - 225px); /* Adjust width accordingly */
-    }
-    .required-field::after {
-        content: " *";
-        color: red;
-    }
-    .error-field {
-        border: 2px solid red !important;
-    }
-    td.error-field {
-        border: 2px solid red !important;
-    }
-    .hide-field {
-        display: none !important;
-    }
-    .error-message {
-        color: red;
-        font-size: 12px;
-        margin-top: -10px;
-        margin-bottom: 10px;
-        display: none;
-    }
-    /* Responsive Design Additions and Improvements from staff_form.html */
-    @media (max-width: 768px) {
-        .form-container {
-            margin-left: 0 !important;
-            width: 100% !important;
-            padding: 12px !important;
-            box-sizing: border-box;
-        }
-        .section {
-            padding: 10px 0;
-        }
-        .section h2, .section h3 {
-            font-size: 1.1rem;
-        }
-        .period-container, .grid-section {
-            flex-direction: column !important;
-            gap: 12px !important;
-            align-items: stretch !important;
-            display: flex !important;
-        }
-        .form-container input,
-        .form-container select,
-        .form-container textarea,
-        .form-container button {
-            width: 100% !important;
-            min-width: 0 !important;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-        .form-container label {
-            font-size: 1rem;
-        }
-        .form-container .input-field {
-            flex-direction: column !important;
-            gap: 5px !important;
-        }
-        .form-container .section > div[style*="display: flex"] {
-            flex-direction: column !important;
-            gap: 10px !important;
-        }
-        .form-container .section > div[style*="display: grid"] {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 10px !important;
-        }
-        table, .form-container table {
-            width: 100% !important;
-            min-width: 0 !important;
-            display: block;
-            overflow-x: auto;
-        }
-        th, td {
-            font-size: 0.95rem;
-            white-space: normal;
-        }
-        .submit-btn, .add-job-description-row, .add-training-course-row, .remove-row {
-            font-size: 1rem !important;
-            padding: 10px 0 !important;
-        }
-        /* Section 1 improvements */
-        .section.section-general-info {
-            background: #f7f7fa;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            padding: 14px 8px 18px 8px;
-            margin-bottom: 18px;
-        }
-        .section.section-general-info h2 {
-            font-size: 1.08rem;
-            margin-bottom: 10px;
-            color: #2d3a4a;
-        }
-        .section.section-general-info .grid-section {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 10px !important;
-        }
-        .section.section-period {
-            background: #f7f7fa;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            padding: 14px 8px 18px 8px;
-            margin-bottom: 18px;
-        }
-        .section.section-period .period-container {
-            flex-direction: column !important;
-            gap: 10px !important;
-        }
-        .section.section-period .input-field {
-            flex-direction: column !important;
-            gap: 5px !important;
-        }
-    }
-    @media (min-width: 769px) {
-        .section.section-period {
-            background: none;
-            border-radius: 0;
-            box-shadow: none;
-            padding: 0;
-            margin-bottom: 0;
-        }
-        .section.section-period .period-container {
-            display: flex !important;
-            align-items: center;
-            gap: 60px;
-            flex-direction: row !important;
-        }
-        .section.section-period .input-field {
-            display: inline-flex;
-            align-items: center;
-            gap: 30px;
-            width: auto;
-        }
-        .section.section-general-info {
-            background: none;
-            border-radius: 0;
-            box-shadow: none;
-            padding: 0;
-            margin-bottom: 0;
-        }
-        .section.section-general-info .grid-section {
-            display: grid !important;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-    }
-</style>
-        <title>NASRDA PMS | Appraisal Form</title>
-    <form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'supervisor_initiate_appraisal' %}">
-        {% csrf_token %}
-        <div class="section">
-            <div style="display: flex; align-items: center; gap: 60px;">
-                <label style="font-weight: bold;"><h3>Period of Report:</h3></label>
-                <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
-                    <label for="from" style="font-weight: bold;" class="required-field">From</label>
-                    <input type="date" name="period_of_evaluation_from_date" id="from" style="padding: 5px; width: 200px;" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
-                </div>
-                <div class="input-field" style="display: inline-flex; align-items: center; gap: 30px;">
-                    <label for="to" style="font-weight: bold;" class="required-field">To</label>
-                    <input type="date" name="period_of_evaluation_to_date" id="to" style="padding: 5px; width: 200px;" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
-                </div>
-            </div>                             
-               
-            <br>
-            <h2>Section 1: General Information (To be Completed by the Employee)</h2>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                <!-- General Information Fields -->
-                <div>
-                    <label for="employeeName">Name of Employee:</label>
-                    <input type="text" id="employeeName" name="full_name" class="form-control" value="{% if request.user.middle_name %}{{ request.user.first_name }} {{ request.user.middle_name }} {{ request.user.last_name }}{% else %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}" readonly>
-                </div>
-                <div>
-                    <label for="dateOfBirth">Date of Birth:</label>
-                    <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" value="{{ request.user.date_of_birth|date:'Y-m-d' }}" readonly>
-                </div>
-                <div>
-                    <label for="dateOfFirstAppointment">Date of First Appointment:</label>
-                    <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" name="date_of_first_appointment" class="form-control" value="{{ request.user.date_of_first_appointment|date:'Y-m-d' }}" readonly>
-                </div>
-                <div>
-                    <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
-                    <input type="date" id="dateOfPresentAppointment" class="form-control" name="date_of_present_appointment" value="{{ request.user.date_of_present_appointment|date:'Y-m-d' }}" readonly>
-                </div>
-                <div>
-                    <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
-                    <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" value="{{ request.user.date_of_acting_appointment|date:'Y-m-d' }}" readonly>
-                </div>
-                <div>
-                    <label for="fileNumber">File Number:</label>
-                    <input type="text" id="fileNumber" name="file_number" class="form-control" value="{{ request.user.file_number }}" readonly>
-                </div>
-                <div>
-                    <label for="ippisNumber">IPPIS Number:</label>
-                    <input type="text" id="ippisNumber" name="ippis_no" class="form-control" value="{{ request.user.ippis_no }}" readonly>
-                </div>
-                <div>
-                    <label for="designation">Designation:</label>
-                    <input type="text" id="designation" name="designation" class="form-control" value="{{ request.user.designation }}" readonly>
-                </div>
-                <div>
-                    <label for="department">Department:</label>
-                    <input type="text" id="department" name="department" class="form-control" value="{{ request.user.department }}" readonly>
-                </div>
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+<title>NASRDA PMS | Supervisor Appraisal Form</title>
+<form id="employeeEvaluationForm" class="form-container" method="POST" action="{% url 'supervisor_initiate_appraisal' %}">
+    {% csrf_token %}
+    <p style="color: red;"><b>"Please make sure you have updated your department and division/unit on the 'Update Department' page before starting your evaluation."</b></p>
+    <div class="section section-period">
+        <div class="period-container">
+            <label style="font-weight: bold;"><h3>Period of Report:</h3></label>
+            <div class="input-field">
+                <label for="from" class="required-field">From</label>
+                <input type="date" name="period_of_evaluation_from_date" id="from" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
+            </div>
+            <div class="input-field">
+                <label for="to" class="required-field">To</label>
+                <input type="date" name="period_of_evaluation_to_date" id="to" value="{{ appraisal.period_of_evaluation_from_date|date:'Y-m' }}" required>
             </div>
         </div>
-        <!-- New Section 1B: Educational Background -->
-        <div class="section">
-            <h2>B: Educational/Professional certifications</h2>
-            <table>
-                <tr>
-                    <th>Highest Qualification (Most Recent Qualification, Academic /Professional)</th>
-                    <th>Institution</th>
-                    <th>Date of Award</th>
-                </tr>
-                <tr>
-                    <td><input type="text" id="qualification" name="qualification" class="form-control" value="{{ request.user.qualification }}" readonly></td>
-                    <td><input type="text" id="institution" name="institution" class="form-control" value="{{ request.user.institution }}" readonly></td>
-                    <td><input type="date" id="awardDate" name= "qualification_award_date" class="form-control" value="{{ request.user.qualification_award_date|date:'Y-m-d' }}" readonly></td>
-                </tr>
-                
-            </table>
+    </div>
+    
+    <div class="section section-general-info">
+        <h2>Section 1: General Information (To be Completed by the Supervisor)</h2>
+        <div class="grid-section">
+            <!-- General Information Fields -->
+            <div>
+                <label for="employeeName">Name of Employee:</label>
+                <input type="text" id="employeeName" name="full_name" class="form-control" value="{% if request.user.middle_name %}{{ request.user.first_name }} {{ request.user.middle_name }} {{ request.user.last_name }}{% else %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}" readonly disabled>
+            </div>
+            <div>
+                <label for="dateOfBirth">Date of Birth:</label>
+                <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control" value="{{ request.user.date_of_birth|date:'Y-m-d' }}" readonly disabled>
+            </div>
+            <div>
+                <label for="dateOfFirstAppointment">Date of First Appointment:</label>
+                <input type="date" id="dateOfFirstAppointment" name="date_of_first_appointment" name="date_of_first_appointment" class="form-control" value="{{ request.user.date_of_first_appointment|date:'Y-m-d' }}" readonly disabled>
+            </div>
+            <div>
+                <label for="dateOfPresentAppointment">Date of Present Appointment:</label>
+                <input type="date" id="dateOfPresentAppointment" class="form-control" name="date_of_present_appointment" value="{{ request.user.date_of_present_appointment|date:'Y-m-d' }}" readonly disabled>
+            </div>
+            <div>
+                <label for="dateOfActingAppointment">Date of Acting Appointment:</label>
+                <input type="date" id="dateOfActingAppointment" name="date_of_acting_appointment" class="form-control" value="{{ request.user.date_of_acting_appointment|date:'Y-m-d' }}" readonly disabled>
+            </div>
+            <div>
+                <label for="fileNumber">File Number:</label>
+                <input type="text" id="fileNumber" name="file_number" class="form-control" value="{{ request.user.file_number }}" readonly disabled>
+            </div>
+            <div>
+                <label for="ippisNumber">IPPIS Number:</label>
+                <input type="text" id="ippisNumber" name="ippis_no" class="form-control" value="{{ request.user.ippis_no }}" readonly disabled>
+            </div>
+            <div>
+                <label for="designation">Designation:</label>
+                <input type="text" id="designation" name="designation" class="form-control" value="{{ request.user.designation }}" readonly disabled>
+            </div>
+            <div>
+                <label for="department">Department:</label>
+                <input type="text" id="department" name="department" class="form-control" value="{{ request.user.department }}" readonly disabled>
+            </div>
         </div>
-        
-        <div class="section">
-            <h2>C (i) Job Description/Role For The Period Of Evaluation</h2>
-            <table  id="jobDescriptionTable" style="width: 100%;">
-                <tr>
-                    <th class="required-field">Activity/Task Assigned to You</th>
-                    <th class="required-field">Overall Assessment of Performance</th>
-                    <th>Action</th>
-                </tr>
-                <tr>
-                    <td style="width: 45%;"><input type="text" name="activity_task[]" required></td>
-                    <td style="width: 45%;"><input type="text" name="overall_assessment_of_performance[]" required></td>
-                    <td style="width: 10%;"><button type="button" class="add-job-description-row">Add</button></td>
+    </div>
+    <!-- New Section 1B: Educational Background -->
+    <div class="section">
+        <h2>B: Educational/Professional certifications</h2>
+        <table>
+            <tr>
+                <th>Highest Qualification (Most Recent Qualification, Academic /Professional)</th>
+                <th>Institution</th>
+                <th>Date of Award</th>
+            </tr>
+            <tr>
+                <td><input type="text" id="qualification" name="qualification" class="form-control" value="{{ request.user.qualification }}" readonly disabled></td>
+                <td><input type="text" id="institution" name="institution" class="form-control" value="{{ request.user.institution }}" readonly disabled></td>
+                <td><input type="date" id="awardDate" name= "qualification_award_date" class="form-control" value="{{ request.user.qualification_award_date|date:'Y-m-d' }}" readonly disabled></td>
+            </tr>
+            
+        </table>
+    </div>
+    
+    <div class="section">
+        <h2>C (i) Job Description/Role For The Period Of Evaluation</h2>
+        <table  id="jobDescriptionTable" style="width: 100%;">
+            <tr>
+                <th class="required-field">Activity/Task Assigned to You</th>
+                <th class="required-field">Overall Assessment of Performance</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td style="width: 45%;"><input type="text" name="activity_task[]" required></td>
+                <td style="width: 45%;"><input type="text" name="overall_assessment_of_performance[]" required></td>
+                <td style="width: 10%;"><button type="button" class="add-job-description-row">Add</button></td>
 
-                </tr>
-            </table>
+            </tr>
+        </table>
+    </div>
+
+        <div class="section">
+            <div class="details personal">
+                <span class="title">
+                    <h2>C (ii) Job Description</h2>
+                </span>
+                <div class="Job_Description">
+                    <table style="width: 100%;">
+                        <!-- Question a -->
+                        <tr>
+                            <td style="width: 100%;" colspan="2">
+                                <label class="required-field"><strong>(a)</strong> State in the box in order of importance the main duties performed in relation to the targets set during the period of report</label>
+                                <textarea name="main_duties_performed_by_staff" rows="3" required style="width: 100%;"></textarea>
+                            </td>
+                        </tr>
+                        <!-- Question b -->
+                        <tr>
+                            <td style="width: 80%;" class="required-field"><strong>(b)</strong> Was there any joint discussion between you and your Supervisor on how to accomplish the target?</td>
+                            <td style="width: 20%;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <label for="jointDiscussionYes">Yes</label>
+                                    <label for="jointDiscussionNo">No</label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionYes" value="yes">
+                                    <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionNo" value="no">
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Question c -->
+                        <tr>
+                            <td style="width: 80%;" class="required-field"><strong>(c)</strong> Were you properly equipped professionally/technically/administratively to perform the jobs allocated to you?</td>
+                            <td style="width: 20%;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <label for="equippedYes">Yes</label>
+                                    <label for="equippedNo">No</label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <input type="radio" name="staff_professionally_equipped" id="equippedYes" value="yes">
+                                    <input type="radio" name="staff_professionally_equipped" id="equippedNo" value="no">
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Question d -->
+                        <tr>
+                            <td style="width: 100%;" colspan="2">
+                                <label class="required-field"><strong>(d)</strong> In light of <strong> (c) </strong> above, state the various difficulties encountered in achieving the set targets and efforts you and your supervisor put in to rectify them.</label>
+                                <textarea name= "difficulties_achieving_target" rows="3" required style="width: 100%;"></textarea>
+                            </td>
+                        </tr>                            
+                        <!-- Question e -->
+                        <tr>
+                            <td style="width: 100%;" colspan="2">
+                                <label class="required-field"><strong>(e)</strong> What was the method adopted by your supervisor to assist you in solving the difficult problems?</label>
+                                <textarea name="method_by_supervisor_to_resolve_difficulties" rows="3" required style="width: 100%;"></textarea>
+                            </td>
+                        </tr>
+                        <!-- Question f -->
+                        <tr>
+                            <td style="width: 80%;" class="required-field"><strong>(f)</strong> Was there any periodic review of the targets set for you by your supervisor to achieve the desired goals?</td>
+                            <td style="width: 20%;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <label  for="reviewYes">Yes</label>
+                                    <label  for="reviewNo">No</label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <input name="target_review_with_supervisor" type="radio" id="reviewYes" value="yes">
+                                    <input name="target_review_with_supervisor" type="radio" id="reviewNo" value="no">
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Question g -->
+                        <tr>
+                            <td style="width: 80%;" class="required-field"><strong>(g)</strong> After the review, did your performance measure up to the prescribed standards set at the beginning of the year?</td>
+                            <td style="width: 20%;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <label for="performanceYes">Yes</label>
+                                    <label for="performanceNo">No</label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <input type="radio" name="performance_measure_upto_standard_after_review" id="performanceYes" value="yes">
+                                    <input type="radio" name="performance_measure_upto_standard_after_review" id="performanceNo" value="no">
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Question h -->
+                        <tr>
+                            <td style="width: 100%;" colspan="2">
+                                <label class="required-field"><strong>(h)</strong> State any ad hoc duties performed by you in addition to your normal schedule of duties which were not of continuous nature</label>
+                                <textarea rows="3" name="adhoc_duties_performed" required style="width: 100%;"></textarea>
+                            </td>
+                        </tr>
+                        <!-- Question i -->
+                        <tr>
+                            <td style="width: 80%;" class="required-field"><strong>(i)</strong> Did the performance of these ad hoc duties affect your real duties and if so, did you bring these to the attention of your supervisor?</td>
+                            <td style="width: 20%;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <label for="adHocYes">Yes</label>
+                                    <label for="adHocNo">No</label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <input type="radio" name="adhoc_duties_impact_real_duties" id="adHocYes" value="yes">
+                                    <input type="radio" name="adhoc_duties_impact_real_duties" id="adHocNo" value="no">
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Question j -->
+                        <tr>
+                            <td style="width: 80%;" class="required-field">
+                                <span class="title"><strong>(j)</strong> State the period that you have been on the schedule of duty referred to in <strong>(a) </strong> above:</span>
+                            </td>
+                            <td style="width: 20%;">
+                                <div class="fields">
+                                    <div class="input-field">
+                                        <label>From</label>
+                                        <input name="main_duties_performed_by_staff_from_date" type="date" required>
+                                    </div>
+                                    <div class="input-field">
+                                        <label>To</label>
+                                        <input name="main_duties_performed_by_staff_to_date" type="date" required>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
 
             <div class="section">
-                <div class="details personal">
-                    <span class="title">
-                        <h2>C (ii) Job Description</h2>
-                    </span>
-                    <div class="Job_Description">
-                        <table style="width: 100%;">
-                            <!-- Question a -->
-                            <tr>
-                                <td style="width: 100%;" colspan="2">
-                                    <label class="required-field"><strong>(a)</strong> State in the box in order of importance the main duties performed in relation to the targets set during the period of report</label>
-                                    <textarea name="main_duties_performed_by_staff" rows="3" required style="width: 100%;"></textarea>
-                                </td>
-                            </tr>
-                            <!-- Question b -->
-                            <tr>
-                                <td style="width: 80%;" class="required-field"><strong>(b)</strong> Was there any joint discussion between you and your Supervisor on how to accomplish the target?</td>
-                                <td style="width: 20%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <label for="jointDiscussionYes">Yes</label>
-                                        <label for="jointDiscussionNo">No</label>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionYes" value="yes">
-                                        <input type="radio" name="joint_discussion_with_supervisor" id="jointDiscussionNo" value="no">
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Question c -->
-                            <tr>
-                                <td style="width: 80%;" class="required-field"><strong>(c)</strong> Were you properly equipped professionally/technically/administratively to perform the jobs allocated to you?</td>
-                                <td style="width: 20%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <label for="equippedYes">Yes</label>
-                                        <label for="equippedNo">No</label>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <input type="radio" name="staff_professionally_equipped" id="equippedYes" value="yes">
-                                        <input type="radio" name="staff_professionally_equipped" id="equippedNo" value="no">
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Question d -->
-                            <tr>
-                                <td style="width: 100%;" colspan="2">
-                                    <label class="required-field"><strong>(d)</strong> In light of <strong> (c) </strong> above, state the various difficulties encountered in achieving the set targets and efforts you and your supervisor put in to rectify them.</label>
-                                    <textarea name= "difficulties_achieving_target" rows="3" required style="width: 100%;"></textarea>
-                                </td>
-                            </tr>                            
-                            <!-- Question e -->
-                            <tr>
-                                <td style="width: 100%;" colspan="2">
-                                    <label class="required-field"><strong>(e)</strong> What was the method adopted by your supervisor to assist you in solving the difficult problems?</label>
-                                    <textarea name="method_by_supervisor_to_resolve_difficulties" rows="3" required style="width: 100%;"></textarea>
-                                </td>
-                            </tr>
-                            <!-- Question f -->
-                            <tr>
-                                <td style="width: 80%;" class="required-field"><strong>(f)</strong> Was there any periodic review of the targets set for you by your supervisor to achieve the desired goals?</td>
-                                <td style="width: 20%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <label  for="reviewYes">Yes</label>
-                                        <label  for="reviewNo">No</label>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <input name="target_review_with_supervisor" type="radio" id="reviewYes" value="yes">
-                                        <input name="target_review_with_supervisor" type="radio" id="reviewNo" value="no">
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Question g -->
-                            <tr>
-                                <td style="width: 80%;" class="required-field"><strong>(g)</strong> After the review, did your performance measure up to the prescribed standards set at the beginning of the year?</td>
-                                <td style="width: 20%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <label for="performanceYes">Yes</label>
-                                        <label for="performanceNo">No</label>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <input type="radio" name="performance_measure_upto_standard_after_review" id="performanceYes" value="yes">
-                                        <input type="radio" name="performance_measure_upto_standard_after_review" id="performanceNo" value="no">
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Question h -->
-                            <tr>
-                                <td style="width: 100%;" colspan="2">
-                                    <label class="required-field"><strong>(h)</strong> State any ad hoc duties performed by you in addition to your normal schedule of duties which were not of continuous nature</label>
-                                    <textarea rows="3" name="adhoc_duties_performed" required style="width: 100%;"></textarea>
-                                </td>
-                            </tr>
-                            <!-- Question i -->
-                            <tr>
-                                <td style="width: 80%;" class="required-field"><strong>(i)</strong> Did the performance of these ad hoc duties affect your real duties and if so, did you bring these to the attention of your supervisor?</td>
-                                <td style="width: 20%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <label for="adHocYes">Yes</label>
-                                        <label for="adHocNo">No</label>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <input type="radio" name="adhoc_duties_impact_real_duties" id="adHocYes" value="yes">
-                                        <input type="radio" name="adhoc_duties_impact_real_duties" id="adHocNo" value="no">
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Question j -->
-                            <tr>
-                                <td style="width: 80%;" class="required-field">
-                                    <span class="title"><strong>(j)</strong> State the period that you have been on the schedule of duty referred to in <strong>(a) </strong> above:</span>
-                                </td>
-                                <td style="width: 20%;">
-                                    <div class="fields">
-                                        <div class="input-field">
-                                            <label>From</label>
-                                            <input name="main_duties_performed_by_staff_from_date" type="date" required>
+                <section class="achievement-section">
+                    <div class="details personal">
+                        <span class="title">
+                            <h2>D. Achievement of Target: (If Applicable)</h2>
+                        </span>
+                        <table style="width: 100%; table-layout: fixed;">
+                            <tbody>
+                                <!-- Question 1 -->
+                                <tr>
+                                    <td class="question-cell" style="width: 80%;"><strong>(I)</strong> What was the estimated cost of the Project/Assignment/Responsibility set for your Division/Section/Unit?</td>
+                                    <td class="options-cell" style="width: 20%;">
+                                        <div>
+                                            <label>Allowances: </label> <input type="text" id="allowances" name="cost_project_assignment_responsibility_allowances" >
+                                            <label>Overhead Cost: </label> <input type="text" id="overhead_cost" name="project_assignment_responsibility_overhead_cost" >
+                                            <label>Capital Cost: </label> <input type="text" id="capital_cost" name="project_assignment_responsibility_capital_cost" >
                                         </div>
-                                        <div class="input-field">
-                                            <label>To</label>
-                                            <input name="main_duties_performed_by_staff_to_date" type="date" required>
+                                    </td>
+                                </tr>
+                                <!-- Question 2 -->
+                                <tr>
+                                    <td class="question-cell" style="width: 80%;"><strong>(II)</strong> What was the agreed time for the completion of the Project/Assignment/Responsibility?</td>
+                                    <td class="options-cell" style="width: 20%;">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <label class="radio-label" for="completion_daily">Daily|</label>
+                                            <label class="radio-label" for="completion_weekly">Weekly|</label>
+                                            <label class="radio-label" for="completion_monthly">Monthly|</label>
+                                            <label class="radio-label" for="completion_yearly">Yearly</label>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <input type="radio" name="project_assigment_completion_time" id="completion_daily" value="DAILY">
+                                            <input type="radio" name="project_assigment_completion_time" id="completion_weekly" value="WEEKLY">
+                                            <input type="radio" name="project_assigment_completion_time" id="completion_monthly" value="MONTHLY">
+                                            <input type="radio" name="project_assigment_completion_time" id="completion_yearly" value="YEARLY">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Question 3 -->
+                                <tr>
+                                    <td class="question-cell" style="width: 80%;"><strong>(III)</strong> Was the quantity of the work performed during the period of the report in conformity with the set standard?</td>
+                                    <td class="options-cell" style="width: 20%;">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <label class="radio-label" for="quantity_yes">Yes</label>
+                                            <label class="radio-label" for="quantity_no">No</label>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <input type="radio" name="project_quantity_conformity_to_standard" id="quantity_yes" value="yes">
+                                            <input type="radio" name="project_quantity_conformity_to_standard" id="quantity_no" value="no">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Question 4 -->
+                                <tr>
+                                    <td class="question-cell" style="width: 80%;"><strong>(IV)</strong> Did the quality of the Project/Assignment/Responsibility so far completed agree with the set standards?</td>
+                                    <td class="options-cell" style="width: 20%;">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <label class="radio-label" for="quality_yes">Yes</label>
+                                            <label class="radio-label" for="quality_no">No</label>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <input type="radio" name="project_quality_conformity_to_standard" id="quality_yes" value="yes">
+                                            <input type="radio" name="project_quality_conformity_to_standard" id="quality_no" value="no">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
-                </div>
+                </section>
             </div>
-
-                <div class="section">
-                    <section class="achievement-section">
-                        <div class="details personal">
-                            <span class="title">
-                                <h2>D. Achievement of Target: (If Applicable)</h2>
+            <div class="section">
+                <h2>E: Training course/Seminars attended (Period Under Review)</h2>
+                <table id="TrainingCourseSeminarsTable" style="width: 100%;">
+                    <tr>
+                        <th>Type of Training/Seminar</th>
+                        <th>Where was the Training held</th>
+                        <th>Period of Training</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td style="width: 40%;"><input type="text" id="trainingProgram" name="training_program_type[]"></td>
+                        <td style="width: 20%;"><input type="text" id="trainingLocation" name="training_location[]"></td>
+                        <td style="width: 20%;"><label>From</label><input type="date" id="trainingDate" name="training_from_date[]">
+                            <label>To</label><input type="date" id="trainingDate" name="training_to_date[]">
+                        </td>
+                        <td style="width: 10%;"><button type="button" class="add-training-course-row">Add</button></td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td class="question-cell" style="width: 80%;"> Has the training received by you enhanced your performance and productivity?</td>
+                        <td class="options-cell" style="width: 20%;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <label class="radio-label" for="quality_yes">Yes</label>
+                                <label class="radio-label" for="quality_no">No</label>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <input type="radio" name="quality_of_training_received" id="quality_yes" value="yes">
+                                <input type="radio" name="quality_of_training_received" id="quality_no" value="no">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="section">
+                <strong class="required-field">I have served for over 3 months under:</strong><br>
+                <table class="table">
+                    <tr>
+                        <!-- Reporting Officer (Supervisor) -->
+                        <td>
+                            <span class="title">(i). Mr./Mrs.
+                                <div class="fields">
+                                    <div class="input-field">
+                                        <label><strong>the reporting officer</strong></label>
+                                        <select id="reportingOfficer" name="reporting_officer" required>
+                                            <option value="">Select a reporting officer</option>
+                                            {% for hod in hods %}
+                                                <option value="{{ hod.get_full_name }}">{{ hod.get_full_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="input-field">
+                                        <label>From</label>
+                                        <input type="date" id="reportingOfficerFromDate" name="reporting_officer_from_date" required>
+                                    </div>
+                                    <div class="input-field">
+                                        <label>To</label>
+                                        <input type="date" id="reportingOfficerToDate" name="reporting_officer_to_date" required>
+                                    </div>
+                                </div>
                             </span>
-                            <table style="width: 100%; table-layout: fixed;">
-                                <tbody>
-                                    <!-- Question 1 -->
-                                    <tr>
-                                        <td class="question-cell" style="width: 80%;"><strong>(I)</strong> What was the estimated cost of the Project/Assignment/Responsibility set for your Division/Section/Unit?</td>
-                                        <td class="options-cell" style="width: 20%;">
-                                            <div>
-                                                <label>Allowances: </label> <input type="text" id="allowances" name="cost_project_assignment_responsibility_allowances" >
-                                                <label>Overhead Cost: </label> <input type="text" id="overhead_cost" name="project_assignment_responsibility_overhead_cost" >
-                                                <label>Capital Cost: </label> <input type="text" id="capital_cost" name="project_assignment_responsibility_capital_cost" >
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- Question 2 -->
-                                    <tr>
-                                        <td class="question-cell" style="width: 80%;"><strong>(II)</strong> What was the agreed time for the completion of the Project/Assignment/Responsibility?</td>
-                                        <td class="options-cell" style="width: 20%;">
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <label class="radio-label" for="completion_daily">Daily|</label>
-                                                <label class="radio-label" for="completion_weekly">Weekly|</label>
-                                                <label class="radio-label" for="completion_monthly">Monthly|</label>
-                                                <label class="radio-label" for="completion_yearly">Yearly</label>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <input type="radio" name="project_assigment_completion_time" id="completion_daily" value="DAILY">
-                                                <input type="radio" name="project_assigment_completion_time" id="completion_weekly" value="WEEKLY">
-                                                <input type="radio" name="project_assigment_completion_time" id="completion_monthly" value="MONTHLY">
-                                                <input type="radio" name="project_assigment_completion_time" id="completion_yearly" value="YEARLY">
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- Question 3 -->
-                                    <tr>
-                                        <td class="question-cell" style="width: 80%;"><strong>(III)</strong> Was the quantity of the work performed during the period of the report in conformity with the set standard?</td>
-                                        <td class="options-cell" style="width: 20%;">
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <label class="radio-label" for="quantity_yes">Yes</label>
-                                                <label class="radio-label" for="quantity_no">No</label>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <input type="radio" name="project_quantity_conformity_to_standard" id="quantity_yes" value="yes">
-                                                <input type="radio" name="project_quantity_conformity_to_standard" id="quantity_no" value="no">
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- Question 4 -->
-                                    <tr>
-                                        <td class="question-cell" style="width: 80%;"><strong>(IV)</strong> Did the quality of the Project/Assignment/Responsibility so far completed agree with the set standards?</td>
-                                        <td class="options-cell" style="width: 20%;">
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <label class="radio-label" for="quality_yes">Yes</label>
-                                                <label class="radio-label" for="quality_no">No</label>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <input type="radio" name="project_quality_conformity_to_standard" id="quality_yes" value="yes">
-                                                <input type="radio" name="project_quality_conformity_to_standard" id="quality_no" value="no">
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                </div>
-                <div class="section">
-                    <h2>E: Training course/Seminars attended (Period Under Review)</h2>
-                    <table id="TrainingCourseSeminarsTable" style="width: 100%;">
-                        <tr>
-                            <th>Type of Training/Seminar</th>
-                            <th>Where was the Training held</th>
-                            <th>Period of Training</th>
-                            <th>Action</th>
-                        </tr>
-                        <tr>
-                            <td style="width: 40%;"><input type="text" id="trainingProgram" name="training_program_type[]"></td>
-                            <td style="width: 20%;"><input type="text" id="trainingLocation" name="training_location[]"></td>
-                            <td style="width: 20%;"><label>From</label><input type="date" id="trainingDate" name="training_from_date[]">
-                                <label>To</label><input type="date" id="trainingDate" name="training_to_date[]">
-                            </td>
-                            <td style="width: 10%;"><button type="button" class="add-training-course-row">Add</button></td>
-                        </tr>
-                    </table>
-                    <table>
-                        <tr>
-                            <td class="question-cell" style="width: 80%;"> Has the training received by you enhanced your performance and productivity?</td>
-                            <td class="options-cell" style="width: 20%;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <label class="radio-label" for="quality_yes">Yes</label>
-                                    <label class="radio-label" for="quality_no">No</label>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <input type="radio" name="quality_of_training_received" id="quality_yes" value="yes">
-                                    <input type="radio" name="quality_of_training_received" id="quality_no" value="no">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="section">
-                    <strong class="required-field">I have served for over 3 months under:</strong><br>
-                    <table class="table">
-                        <tr>
-                            <!-- Reporting Officer (Supervisor) -->
-                            <td>
-                                <span class="title">(i). Mr./Mrs.
-                                    <div class="fields">
-                                        <div class="input-field">
-                                            <label><strong>the reporting officer</strong></label>
-                                            <select id="reportingOfficer" name="reporting_officer" required>
-                                                <option value="">Select a reporting officer</option>
-                                                {% for hod in hods %}
-                                                    <option value="{{ hod.get_full_name }}">{{ hod.get_full_name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="input-field">
-                                            <label>From</label>
-                                            <input type="date" id="reportingOfficerFromDate" name="reporting_officer_from_date" required>
-                                        </div>
-                                        <div class="input-field">
-                                            <label>To</label>
-                                            <input type="date" id="reportingOfficerToDate" name="reporting_officer_to_date" required>
-                                        </div>
+                        </td>
+                        <!-- Countersigning Officer (HoD) -->
+                        <!--<td>
+                            <span class="title">(ii). Mr./Mrs.
+                                <div class="fields">
+                                    <div class="input-field">
+                                        <label><strong>the countersigning officer</strong></label>
+                                        <select id="countersigningOfficer" name="countersigning_officer" required>
+                                            <option value="">Select a countersigning officer</option>
+                                            {% for hod in hods %}
+                                                <option value="{{ hod.id }}">{{ hod.get_full_name }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-                                </span>
-                            </td>
-                            <!-- Countersigning Officer (HoD) -->
-                            <!--<td>
-                                <span class="title">(ii). Mr./Mrs.
-                                    <div class="fields">
-                                        <div class="input-field">
-                                            <label><strong>the countersigning officer</strong></label>
-                                            <select id="countersigningOfficer" name="countersigning_officer" required>
-                                                <option value="">Select a countersigning officer</option>
-                                                {% for hod in hods %}
-                                                    <option value="{{ hod.id }}">{{ hod.get_full_name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="input-field">
-                                            <label>From</label>
-                                            <input type="date" id="countersigningOfficerFromDate" name="countersigning_officer_from_date" required>
-                                        </div>
-                                        <div class="input-field">
-                                            <label>To</label>
-                                            <input type="date" id="countersigningOfficerToDate" name="countersigning_officer_to_date" required>
-                                        </div>
+                                    <div class="input-field">
+                                        <label>From</label>
+                                        <input type="date" id="countersigningOfficerFromDate" name="countersigning_officer_from_date" required>
                                     </div>
-                                </span>
-                            </td>-->
-                        </tr>
-                    </table>
-                </div>
-                
-             <div class="section hide-field">   
-                <p style="color: red;"><b>The Section Below is for your Supervisor and Director<br>SCROLL DOWN TO THE BOTTOM OF THE PAGE TO SUBMIT YOUR FORM</b></p>
+                                    <div class="input-field">
+                                        <label>To</label>
+                                        <input type="date" id="countersigningOfficerToDate" name="countersigning_officer_to_date" required>
+                                    </div>
+                                </div>
+                            </span>
+                        </td>-->
+                    </tr>
+                </table>
+            </div>
+            
+         <div class="section hide-field">   
+            <p style="color: red;"><b>The Section Below is for your Supervisor and Director<br>SCROLL DOWN TO THE BOTTOM OF THE PAGE TO SUBMIT YOUR FORM</b></p>
 
-                <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2><p style="color: red;"><b>( To be filled by Supervisor)</b></p>
+            <h2>Section 2: Performance Evaluation (<span class="red-text">16 points</span>)</h2><p style="color: red;"><b>( To be filled by Supervisor)</b></p>
 
-            <p><b>Instructions: </b><i>Rate the employee's performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 16 Sixteen and match with the corresponding marks in bracket. Prior to the performance discussion with the employee, a detailed plan to address areas rated "needs improvement" or "unacceptable" must be submitted to the department head and human resources for review.</i></p>
-            <br>    
-            <p><b>Rating scale:</b></p>
-                <p><b>5 – Excellent (consistently exceeds standards) – (16) 4 - Outstanding (frequently exceeds standards) – (13) 3- Satisfactory (generally meets standards) -(10) 2- Needs improvement (frequently fails to meet standards) – (7) 1- Unacceptable (fails to meet standards) – (5)</b></p>
-            <table>
-                <!--<h2>Work (<span class="red-text">10 points</span>)</h2>-->
-                <br>
-                <tr>
-                    <th style="width: 80%;">Parameter</th>
-                    <th style="width: 20%;">Rating</th>
-                </tr>
-                <tr>
-                    <td><strong>a. </strong><b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
-                    <td>
-                        <select name="job_knowledge" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>b. </strong><b> Quality of Work </b><p>Freedom from errors and mistakes. Accuracy, quality of work in general.</p></td>
-                    <td>
-                        <select name="quality_of_work" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>c. </strong><b> Quantity of Work </b><p>Productivity of the employee.</p></td>
-                    <td>
-                        <select name="quantity_of_work" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>d. </strong><b> Reliability </b><p>The extent to which the employee can be depended upon to be available for work, to complete work properly, and complete work on time. The degree to which the employee is reliable, trustworthy, and persistent. 
-                        Consistency in coming to work daily and conforming to scheduled work hours. ATTENDANCE
-                        </p></td>
-                    <td>
-                        <select name="reliability" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>e. </strong> <b>Initiative and Creativity </b><p>The ability to plan work and to proceed with a task without being told every detail and the ability to make constructive suggestions.</p></td>
-                    <td>
-                        <select name="initiative_creativity" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>f. </strong><b> Judgement </b><p>The extent to which the employee makes decisions that is sound. The ability to base decisions on fact rather than emotion.</p></td>
-                    <td>
-                        <select name="judgment" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="section hide-field">
-            <h3>Character Trait</h3>
-            <table>
-                <tr>
-                    <th style="width: 80%;">Parameter</th>
-                    <th style="width: 20%;">Rating</th>
-                </tr>
-                <tr>
-                    <td><strong>a. </strong><b>Interpersonal Relationship with Supervisor</b><br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
-                    </td>
-                    <td>
-                        <select name="relationship_with_supervisor" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>b. </strong><b> Quality of work</b><br><p>Willingness to work harmoniously with others in getting a job done. Readiness to respond positively to instructions and procedures.</p>
-                        <td>
-                        <select name="working_with_others" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>c. </strong><b>Interpersonal Relationship with Subordinates</b><br><p>Ability to direct and give clear instructions, coach/mentor and provide leadership in a way that is not domineering and at the same time result oriented..</p>
-                        <td>
-                        <select name="relationship_with_subordinates" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>d. </strong> <b>Communication Skills (Written & Verbal)</b><br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
-                        <td>
-                        <select name="communication_skills" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-          </table>
-        </div>
-        <div class="section hide-field">
-            <h3>Complete this Section for Employees with Supervisory Responsibilities:</h3>
-            <table>
-                <tr>
-                    <th style="width: 80%;">Parameter</th>
-                    <th style="width: 20%;">Rating</th>
-                </tr>
-                <tr>
-                    <td><strong>a. </strong> <b>Planning and organizing</b><br>
-                        <p>The ability to analyze work, set goals, develop plans of action, utilize time. Consider amount of supervision required and extent to which you can trust employee to carry out assignments diligently.</p>
-                    </td>
-                    <td>
-                        <select name="planning_and_organizing" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>b. </strong> <b>Directing and controlling</b><br><p>The ability to create a motivating climate, achieve teamwork, train and develop, measure work in progress, take corrective action.</p>
-                        <td>
-                        <select name="directing_and_controlling" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>c. </strong><b>Decision-making</b><br><p>The ability to make decisions and the quality and timeliness of those decisions.</p>
-                        <td>
-                        <select name="decision_making" readonly disabled>
-                            <option value="">Select rating</option>
-                            <option value="16">5 - Excellent</option>
-                            <option value="13">4 - Outstanding</option>
-                            <option value="10">3 - Satisfactory</option>
-                            <option value="7">2 - Needs improvement</option>
-                            <option value="5">1 - Unacceptable</option>
-                        </select>
-                    </td>
-                </tr>
-                
-          </table>
-          <p style="color: red;"><b><i>GRADING: All numerical values from each category above will then be divide by 10 (or 13 if supervisory section was completed).</p>
-        </div>
-        <div class="section hide-field">
-        <table class="evaluation-table">
+        <p><b>Instructions: </b><i>Rate the employee's performance during the review period by checking the most appropriate numerical value in each section. To determine the overall performance rating, add the numerical values together and divide by 16 Sixteen and match with the corresponding marks in bracket. Prior to the performance discussion with the employee, a detailed plan to address areas rated "needs improvement" or "unacceptable" must be submitted to the department head and human resources for review.</i></p>
+        <br>    
+        <p><b>Rating scale:</b></p>
+            <p><b>5 – Excellent (consistently exceeds standards) – (16) 4 - Outstanding (frequently exceeds standards) – (13) 3- Satisfactory (generally meets standards) -(10) 2- Needs improvement (frequently fails to meet standards) – (7) 1- Unacceptable (fails to meet standards) – (5)</b></p>
+        <table>
+            <!--<h2>Work (<span class="red-text">10 points</span>)</h2>-->
+            <br>
             <tr>
-                <td colspan="2"><strong>Incentive/Reward</strong><br></td>
+                <th style="width: 80%;">Parameter</th>
+                <th style="width: 20%;">Rating</th>
             </tr>
             <tr>
-                <td colspan="2">
-                    Has the officer received any special commendations (WRITTEN) DURING the year for outstanding performance? (<span class="red-text">2 points</span>)
-                    <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
-                        <label for="quality_yes">Yes</label>
-                        <input type="radio" name="commendation_for_outstanding_performance" id="commendation_yes" value="yes" readonly disabled>
-                        
-                        <label for="quality_no">No</label>
-                        <input type="radio" name="commendation_for_outstanding_performance" id="commendation_no" value="no" readonly disabled>
-                    </div>
-                    <br>
-                    If YES, give details:
-                
-                    <textarea rows="3" name="details_of_commendation_for_outstanding_performance" style="width: 100%;" readonly disabled></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Leadership Attainment</strong><br></td>
-            </tr>
-            <!--<tr>
-                <td colspan="2">Did he make suggestions for changes/adjust methods/procedures that significantly contribute to his/her own work or that of any associate/subordinates? (<span class="red-text">2 points</span>)
-                    <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
-                    <label for="leadershipYes">Yes</label>
-                    <input type="radio" name="suggestions_that_contributed_to_changes" id="leadershipYes" value="yes" readonly disabled>
-                        
-                    <label for="leadershipNo">No</label>
-                    <input type="radio" name="suggestions_that_contributed_to_changes" id="leadershipNo" value="no" readonly disabled>
-                    </div>
-                </td>
-            </tr>-->
-            <tr>
-                <td>Did he make suggestions for changes/adjust methods/procedures that significantly contribute to his/her own work or that of any associate/subordinates? (<span class="red-text">range 2 - 0.5 points</span>)</p>
-                    <select name="suggestions_that_contributed_to_changes" readonly disabled>
+                <td><strong>a. </strong><b> Job Knowledge </b><p>Knowledge of products, policies and procedures; OR knowledge of techniques, skills, equipment, procedures, and materials.</p></td>
+                <td>
+                    <select name="job_knowledge" readonly disabled>
                         <option value="">Select rating</option>
-                        <option value="2">5 - Always, Frequently suggests innovative changes or adjustments that significantly contribute to both their own and others' work.</option>
-                        <option value="1.99">4 - Often, Regularly makes helpful suggestions and adjustments that positively impact their own work and sometimes that of others.</option>
-                        <option value="1">3 - Sometimes, Occasionally offers suggestions or makes adjustments that contribute to their work or the work of others.</option>
-                        <option value="0.99">2 - Rarely, Rarely suggests changes or adjustments, with limited contributions to their own or others' work.</option>
-                        <option value="0.5">1 - Never, Never makes suggestions or adjustments that contribute to their own or others' work.</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <td colspan="2"><strong>Sanction/Discipline</strong><br></td>
+                <td><strong>b. </strong><b> Quality of Work </b><p>Freedom from errors and mistakes. Accuracy, quality of work in general.</p></td>
+                <td>
+                    <select name="quality_of_work" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
+                </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    Has any disciplinary action been taken against the officer during the period covered by this report?
-                    <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
-                        <label for="quality_yes">Yes</label>
-                        <input type="radio" name="sanction_discipline" id="saction_yes" value="yes" readonly disabled>
-                        
-                        <label for="quality_no">No</label>
-                        <input type="radio" name="sanction_discipline" id="saction_no" value="no" readonly disabled>
-                    </div>
-                    <br>
-                    If YES, give details of Sanction:
-                
-                    <textarea rows="3" name="details_sanction_discipline" style="width: 100%;" readonly disabled></textarea>
+                <td><strong>c. </strong><b> Quantity of Work </b><p>Productivity of the employee.</p></td>
+                <td>
+                    <select name="quantity_of_work" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>d. </strong><b> Reliability </b><p>The extent to which the employee can be depended upon to be available for work, to complete work properly, and complete work on time. The degree to which the employee is reliable, trustworthy, and persistent. 
+                    Consistency in coming to work daily and conforming to scheduled work hours. ATTENDANCE
+                    </p></td>
+                <td>
+                    <select name="reliability" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>e. </strong> <b>Initiative and Creativity </b><p>The ability to plan work and to proceed with a task without being told every detail and the ability to make constructive suggestions.</p></td>
+                <td>
+                    <select name="initiative_creativity" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>f. </strong><b> Judgement </b><p>The extent to which the employee makes decisions that is sound. The ability to base decisions on fact rather than emotion.</p></td>
+                <td>
+                    <select name="judgment" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
                 </td>
             </tr>
         </table>
-        </div>
-        <div class="section hide-field">
-            <h2>Section 3 </h2>
-            <table>
-              <tr>
-                <td style="width: 100%;" colspan="2">
-                    <strong>i.</strong> In what way has the Employee developed his/her capacity since the last evaluation?
-                    <textarea rows="3" name="capacity_development_since_last_evaluation" style="width: 100%;" readonly disabled></textarea>
+    </div>
+    <div class="section hide-field">
+        <h3>Character Trait</h3>
+        <table>
+            <tr>
+                <th style="width: 80%;">Parameter</th>
+                <th style="width: 20%;">Rating</th>
+            </tr>
+            <tr>
+                <td><strong>a. </strong><b>Interpersonal Relationship with Supervisor</b><br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
                 </td>
-              </tr>
-              <tr>
-                <td style="width: 100%;" colspan="2">
-                    <strong>ii.</strong> State any outstanding accomplishments of the Employee since the last evaluation?
-                    <textarea rows="3" name="accommplishments_since_last_evaluation" style="width: 100%;" readonly disabled></textarea>
+                <td>
+                    <select name="relationship_with_supervisor" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
                 </td>
-                
-              </tr>
-              <tr>
-                <td style="width: 100%;" colspan="2">
-                    <strong>iii.</strong> Specify areas (if any), in which the Employee requires training to handle new or more responsibilities.
-                    <textarea rows="3" name="training_requirements_to_handle_responsibilities" style="width: 100%;" readonly disabled></textarea>
+            </tr>
+            <tr>
+                <td><strong>b. </strong><b> Quality of work</b><br><p>Willingness to work harmoniously with others in getting a job done. Readiness to respond positively to instructions and procedures.</p>
+                    <td>
+                    <select name="working_with_others" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
                 </td>
-                
-              </tr>
-              <tr>
-                <td style="width: 100%;" colspan="2">
-                    <strong>iv.</strong> What are the skills gaps/areas requiring improvement in job performance noticed in the Employee?
-                    <textarea rows="3" name="skills_gap_requiring_improvement" style="width: 100%;" readonly disabled></textarea>
+            </tr>
+            <tr>
+                <td><strong>c. </strong><b>Interpersonal Relationship with Subordinates</b><br><p>Ability to direct and give clear instructions, coach/mentor and provide leadership in a way that is not domineering and at the same time result oriented..</p>
+                    <td>
+                    <select name="relationship_with_subordinates" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
                 </td>
-              </tr>
-              <tr>
-                <td style="width: 100%;" colspan="2">
-                    <strong>v.</strong> Are there necessary opportunities that could not be created for the Employee during the period evaluated and why?
-                    <textarea rows="3" name="missed_opportunities_reason" style="width: 100%;" readonly disabled></textarea>
+            </tr>
+            <tr>
+                <td><strong>d. </strong> <b>Communication Skills (Written & Verbal)</b><br><p>Ability to relate well with superiors. Interpret directives and receive feedbacks in a professional way.</p>
+                    <td>
+                    <select name="communication_skills" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
                 </td>
-                
-              </tr>
-            </table>
-        </div>
-        <div class="section hide-field">
-            <p>From the above assessments, indicate the overall performance of his/her duties by selecting the appropriate value below:</p>
-            <h3>Overall Assessment:</h3>
-            <select id="overallAssessment" name="overall_performance_assessment" readonly disabled>
-                <option value="">Select assessment</option>
-                <option value="Outstanding">A - Outstanding, An exceptionally valuable member of staff, performance is well above the required standard for the job.</option>
-                <option value="Very Good">B - Very Good, Displays good all-round level of effectiveness; performance meets requirements in all important tasks.</option>
-                <option value="Good">C - Good, A competent member of staff; generally achieves the standard required.</option>
-                <option value="Fair">D - Fair Complete all assignments fairly satisfactorily within agreed date.</option>
-                <option value="Poor">E - Poor, Performance does not always reach the required standard; room for improvement.</option>
-                <option value="Very Poor">F - Very Poor, Performance does not meet the required standard</option>
-            </select>
-        </div>
-        <div class="section hide-field">
+            </tr>
+      </table>
+    </div>
+    <div class="section hide-field">
+        <h3>Complete this Section for Employees with Supervisory Responsibilities:</h3>
+        <table>
+            <tr>
+                <th style="width: 80%;">Parameter</th>
+                <th style="width: 20%;">Rating</th>
+            </tr>
+            <tr>
+                <td><strong>a. </strong> <b>Planning and organizing</b><br>
+                    <p>The ability to analyze work, set goals, develop plans of action, utilize time. Consider amount of supervision required and extent to which you can trust employee to carry out assignments diligently.</p>
+                </td>
+                <td>
+                    <select name="planning_and_organizing" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>b. </strong> <b>Directing and controlling</b><br><p>The ability to create a motivating climate, achieve teamwork, train and develop, measure work in progress, take corrective action.</p>
+                    <td>
+                    <select name="directing_and_controlling" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>c. </strong><b>Decision-making</b><br><p>The ability to make decisions and the quality and timeliness of those decisions.</p>
+                    <td>
+                    <select name="decision_making" readonly disabled>
+                        <option value="">Select rating</option>
+                        <option value="16">5 - Excellent</option>
+                        <option value="13">4 - Outstanding</option>
+                        <option value="10">3 - Satisfactory</option>
+                        <option value="7">2 - Needs improvement</option>
+                        <option value="5">1 - Unacceptable</option>
+                    </select>
+                </td>
+            </tr>
             
-            <h3>Promotability: </h3>
-            <select id="Promotability" name="promotability" readonly disabled>
-                <option value="">Select Promotability</option>
-                <option value="Outstanding">A - Well qualified, the officer already stands out in the next higher </option>
-                <option value="Very Good">B - Ready for promotion</option>
-                <option value="Good">C - Has promotion potentials; has completed the required number of years</option>
-                <option value="Fair">D - Not yet ripe for promotion ( for non-fulfillment of condition prescribed for 
-                    promotion in line with the Guideline on Civil Service reforms)
-                    </option>
-                <option value="Poor">E - No evidence of promotion potential at present.</option>
-                <option value="Very Poor">F - Unlikely to qualify as he/she seems to have reached the limit of his/her capacity.</option>
-            </select>
-        </div>
-        <!--<div class="section">
-            <h2>Section 4: Recommended by supervisor</h2>
+      </table>
+      <p style="color: red;"><b><i>GRADING: All numerical values from each category above will then be divide by 10 (or 13 if supervisory section was completed).</p>
+    </div>
+    <div class="section hide-field">
+    <table class="evaluation-table">
+        <tr>
+            <td colspan="2"><strong>Incentive/Reward</strong><br></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                Has the officer received any special commendations (WRITTEN) DURING the year for outstanding performance? (<span class="red-text">2 points</span>)
+                <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+                    <label for="quality_yes">Yes</label>
+                    <input type="radio" name="commendation_for_outstanding_performance" id="commendation_yes" value="yes" readonly disabled>
+                    
+                    <label for="quality_no">No</label>
+                    <input type="radio" name="commendation_for_outstanding_performance" id="commendation_no" value="no" readonly disabled>
+                </div>
+                <br>
+                If YES, give details:
             
-            <label for="supervisorsComments">Supervisor's Comment:</label>
-            <textarea id="supervisorsComments" name="supervisor_comments" rows="5" placeholder="Enter your comments here..." readonly disabled></textarea>
+                <textarea rows="3" name="details_of_commendation_for_outstanding_performance" style="width: 100%;" readonly disabled></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Leadership Attainment</strong><br></td>
+        </tr>
+        <!--<tr>
+            <td colspan="2">Did he make suggestions for changes/adjust methods/procedures that significantly contribute to his/her own work or that of any associate/subordinates? (<span class="red-text">2 points</span>)
+                <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+                <label for="leadershipYes">Yes</label>
+                <input type="radio" name="suggestions_that_contributed_to_changes" id="leadershipYes" value="yes" readonly disabled>
+                    
+                <label for="leadershipNo">No</label>
+                <input type="radio" name="suggestions_that_contributed_to_changes" id="leadershipNo" value="no" readonly disabled>
+                </div>
+            </td>
+        </tr>-->
+        <tr>
+            <td>Did he make suggestions for changes/adjust methods/procedures that significantly contribute to his/her own work or that of any associate/subordinates? (<span class="red-text">range 2 - 0.5 points</span>)</p>
+                <select name="suggestions_that_contributed_to_changes" readonly disabled>
+                    <option value="">Select rating</option>
+                    <option value="2">5 - Always, Frequently suggests innovative changes or adjustments that significantly contribute to both their own and others' work.</option>
+                    <option value="1.99">4 - Often, Regularly makes helpful suggestions and adjustments that positively impact their own work and sometimes that of others.</option>
+                    <option value="1">3 - Sometimes, Occasionally offers suggestions or makes adjustments that contribute to their work or the work of others.</option>
+                    <option value="0.99">2 - Rarely, Rarely suggests changes or adjustments, with limited contributions to their own or others' work.</option>
+                    <option value="0.5">1 - Never, Never makes suggestions or adjustments that contribute to their own or others' work.</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Sanction/Discipline</strong><br></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                Has any disciplinary action been taken against the officer during the period covered by this report?
+                <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+                    <label for="quality_yes">Yes</label>
+                    <input type="radio" name="sanction_discipline" id="saction_yes" value="yes" readonly disabled>
+                    
+                    <label for="quality_no">No</label>
+                    <input type="radio" name="sanction_discipline" id="saction_no" value="no" readonly disabled>
+                </div>
+                <br>
+                If YES, give details of Sanction:
+            
+                <textarea rows="3" name="details_sanction_discipline" style="width: 100%;" readonly disabled></textarea>
+            </td>
+        </tr>
+    </table>
+    </div>
+    <div class="section hide-field">
+        <h2>Section 3 </h2>
+        <table>
+          <tr>
+            <td style="width: 100%;" colspan="2">
+                <strong>i.</strong> In what way has the Employee developed his/her capacity since the last evaluation?
+                <textarea rows="3" name="capacity_development_since_last_evaluation" style="width: 100%;" readonly disabled></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 100%;" colspan="2">
+                <strong>ii.</strong> State any outstanding accomplishments of the Employee since the last evaluation?
+                <textarea rows="3" name="accommplishments_since_last_evaluation" style="width: 100%;" readonly disabled></textarea>
+            </td>
+            
+          </tr>
+          <tr>
+            <td style="width: 100%;" colspan="2">
+                <strong>iii.</strong> Specify areas (if any), in which the Employee requires training to handle new or more responsibilities.
+                <textarea rows="3" name="training_requirements_to_handle_responsibilities" style="width: 100%;" readonly disabled></textarea>
+            </td>
+            
+          </tr>
+          <tr>
+            <td style="width: 100%;" colspan="2">
+                <strong>iv.</strong> What are the skills gaps/areas requiring improvement in job performance noticed in the Employee?
+                <textarea rows="3" name="skills_gap_requiring_improvement" style="width: 100%;" readonly disabled></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 100%;" colspan="2">
+                <strong>v.</strong> Are there necessary opportunities that could not be created for the Employee during the period evaluated and why?
+                <textarea rows="3" name="missed_opportunities_reason" style="width: 100%;" readonly disabled></textarea>
+            </td>
+            
+          </tr>
+        </table>
+    </div>
+    <div class="section hide-field">
+        <p>From the above assessments, indicate the overall performance of his/her duties by selecting the appropriate value below:</p>
+        <h3>Overall Assessment:</h3>
+        <select id="overallAssessment" name="overall_performance_assessment" readonly disabled>
+            <option value="">Select assessment</option>
+            <option value="Outstanding">A - Outstanding, An exceptionally valuable member of staff, performance is well above the required standard for the job.</option>
+            <option value="Very Good">B - Very Good, Displays good all-round level of effectiveness; performance meets requirements in all important tasks.</option>
+            <option value="Good">C - Good, A competent member of staff; generally achieves the standard required.</option>
+            <option value="Fair">D - Fair Complete all assignments fairly satisfactorily within agreed date.</option>
+            <option value="Poor">E - Poor, Performance does not always reach the required standard; room for improvement.</option>
+            <option value="Very Poor">F - Very Poor, Performance does not meet the required standard</option>
+        </select>
+    </div>
+    <div class="section hide-field">
+        
+        <h3>Promotability: </h3>
+        <select id="Promotability" name="promotability" readonly disabled>
+            <option value="">Select Promotability</option>
+            <option value="Outstanding">A - Well qualified, the officer already stands out in the next higher </option>
+            <option value="Very Good">B - Ready for promotion</option>
+            <option value="Good">C - Has promotion potentials; has completed the required number of years</option>
+            <option value="Fair">D - Not yet ripe for promotion ( for non-fulfillment of condition prescribed for 
+                promotion in line with the Guideline on Civil Service reforms)
+                </option>
+            <option value="Poor">E - No evidence of promotion potential at present.</option>
+            <option value="Very Poor">F - Unlikely to qualify as he/she seems to have reached the limit of his/her capacity.</option>
+        </select>
+    </div>
+    <!--<div class="section">
+        <h2>Section 4: Recommended by supervisor</h2>
+        
+        <label for="supervisorsComments">Supervisor's Comment:</label>
+        <textarea id="supervisorsComments" name="supervisor_comments" rows="5" placeholder="Enter your comments here..." readonly disabled></textarea>
 
-            <label for="supervisorDateOfEvaluation">Date of Evaluation:</label>
-            <input type="date" id="supervisorDateOfEvaluation" name="supervisor_date_of_evaluation" readonly disabled>
+        <label for="supervisorDateOfEvaluation">Date of Evaluation:</label>
+        <input type="date" id="supervisorDateOfEvaluation" name="supervisor_date_of_evaluation" readonly disabled>
 
-        </div>-->
+    </div>-->
 
-        <div class="section hide-field">
-                <h2>Section 4: Head of Department's Comments:</h2>
-                
-                <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." readonly disabled></textarea>
+    <div class="section hide-field">
+            <h2>Section 4: Head of Department's Comments:</h2>
+            
+            <textarea id="headOfDepartmentComments" name="head_of_department_comments" rows="5" placeholder="Enter your comments here..." readonly disabled></textarea>
     
-                <label for="headOfDepartmentComments">Date of Evaluation:</label>
-                <input type="date" id="headOfDepartmentDateOfEvaluation" name="head_of_department_date_of_evaluation" readonly disabled>
-        </div>
-        <div class="section">
-            <button type="submit" class="submit-btn">Submit Evaluation</button>
-        </div>
-        <input type="hidden" id="examLocation" name="exam_location" class="form-control" value="{{ request.user.exam_location }}" readonly>
-    </form>
-    <script>
-        // Add row to Job Description table
-        document.querySelector('.add-job-description-row').addEventListener('click', function() {
-            const table = document.querySelector('#jobDescriptionTable tbody');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td><input type="text" name="activity_task[]" required></td>
-                <td><input type="text" name="overall_assessment_of_performance[]" required></td>
-                <td><button type="button" class="remove-row">Remove</button></td>
-            `;
-            table.appendChild(newRow);
-        });
-    
-        // Add row to Training Course Seminars table
-        document.querySelector('.add-training-course-row').addEventListener('click', function() {
-            const table = document.querySelector('#TrainingCourseSeminarsTable tbody');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td><input type="text" id="trainingProgram" name="training_program_type[]" required></td>
-                <td><input type="text" id="trainingLocation" name="training_location[]" required></td>
-                <td><label>From</label><input type="date" id="trainingDateFrom" name="training_from_date[]" required>
-                    <label>To</label><input type="date" id="trainingDateTo" name="training_to_date[]" required>
-                </td>
-                <td><button type="button" class="remove-row">Remove</button></td>
-            `;
-            table.appendChild(newRow);
-        });
-    
-        // Remove row from any table
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.classList.contains('remove-row')) {
-                e.target.closest('tr').remove();
-            }
-        });
+            <label for="headOfDepartmentComments">Date of Evaluation:</label>
+            <input type="date" id="headOfDepartmentDateOfEvaluation" name="head_of_department_date_of_evaluation" readonly disabled>
+    </div>
+    <div class="section">
+        <button type="submit" class="submit-btn">Submit Evaluation</button>
+    </div>
+    <input type="hidden" id="examLocation" name="exam_location" class="form-control" value="{{ request.user.exam_location }}" readonly>
+</form>
+<script>
+    // Add row to Job Description table
+    document.querySelector('.add-job-description-row').addEventListener('click', function() {
+        const table = document.querySelector('#jobDescriptionTable tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><input type="text" name="activity_task[]" required></td>
+            <td><input type="text" name="overall_assessment_of_performance[]" required></td>
+            <td><button type="button" class="remove-row">Remove</button></td>
+        `;
+        table.appendChild(newRow);
+    });
 
-        document.getElementById('employeeEvaluationForm').addEventListener('submit', function(e) {
-            let hasErrors = false;
-            // Clear previous errors
-            document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
-            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
-            // Check all required fields
-            document.querySelectorAll('[required]').forEach(field => {
-                if (field.disabled || field.readOnly) return;
-                // For radio buttons
-                if (field.type === 'radio') {
-                    const name = field.name;
-                    if (!document.querySelector(`input[name="${name}"]:checked`)) {
-                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-                            r.closest('td').classList.add('error-field');
-                            // Show error message if present
-                            const errorMsg = r.closest('td').querySelector('.error-message');
-                            if (errorMsg) errorMsg.style.display = 'block';
-                        });
-                        hasErrors = true;
-                    }
-                    return;
-                }
-                // For other fields
-                if (!field.value.trim()) {
-                    field.classList.add('error-field');
-                    // Show error message if present
-                    const errorMsg = field.parentElement.querySelector('.error-message');
-                    if (errorMsg) errorMsg.style.display = 'block';
+    // Add row to Training Course Seminars table
+    document.querySelector('.add-training-course-row').addEventListener('click', function() {
+        const table = document.querySelector('#TrainingCourseSeminarsTable tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><input type="text" id="trainingProgram" name="training_program_type[]" required></td>
+            <td><input type="text" id="trainingLocation" name="training_location[]" required></td>
+            <td><label>From</label><input type="date" id="trainingDateFrom" name="training_from_date[]" required>
+                <label>To</label><input type="date" id="trainingDateTo" name="training_to_date[]" required>
+            </td>
+            <td><button type="button" class="remove-row">Remove</button></td>
+        `;
+        table.appendChild(newRow);
+    });
+
+    // Remove row from any table
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-row')) {
+            e.target.closest('tr').remove();
+        }
+    });
+
+    document.getElementById('employeeEvaluationForm').addEventListener('submit', function(e) {
+        let hasErrors = false;
+        // Clear previous errors
+        document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        // Check all required fields
+        document.querySelectorAll('[required]').forEach(field => {
+            if (field.disabled || field.readOnly) return;
+            // For radio buttons
+            if (field.type === 'radio') {
+                const name = field.name;
+                if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                        r.closest('td').classList.add('error-field');
+                        // Show error message if present
+                        const errorMsg = r.closest('td').querySelector('.error-message');
+                        if (errorMsg) errorMsg.style.display = 'block';
+                    });
                     hasErrors = true;
                 }
-            });
-            if (hasErrors) {
-                e.preventDefault();
-                alert('Please fill in all required fields highlighted in red.');
-                // Scroll to first error
-                const firstError = document.querySelector('.error-field');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                return;
+            }
+            // For other fields
+            if (!field.value.trim()) {
+                field.classList.add('error-field');
+                // Show error message if present
+                const errorMsg = field.parentElement.querySelector('.error-message');
+                if (errorMsg) errorMsg.style.display = 'block';
+                hasErrors = true;
             }
         });
-    </script>
+        if (hasErrors) {
+            e.preventDefault();
+            alert('Please fill in all required fields highlighted in red.');
+            // Scroll to first error
+            const firstError = document.querySelector('.error-field');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+</script>
 {% endblock content %}
